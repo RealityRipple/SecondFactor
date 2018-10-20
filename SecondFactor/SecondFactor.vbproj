@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{55B9678E-0F78-449A-B6F7-6697F19DF621}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>SecondFactor.My.MyApplication</StartupObject>
+    <RootNamespace>SecondFactor</RootNamespace>
+    <AssemblyName>SecondFactor</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>WindowsForms</MyType>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>Full</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DocumentationFile>
+    </DocumentationFile>
+    <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022</NoWarn>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionExplicit>On</OptionExplicit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionCompare>Binary</OptionCompare>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionStrict>Off</OptionStrict>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OptionInfer>On</OptionInfer>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>key.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="Classes\clsPasswordBox.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Classes\clsSettings.vb" />
+    <Compile Include="Classes\QRCode\clsQRCodeDecoder.vb" />
+    <Compile Include="Classes\QRCode\Data\clsQRCodeBitmapImage.vb" />
+    <Compile Include="Classes\QRCode\Data\clsQRCodeImage.vb" />
+    <Compile Include="Classes\QRCode\Data\clsQRCodeSymbol.vb" />
+    <Compile Include="Classes\QRCode\ECC\clsBCH15_5.vb" />
+    <Compile Include="Classes\QRCode\ECC\clsReedSolomon.vb" />
+    <Compile Include="Classes\QRCode\Exceptions\clsAlignmentPatternNotFound.vb" />
+    <Compile Include="Classes\QRCode\Exceptions\clsDecodingFailed.vb" />
+    <Compile Include="Classes\QRCode\Exceptions\clsFinderPatternNotFound.vb" />
+    <Compile Include="Classes\QRCode\Exceptions\clsInvalidDataBlock.vb" />
+    <Compile Include="Classes\QRCode\Exceptions\clsInvalidVersion.vb" />
+    <Compile Include="Classes\QRCode\Exceptions\clsInvalidVersionInfo.vb" />
+    <Compile Include="Classes\QRCode\Exceptions\clsSymbolNotFound.vb" />
+    <Compile Include="Classes\QRCode\Exceptions\clsVersionInformation.vb" />
+    <Compile Include="Classes\QRCode\Geometry\clsAxis.vb" />
+    <Compile Include="Classes\QRCode\Geometry\clsLine.vb" />
+    <Compile Include="Classes\QRCode\Geometry\clsPoint.vb" />
+    <Compile Include="Classes\QRCode\Geometry\clsSamplingGrid.vb" />
+    <Compile Include="Classes\QRCode\Reader\clsQRCodeDataBlockReader.vb" />
+    <Compile Include="Classes\QRCode\Reader\clsQRCodeImageReader.vb" />
+    <Compile Include="Classes\QRCode\Reader\Pattern\clsAlignmentPattern.vb" />
+    <Compile Include="Classes\QRCode\Reader\Pattern\clsFinderPattern.vb" />
+    <Compile Include="Classes\QRCode\Reader\Pattern\clsLogicalSeed.vb" />
+    <Compile Include="Classes\QRCode\Util\clsQRCodeUtility.vb" />
+    <Compile Include="Classes\QRCode\Util\clsSystemUtils.vb" />
+    <Compile Include="Forms\frmMain.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmMain.Designer.vb">
+      <DependentUpon>frmMain.vb</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmPassEntry.Designer.vb">
+      <DependentUpon>frmPassEntry.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmPassEntry.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmProfiles.Designer.vb">
+      <DependentUpon>frmProfiles.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmProfiles.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmQR.Designer.vb">
+      <DependentUpon>frmQR.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmQR.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Modules\modBase32.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Forms\frmMain.resx">
+      <DependentUpon>frmMain.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmPassEntry.resx">
+      <DependentUpon>frmPassEntry.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmProfiles.resx">
+      <DependentUpon>frmProfiles.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmQR.resx">
+      <DependentUpon>frmQR.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="key.ico" />
+    <None Include="Resources\key.png" />
+    <None Include="Resources\crosshair.cur" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+</Project>
