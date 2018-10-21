@@ -69,17 +69,6 @@ Namespace My
 
     Private Sub DeleteRegistry()
       If My.Computer.Registry.ClassesRoot.GetSubKeyNames.Contains("otpauth") Then My.Computer.Registry.ClassesRoot.DeleteSubKeyTree("otpauth")
-      'regDelete_Sub_Key(HKEY_CLASSES_ROOT, "bnftp\DefaultIcon", vbNullString)
-      'regDelete_Sub_Key(HKEY_CLASSES_ROOT, "bnftp\shell\open\command", vbNullString)
-      'regDelete_Sub_Key(HKEY_CLASSES_ROOT, "bnftp\shell\open", vbNullString)
-      'regDelete_Sub_Key(HKEY_CLASSES_ROOT, "bnftp\shell", vbNullString)
-      'regDelete_Sub_Key(HKEY_CLASSES_ROOT, "bnftp", vbNullString)
-      'regDelete_Sub_Key(HKEY_CLASSES_ROOT, "bnftp", "URL Protocol")
-      'regDelete_A_Key(HKEY_CLASSES_ROOT, "bnftp", "DefaultIcon")
-      'regDelete_A_Key(HKEY_CLASSES_ROOT, "bnftp", "shell\open\command")
-      'regDelete_A_Key(HKEY_CLASSES_ROOT, "bnftp", "shell\open")
-      'regDelete_A_Key(HKEY_CLASSES_ROOT, "bnftp", "shell")
-      'regDelete_A_Key(HKEY_CLASSES_ROOT, vbNullString, "bnftp")
     End Sub
 
     Private Sub MyApplication_StartupNextInstance(sender As Object, e As Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventArgs) Handles Me.StartupNextInstance
