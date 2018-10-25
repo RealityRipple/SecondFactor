@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
+    <Compile Include="Classes\clsAuthenticode.vb" />
     <Compile Include="Classes\clsPasswordBox.vb">
       <SubType>Component</SubType>
     </Compile>
