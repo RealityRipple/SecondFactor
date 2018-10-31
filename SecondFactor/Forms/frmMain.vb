@@ -1,18 +1,22 @@
 ﻿Public Class frmMain
+  Private priorSlice As UInt32
+
   Private Sub tmrAuthVals_Tick(sender As Object, e As EventArgs) Handles tmrAuthVals.Tick
     Dim iPeriod As UInt16 = 30
     If cmbProfile.Items.Count > 0 Then iPeriod = cSettings.ProfilePeriod(cmbProfile.SelectedItem)
-    Dim remainder As Integer = DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) Mod iPeriod
-    pbTime.Maximum = iPeriod - 1
-    pbTime.Value = ((iPeriod - 1) - remainder)
-    If remainder > 0 Then Return
+    Dim remainder As UInt16 = DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) Mod iPeriod
+    Dim timeSlice As UInt32 = Math.Floor(DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) / iPeriod)
+    If Not pbTime.Maximum = iPeriod - 1 Then pbTime.Maximum = iPeriod - 1
+    If Not pbTime.Value = (iPeriod - 1) - remainder Then pbTime.Value = (iPeriod - 1) - remainder
+    If timeSlice = priorSlice Then Return
+    priorSlice = timeSlice
     If cmbProfile.Items.Count > 0 Then
+      LoadProfileData(cmbProfile.SelectedItem)
       If txtCodeFuture.Focused Then
         txtCode.Focus()
       ElseIf txtCode.Focused Then
         txtCodePast.Focus()
       End If
-      LoadProfileData(cmbProfile.SelectedItem)
     Else
       LoadProfileData(Nothing)
     End If
@@ -20,6 +24,7 @@
 
   Private Sub frmMain_Shown(sender As Object, e As EventArgs) Handles Me.Shown
     UpdateProfileListing()
+    priorSlice = Math.Floor(DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) / 30)
     If Not String.IsNullOrEmpty(Command) Then
       If Command.Substring(0, 8).ToLower = "-import " Or Command.Substring(0, 8).ToLower = "/import " Then
         ParseOTPURL(Command.Substring(8), False)

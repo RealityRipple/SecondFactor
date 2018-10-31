@@ -180,7 +180,7 @@ Partial Class frmMain
     'tmrAuthVals
     '
     Me.tmrAuthVals.Enabled = True
-    Me.tmrAuthVals.Interval = 1000
+    Me.tmrAuthVals.Interval = 200
     '
     'tmrQRClick
     '
