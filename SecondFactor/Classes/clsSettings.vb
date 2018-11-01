@@ -42,6 +42,7 @@
   Public Shared Function ChangePassword(newPass As String) As Boolean
     If RequiresLogin AndAlso Not LoggedIn Then Return False
     Dim sProfiles() As String = GetProfileNames
+    Dim sProfSel As String = LastSelectedProfileName
     Dim profData As New Dictionary(Of String, String())
     For Each sProfile In sProfiles
       Dim sSecret As String = ProfileSecret(sProfile)
@@ -78,6 +79,7 @@
       If Not String.IsNullOrEmpty(sSecret) Then ProfileSecret(sProfile) = sSecret
       If Not String.IsNullOrEmpty(sOrig) Then ProfileDefaultName(sProfile) = sOrig
     Next
+    LastSelectedProfileName = sProfSel
     Return True
   End Function
 
@@ -102,6 +104,22 @@
       Next
       Return I
     End Get
+  End Property
+
+  Public Shared Property LastSelectedProfileName As String
+    Get
+      If RequiresLogin AndAlso Not LoggedIn Then Return Nothing
+      If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then Return Nothing
+      If Not RegistryPath.OpenSubKey("Profiles").GetValueNames.Contains("") Then Return Nothing
+      If Not RegistryPath().OpenSubKey("Profiles").GetValueKind("") = Microsoft.Win32.RegistryValueKind.Binary Then Return Nothing
+      Return DecrypText(RegistryPath.OpenSubKey("Profiles").GetValue("", Nothing))
+    End Get
+    Set(value As String)
+      If Not GetProfileNames.Contains(value) Then Return
+      If RequiresLogin AndAlso Not LoggedIn Then Return
+      If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then RegistryPath(True).CreateSubKey("Profiles")
+      RegistryPath(True).OpenSubKey("Profiles", True).SetValue("", EncrypText(value), Microsoft.Win32.RegistryValueKind.Binary)
+    End Set
   End Property
 
   Public Shared ReadOnly Property GetProfileNames As String()

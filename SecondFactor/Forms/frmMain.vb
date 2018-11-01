@@ -24,6 +24,15 @@
 
   Private Sub frmMain_Shown(sender As Object, e As EventArgs) Handles Me.Shown
     UpdateProfileListing()
+    Dim selProfile As String = cSettings.LastSelectedProfileName
+    If Not String.IsNullOrEmpty(selProfile) Then
+      For I As Integer = 0 To cmbProfile.Items.Count - 1
+        If cmbProfile.Items(I) = selProfile Then
+          cmbProfile.SelectedIndex = I
+          Exit For
+        End If
+      Next
+    End If
     priorSlice = Math.Floor(DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) / 30)
     If Not String.IsNullOrEmpty(Command) Then
       If Command.Substring(0, 8).ToLower = "-import " Or Command.Substring(0, 8).ToLower = "/import " Then
@@ -113,6 +122,7 @@
       Else
         cmbProfile.SelectedIndex = 0
       End If
+      If priorSlice > 0 Then cSettings.LastSelectedProfileName = Nothing
       Return
     End If
     Dim sSecret As String = cSettings.ProfileSecret(ProfileName)
@@ -143,6 +153,7 @@
     txtCodePast.SelectAll()
     txtCodeFuture.SelectAll()
     txtCode.SelectAll()
+    If priorSlice > 0 Then cSettings.LastSelectedProfileName = ProfileName
   End Sub
 
   Private Sub cmbProfile_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbProfile.SelectedIndexChanged
