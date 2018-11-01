@@ -6,6 +6,7 @@
   End Enum
 
   Private Shared passkey() As Byte
+  Private Shared cryptoSeq As String = "|PADDING" & Application.ProductName & "PADDING|"
 
   Private Shared Function RegistryPath(Optional writable As Boolean = False) As Microsoft.Win32.RegistryKey
     If Not My.Computer.Registry.CurrentUser.GetSubKeyNames.Contains("Software") Then My.Computer.Registry.CurrentUser.CreateSubKey("Software")
@@ -20,8 +21,8 @@
       If Not RegistryPath.GetValueKind("A") = Microsoft.Win32.RegistryValueKind.Binary Then Return False
       Dim decrypTest() As Byte = RegistryPath.GetValue("A", Nothing)
       If decrypTest Is Nothing OrElse decrypTest.Length = 0 Then Return False
-      If decrypTest.Length = 16 Then Return True
-      Return False
+      If decrypTest.Length = 32 Then Return False
+      Return True
     End Get
   End Property
 
@@ -56,12 +57,6 @@
       Dim bIV() As Byte = hAES.IV
       RegistryPath(True).SetValue("A", bKey, Microsoft.Win32.RegistryValueKind.Binary)
       RegistryPath(True).SetValue("B", bIV, Microsoft.Win32.RegistryValueKind.Binary)
-      For Each sProfile In profData.Keys
-        Dim sSecret As String = profData(sProfile)(0)
-        Dim sOrig As String = profData(sProfile)(1)
-        If Not String.IsNullOrEmpty(sSecret) Then ProfileSecret(sProfile) = sSecret
-        If Not String.IsNullOrEmpty(sOrig) Then ProfileDefaultName(sProfile) = sOrig
-      Next
     Else
       Dim bPass() As Byte = System.Text.Encoding.GetEncoding("latin1").GetBytes(newPass)
       hAES.GenerateIV()
@@ -76,13 +71,13 @@
       Dim bIV() As Byte = hAES.IV
       RegistryPath(True).SetValue("B", bIV, Microsoft.Win32.RegistryValueKind.Binary)
       RegistryPath(True).SetValue("A", EncrypText(Application.ProductName, True), Microsoft.Win32.RegistryValueKind.Binary)
-      For Each sProfile In profData.Keys
-        Dim sSecret As String = profData(sProfile)(0)
-        Dim sOrig As String = profData(sProfile)(1)
-        If Not String.IsNullOrEmpty(sSecret) Then ProfileSecret(sProfile) = sSecret
-        If Not String.IsNullOrEmpty(sOrig) Then ProfileDefaultName(sProfile) = sOrig
-      Next
     End If
+    For Each sProfile In profData.Keys
+      Dim sSecret As String = profData(sProfile)(0)
+      Dim sOrig As String = profData(sProfile)(1)
+      If Not String.IsNullOrEmpty(sSecret) Then ProfileSecret(sProfile) = sSecret
+      If Not String.IsNullOrEmpty(sOrig) Then ProfileDefaultName(sProfile) = sOrig
+    Next
     Return True
   End Function
 
@@ -270,6 +265,7 @@
   End Function
 
   Private Shared Function Secrypt(Secret As String) As Byte()
+    Dim prefix As String = cryptoRandom() & cryptoSeq
     Dim bKey As Byte() = Nothing
     If RequiresLogin Then
       If Not LoggedIn Then Return Nothing
@@ -290,9 +286,11 @@
       RegistryPath(True).SetValue("B", bIV, Microsoft.Win32.RegistryValueKind.Binary)
     End If
     Dim hEnc As Security.Cryptography.ICryptoTransform = hAES.CreateEncryptor(bKey, bIV)
+    Dim bPre As Byte() = System.Text.Encoding.GetEncoding("latin1").GetBytes(prefix)
     Dim bSecret As Byte() = Secret.ToUpper.ToByteArray()
     Using msEncrypt As New IO.MemoryStream()
       Using csEncrypt As New Security.Cryptography.CryptoStream(msEncrypt, hEnc, Security.Cryptography.CryptoStreamMode.Write)
+        csEncrypt.Write(bPre, 0, bPre.Length)
         csEncrypt.Write(bSecret, 0, bSecret.Length)
         csEncrypt.FlushFinalBlock()
       End Using
@@ -315,24 +313,43 @@
     Dim hAES As New Security.Cryptography.AesManaged()
     hAES.KeySize = 256
     Dim hDec = hAES.CreateDecryptor(bKey, bIV)
-    Dim bOut As New List(Of Byte)
+    Dim bOutPre As New List(Of Byte)
+    Dim bOutPost As New List(Of Byte)
+    Dim seqFound As Boolean = False
     Try
       Using msDecrypt As New IO.MemoryStream(Encrypted)
         Using csDecrypt As New Security.Cryptography.CryptoStream(msDecrypt, hDec, Security.Cryptography.CryptoStreamMode.Read)
           Do While csDecrypt.CanRead
             Dim iRead As Integer = csDecrypt.ReadByte
             If iRead = -1 Then Exit Do
-            bOut.Add(iRead)
+            For iTest As Integer = 0 To cryptoSeq.Length - 1
+              If Not iRead = Asc(cryptoSeq(iTest)) Then
+                Exit For
+              End If
+              If iTest = cryptoSeq.Length - 1 Then
+                seqFound = True
+                Continue Do
+              End If
+              iRead = csDecrypt.ReadByte
+              If iRead = -1 Then Exit Do
+            Next
+            If seqFound Then
+              bOutPost.Add(iRead)
+            Else
+              bOutPre.Add(iRead)
+            End If
           Loop
         End Using
       End Using
     Catch ex As Exception
       Return "Failed to Decrypt"
     End Try
-    Return bOut.ToArray.ToBase32String
+    If bOutPost.Count = 0 Then Return bOutPre.ToArray.ToBase32String
+    Return bOutPost.ToArray.ToBase32String
   End Function
 
   Private Shared Function EncrypText(Text As String, Optional SpecialLogin As Boolean = False) As Byte()
+    Dim prefix As String = cryptoRandom() & cryptoSeq
     Dim bKey As Byte() = Nothing
     If SpecialLogin Then
       bKey = passkey
@@ -355,9 +372,11 @@
       RegistryPath(True).SetValue("B", bIV, Microsoft.Win32.RegistryValueKind.Binary)
     End If
     Dim hEnc = hAES.CreateEncryptor(bKey, bIV)
+    Dim bPre As Byte() = System.Text.Encoding.GetEncoding("latin1").GetBytes(prefix)
     Dim bText As Byte() = System.Text.Encoding.GetEncoding("latin1").GetBytes(Text)
     Using msEncrypt As New IO.MemoryStream()
       Using csEncrypt As New Security.Cryptography.CryptoStream(msEncrypt, hEnc, Security.Cryptography.CryptoStreamMode.Write)
+        csEncrypt.Write(bPre, 0, bPre.Length)
         csEncrypt.Write(bText, 0, bText.Length)
         csEncrypt.FlushFinalBlock()
       End Using
@@ -382,20 +401,52 @@
     Dim hAES As New Security.Cryptography.AesManaged()
     hAES.KeySize = 256
     Dim hDec = hAES.CreateDecryptor(bKey, bIV)
-    Dim bOut As New List(Of Byte)
+    Dim bOutPre As New List(Of Byte)
+    Dim bOutPost As New List(Of Byte)
+    Dim seqFound As Boolean = False
     Try
       Using msDecrypt As New IO.MemoryStream(Encrypted)
         Using csDecrypt As New Security.Cryptography.CryptoStream(msDecrypt, hDec, Security.Cryptography.CryptoStreamMode.Read)
           Do While csDecrypt.CanRead
             Dim iRead As Integer = csDecrypt.ReadByte
             If iRead = -1 Then Exit Do
-            bOut.Add(iRead)
+            For iTest As Integer = 0 To cryptoSeq.Length - 1
+              If Not iRead = Asc(cryptoSeq(iTest)) Then
+                Exit For
+              End If
+              If iTest = cryptoSeq.Length - 1 Then
+                seqFound = True
+                Continue Do
+              End If
+              iRead = csDecrypt.ReadByte
+              If iRead = -1 Then Exit Do
+            Next
+            If seqFound Then
+              bOutPost.Add(iRead)
+            Else
+              bOutPre.Add(iRead)
+            End If
           Loop
         End Using
       End Using
     Catch ex As Exception
       Return "Failed to Decrypt"
     End Try
-    Return System.Text.Encoding.GetEncoding("latin1").GetString(bOut.ToArray)
+    If bOutPost.Count = 0 Then Return System.Text.Encoding.GetEncoding("latin1").GetString(bOutPre.ToArray)
+    Return System.Text.Encoding.GetEncoding("latin1").GetString(bOutPost.ToArray)
+  End Function
+
+  Private Shared Function cryptoRandom() As String
+    Dim sRnd As String = Nothing
+    Using hRnd As New Security.Cryptography.RNGCryptoServiceProvider
+      For I As Integer = 0 To 63
+        Dim bRnd(0) As Byte
+        Do
+          hRnd.GetBytes(bRnd)
+        Loop Until (bRnd(0) >= &H30 And bRnd(0) < &H39) Or (bRnd(0) >= &H41 And bRnd(0) <= &H5A) Or (bRnd(0) >= &H61 And bRnd(0) <= &H7A)
+        sRnd &= ChrW(bRnd(0))
+      Next
+    End Using
+    Return sRnd
   End Function
 End Class
