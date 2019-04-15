@@ -283,6 +283,10 @@
   End Function
 
   Private Shared Function Secrypt(Secret As String) As Byte()
+    If String.IsNullOrEmpty(Secret) Then
+      Dim bRet(3) As Byte
+      Return bRet
+    End If
     Dim prefix As String = cryptoRandom() & cryptoSeq
     Dim bKey As Byte() = Nothing
     If RequiresLogin Then
@@ -318,6 +322,13 @@
 
   Private Shared Function DeScrypt(Encrypted As Byte()) As String
     If Encrypted Is Nothing OrElse Encrypted.Length = 0 Then Return "Missing"
+    If Encrypted.Length = 4 And
+      Encrypted(0) = 0 And
+      Encrypted(1) = 0 And
+      Encrypted(2) = 0 And
+      Encrypted(3) = 0 Then
+      Return Nothing
+    End If
     Dim bKey As Byte() = Nothing
     If RequiresLogin Then
       If Not LoggedIn Then Return "Not Logged In"
@@ -331,8 +342,7 @@
     Dim hAES As New Security.Cryptography.AesManaged()
     hAES.KeySize = 256
     Dim hDec = hAES.CreateDecryptor(bKey, bIV)
-    Dim bOutPre As New List(Of Byte)
-    Dim bOutPost As New List(Of Byte)
+    Dim bOut As New List(Of Byte)
     Dim seqFound As Boolean = False
     Try
       Using msDecrypt As New IO.MemoryStream(Encrypted)
@@ -340,30 +350,28 @@
           Do While csDecrypt.CanRead
             Dim iRead As Integer = csDecrypt.ReadByte
             If iRead = -1 Then Exit Do
-            For iTest As Integer = 0 To cryptoSeq.Length - 1
-              If Not iRead = Asc(cryptoSeq(iTest)) Then
-                Exit For
-              End If
-              If iTest = cryptoSeq.Length - 1 Then
-                seqFound = True
-                Continue Do
-              End If
-              iRead = csDecrypt.ReadByte
-              If iRead = -1 Then Exit Do
-            Next
-            If seqFound Then
-              bOutPost.Add(iRead)
-            Else
-              bOutPre.Add(iRead)
+            If Not seqFound Then
+              For iTest As Integer = 0 To cryptoSeq.Length - 1
+                If Not iRead = Asc(cryptoSeq(iTest)) Then
+                  Exit For
+                End If
+                If iTest = cryptoSeq.Length - 1 Then
+                  seqFound = True
+                  Continue Do
+                End If
+                iRead = csDecrypt.ReadByte
+                If iRead = -1 Then Exit Do
+              Next
             End If
+            If seqFound Then bOut.Add(iRead)
           Loop
         End Using
       End Using
     Catch ex As Exception
       Return "Failed to Decrypt"
     End Try
-    If bOutPost.Count = 0 Then Return bOutPre.ToArray.ToBase32String
-    Return bOutPost.ToArray.ToBase32String
+    If bOut.Count = 0 Then Return Nothing
+    Return bOut.ToArray.ToBase32String
   End Function
 
   Private Shared Function EncrypText(Text As String, Optional SpecialLogin As Boolean = False) As Byte()
@@ -419,8 +427,7 @@
     Dim hAES As New Security.Cryptography.AesManaged()
     hAES.KeySize = 256
     Dim hDec = hAES.CreateDecryptor(bKey, bIV)
-    Dim bOutPre As New List(Of Byte)
-    Dim bOutPost As New List(Of Byte)
+    Dim bOut As New List(Of Byte)
     Dim seqFound As Boolean = False
     Try
       Using msDecrypt As New IO.MemoryStream(Encrypted)
@@ -428,30 +435,28 @@
           Do While csDecrypt.CanRead
             Dim iRead As Integer = csDecrypt.ReadByte
             If iRead = -1 Then Exit Do
-            For iTest As Integer = 0 To cryptoSeq.Length - 1
-              If Not iRead = Asc(cryptoSeq(iTest)) Then
-                Exit For
-              End If
-              If iTest = cryptoSeq.Length - 1 Then
-                seqFound = True
-                Continue Do
-              End If
-              iRead = csDecrypt.ReadByte
-              If iRead = -1 Then Exit Do
-            Next
-            If seqFound Then
-              bOutPost.Add(iRead)
-            Else
-              bOutPre.Add(iRead)
+            If Not seqFound Then
+              For iTest As Integer = 0 To cryptoSeq.Length - 1
+                If Not iRead = Asc(cryptoSeq(iTest)) Then
+                  Exit For
+                End If
+                If iTest = cryptoSeq.Length - 1 Then
+                  seqFound = True
+                  Continue Do
+                End If
+                iRead = csDecrypt.ReadByte
+                If iRead = -1 Then Exit Do
+              Next
             End If
+            If seqFound Then bOut.Add(iRead)
           Loop
         End Using
       End Using
     Catch ex As Exception
       Return "Failed to Decrypt"
     End Try
-    If bOutPost.Count = 0 Then Return System.Text.Encoding.GetEncoding("latin1").GetString(bOutPre.ToArray)
-    Return System.Text.Encoding.GetEncoding("latin1").GetString(bOutPost.ToArray)
+    If bOut.Count = 0 Then Return Nothing
+    Return System.Text.Encoding.GetEncoding("latin1").GetString(bOut.ToArray)
   End Function
 
   Private Shared Function cryptoRandom() As String
