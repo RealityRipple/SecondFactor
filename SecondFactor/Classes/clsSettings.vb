@@ -247,13 +247,14 @@
     Dim bDigits As Byte = RegistryPath().OpenSubKey("Profiles").OpenSubKey(OldName).GetValue("Size", 6)
     Dim sAlgo As String = RegistryPath().OpenSubKey("Profiles").OpenSubKey(OldName).GetValue("Algorithm", "SHA1")
     Dim iPeriod As UInt16 = RegistryPath().OpenSubKey("Profiles").OpenSubKey(OldName).GetValue("Period", 30)
+    If OldName.ToLower = NewName.ToLower Then RegistryPath(True).OpenSubKey("Profiles", True).DeleteSubKey(OldName)
     RegistryPath(True).OpenSubKey("Profiles", True).CreateSubKey(NewName)
     If Not String.IsNullOrEmpty(sDefault) Then RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(NewName, True).SetValue("", EncrypText(sDefault), Microsoft.Win32.RegistryValueKind.Binary)
     If Not String.IsNullOrEmpty(sSecret) Then RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(NewName, True).SetValue("Secret", Secrypt(sSecret), Microsoft.Win32.RegistryValueKind.Binary)
     RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(NewName, True).SetValue("Size", bDigits, Microsoft.Win32.RegistryValueKind.DWord)
     RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(NewName, True).SetValue("Algorithm", sAlgo, Microsoft.Win32.RegistryValueKind.String)
     RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(NewName, True).SetValue("Period", iPeriod, Microsoft.Win32.RegistryValueKind.DWord)
-    RegistryPath(True).OpenSubKey("Profiles", True).DeleteSubKey(OldName)
+    If Not OldName.ToLower = NewName.ToLower Then RegistryPath(True).OpenSubKey("Profiles", True).DeleteSubKey(OldName)
     Return True
   End Function
 
