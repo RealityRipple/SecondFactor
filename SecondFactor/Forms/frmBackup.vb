@@ -85,11 +85,18 @@
     Dim idx As Integer = 0
     Dim sNames As String() = cSettings.GetProfileNames
     For I As Integer = 0 To iItems.Count - 1
+      Dim sName As String = sNames(iItems(I))
+      Dim sAlg As String = "SHA1"
+      Select Case cSettings.ProfileAlgorithm(sName)
+        Case cSettings.HashAlg.SHA256 : sAlg = "SHA256"
+        Case cSettings.HashAlg.SHA512 : sAlg = "SHA512"
+      End Select
       Dim sData As String = "{" & vbLf &
-        " ""name"": """ & sNames(iItems(I)) & """," & vbLf &
-        " ""secret"": """ & cSettings.ProfileSecret(sNames(iItems(I))) & """," & vbLf &
-        " ""digits"": """ & cSettings.ProfileDigits(sNames(iItems(I))) & """," & vbLf &
-        " ""period"": """ & cSettings.ProfilePeriod(sNames(iItems(I))) & """" & vbLf &
+        " ""name"": """ & sName & """," & vbLf &
+        " ""secret"": """ & cSettings.ProfileSecret(sName) & """," & vbLf &
+        " ""alg"": """ & sAlg & """," & vbLf &
+        " ""digits"": """ & cSettings.ProfileDigits(sName) & """," & vbLf &
+        " ""period"": """ & cSettings.ProfilePeriod(sName) & """" & vbLf &
         "}" & vbLf
       Dim bData As Byte() = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(sData)
       zExport.AddData(idx & ".json", bData, expTime)
@@ -289,6 +296,7 @@
     For I As Integer = 0 To iItems.Count - 1
       Dim sName As String = Nothing
       Dim sSecret As String = Nothing
+      Dim sAlg As String = Nothing
       Dim iDigits As Byte = 0
       Dim iPeriod As UInt16 = 0
       Using fStream As New IO.MemoryStream(ImportedFiles(iItems(I)).Data)
@@ -296,11 +304,12 @@
         For Each el In jReader.Serial(0).SubElements
           If el.Key = "name" Then sName = el.Value
           If el.Key = "secret" Then sSecret = el.Value
+          If el.Key = "alg" Then sAlg = el.Value
           If el.Key = "digits" Then iDigits = el.Value
           If el.Key = "period" Then iPeriod = el.Value
         Next
       End Using
-      If String.IsNullOrEmpty(sName) OrElse String.IsNullOrEmpty(sSecret) OrElse iDigits = 0 OrElse iPeriod = 0 Then Continue For
+      If String.IsNullOrEmpty(sName) OrElse String.IsNullOrEmpty(sSecret) OrElse String.IsNullOrEmpty(sAlg) OrElse iDigits = 0 OrElse iPeriod = 0 Then Continue For
       If iDigits < 6 Or iDigits > 8 Then Continue For
       Dim bFound As Boolean = False
       For J As Integer = 0 To sProfiles.Length - 1
@@ -315,7 +324,12 @@
           Exit For
         End If
       End If
-      If Not cSettings.AddProfile(sName, sSecret, iDigits, cSettings.HashAlg.SHA1, iPeriod) Then
+      Dim hAlg As cSettings.HashAlg = SecondFactor.cSettings.HashAlg.SHA1
+      Select Case sAlg.ToUpper
+        Case "SHA256", "SHA-256" : hAlg = cSettings.HashAlg.SHA256
+        Case "SHA512", "SHA-512" : hAlg = cSettings.HashAlg.SHA512
+      End Select
+      If Not cSettings.AddProfile(sName, sSecret, iDigits, hAlg, iPeriod) Then
         allOK = False
         Exit For
       End If
