@@ -26,7 +26,7 @@
     End Get
   End Property
 
-  Public Shared Function Login(pass As String) As Boolean
+  Private Shared Function LegacyLogin(pass As String) As Boolean
     Dim bPass() As Byte = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(pass)
     Dim sha256 As New Security.Cryptography.SHA256CryptoServiceProvider()
     Dim bHash() As Byte
@@ -36,6 +36,24 @@
       bPass = bHash
     Loop
     passkey = bHash
+    Return LoggedIn
+  End Function
+
+  Public Shared Function Login(pass As String) As Boolean
+    If Not RegistryPath.GetValueNames.Contains("C") Then
+      If LegacyLogin(pass) Then
+        ChangePassword(pass)
+        Return True
+      End If
+      Return False
+    End If
+    If Not RegistryPath.GetValueKind("C") = Microsoft.Win32.RegistryValueKind.Binary Then Return False
+    Dim c() As Byte = RegistryPath.GetValue("C", Nothing)
+    If c Is Nothing OrElse Not c.Length = 24 Then Return False
+    Dim salt(15) As Byte
+    Array.ConstrainedCopy(c, 0, salt, 0, 16)
+    Dim iterations As UInt64 = BitConverter.ToUInt64(c, 16)
+    passkey = PBKDF2.Rfc2898DeriveBytes(pass, salt, iterations, 32, PBKDF2.HashStrength.SHA512)
     Return LoggedIn
   End Function
 
@@ -61,14 +79,17 @@
     Else
       Dim bPass() As Byte = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(newPass)
       hAES.GenerateIV()
-      Dim sha256 As New Security.Cryptography.SHA256CryptoServiceProvider()
-      Dim bHash() As Byte
-      Do
-        bHash = sha256.ComputeHash(bPass, 0, bPass.Length)
-        If (bHash.First > &H1F And bHash.First < &H30) And (bHash.Last Mod 16 = 2) Then Exit Do
-        bPass = bHash
-      Loop
-      passkey = bHash
+      Dim bSalt(15) As Byte
+      Using hRnd As New Security.Cryptography.RNGCryptoServiceProvider
+        hRnd.GetBytes(bSalt)
+      End Using
+      Dim iterations As UInt64 = PBKDF2.BestIterationFor(PBKDF2.HashStrength.SHA512)
+      passkey = PBKDF2.Rfc2898DeriveBytes(newPass, bSalt, iterations, 32, PBKDF2.HashStrength.SHA512)
+      Dim bPBKDFParams(23) As Byte
+      Array.ConstrainedCopy(bSalt, 0, bPBKDFParams, 0, 16)
+      Dim bIter() As Byte = BitConverter.GetBytes(iterations)
+      Array.ConstrainedCopy(bIter, 0, bPBKDFParams, 16, 8)
+      RegistryPath(True).SetValue("C", bPBKDFParams, Microsoft.Win32.RegistryValueKind.Binary)
       Dim bIV() As Byte = hAES.IV
       RegistryPath(True).SetValue("B", bIV, Microsoft.Win32.RegistryValueKind.Binary)
       RegistryPath(True).SetValue("A", EncrypText(Application.ProductName, True), Microsoft.Win32.RegistryValueKind.Binary)
