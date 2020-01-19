@@ -8,8 +8,8 @@ Public Class Authenticode
   Private Const RRRootThumb As String = "25E10B83C6F3EA44EE5E8C290EB17200A5F77EBB"
   Private Const RRRootSerial As String = "0087448327"
   Private Const RRRootSubject As String = "CN=RealityRipple Software Root CA, OU=RealityRipple Software Certificate Authority, O=RealityRipple Software, L=Los Berros Canyon, S=California, C=US"
-  Private Const RRSignThumb As String = "FC3938E81AA02794FA332C6FEE365CE6FEA0930B"
-  Private Const RRSignSerial As String = "32126881"
+  Private Const RRSignThumb As String = "F526764D46CB25CB11C914B09660AD7E911BFBDA"
+  Private Const RRSignSerial As String = "32126882"
   Private Const RRSignSubject As String = "CN=RealityRipple Software, OU=Software Development, O=RealityRipple Software, L=Los Berros Canyon, S=California, C=US"
   Private Structure WINTRUST_FILE_INFO
     Implements IDisposable
