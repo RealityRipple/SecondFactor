@@ -241,4 +241,11 @@
       End Using
     End If
   End Sub
+
+  Private Sub cmdBackup_Click(sender As Object, e As EventArgs) Handles cmdBackup.Click
+    Using fBackup As New frmBackup
+      fBackup.ShowDialog(Me)
+    End Using
+    UpdateProfileListing()
+  End Sub
 End Class

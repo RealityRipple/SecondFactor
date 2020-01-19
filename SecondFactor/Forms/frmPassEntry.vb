@@ -17,6 +17,14 @@
     Me.Text = "Change Your Password"
     lblPassword.Text = "Enter a New Password for SecondFactor:" & vbNewLine & "(An empty password will remove the password feature)"
   End Sub
+  Public Sub Prepare_Export()
+    Me.Text = "Export Your Profiles"
+    lblPassword.Text = "Enter a Password to secure your Backup:"
+  End Sub
+  Public Sub Prepare_Import()
+    Me.Text = "Import a Profile"
+    lblPassword.Text = "Enter your Backup File Password:"
+  End Sub
   Private Sub cmdOK_Click(sender As Object, e As EventArgs) Handles cmdOK.Click
     If String.IsNullOrEmpty(txtPassword.Text) And Not Me.Text = "Change Your Password" Then Return
     sPass = txtPassword.Text

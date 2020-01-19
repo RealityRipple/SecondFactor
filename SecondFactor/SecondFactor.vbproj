@@ -72,10 +72,12 @@
   <ItemGroup>
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Classes\clsAuthenticode.vb" />
+    <Compile Include="Classes\clsJSON.vb" />
     <Compile Include="Classes\clsPasswordBox.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Classes\clsSettings.vb" />
+    <Compile Include="Classes\clsZIP.vb" />
     <Compile Include="Classes\QRCode\clsQRCodeDecoder.vb" />
     <Compile Include="Classes\QRCode\Data\clsQRCodeBitmapImage.vb" />
     <Compile Include="Classes\QRCode\Data\clsQRCodeImage.vb" />
@@ -101,6 +103,12 @@
     <Compile Include="Classes\QRCode\Reader\Pattern\clsLogicalSeed.vb" />
     <Compile Include="Classes\QRCode\Util\clsQRCodeUtility.vb" />
     <Compile Include="Classes\QRCode\Util\clsSystemUtils.vb" />
+    <Compile Include="Forms\frmBackup.Designer.vb">
+      <DependentUpon>frmBackup.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmBackup.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\frmMain.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -144,6 +152,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\frmBackup.resx">
+      <DependentUpon>frmBackup.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmMain.resx">
       <DependentUpon>frmMain.vb</DependentUpon>
     </EmbeddedResource>
