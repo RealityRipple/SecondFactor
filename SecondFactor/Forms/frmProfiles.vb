@@ -232,9 +232,7 @@
         pass.Prepare_ChangePass()
         If pass.ShowDialog(Me) = DialogResult.OK Then cSettings.ChangePassword(pass.txtPassword.Text)
       End Using
-      'Change Password
     Else
-      'New Password
       Using pass As New frmPassEntry
         pass.Prepare_NewPass()
         If pass.ShowDialog(Me) = DialogResult.OK Then cSettings.ChangePassword(pass.txtPassword.Text)

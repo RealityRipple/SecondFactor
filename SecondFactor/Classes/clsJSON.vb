@@ -1,5 +1,4 @@
-﻿
-Public Class JSONReader
+﻿Public Class JSONReader
   Public Enum ElementType
     None
     Group
