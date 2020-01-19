@@ -41,13 +41,6 @@
     AES256 = 3
   End Enum
 
-  Public Enum HashStrength As Byte
-    SHA1 = 1
-    SHA256 = 2
-    SHA384 = 3
-    SHA512 = 4
-  End Enum
-
   Private Structure AESKeyData
     Public Key As Byte()
     Public Salt As Byte()
@@ -61,15 +54,15 @@
   End Structure
 
   Private sFiles As List(Of ZIP.File)
-
   Private UsingAES As AESStrength
   Private AEXVersion As Byte
 
-  Public Sub New(Optional strength As AESStrength = AESStrength.AES256)
+  Public Sub New(Optional strength As AESStrength = AESStrength.AES256, Optional Version As Byte = 2)
     sFiles = New List(Of ZIP.File)
     UsingAES = strength
-    AEXVersion = 2
+    AEXVersion = Version
   End Sub
+
   Public Sub AddData(sName As String, bData As Byte(), dTime As Date, Optional sComment As String = Nothing)
     sFiles.Add(New ZIP.File(sName, bData, dTime, sComment))
   End Sub
@@ -87,7 +80,7 @@
     Next
   End Sub
 
-  Public Function Encrypt(sPassword As String, Optional sComment As String = Nothing, Optional Hash As HashStrength = HashStrength.SHA1, Optional Iterations As UInt64 = 1000) As Byte()
+  Public Function Encrypt(sPassword As String, Optional sComment As String = Nothing, Optional Hash As PBKDF2.HashStrength = PBKDF2.HashStrength.SHA1, Optional Iterations As UInt64 = 1000) As Byte()
     Dim bZip As New List(Of Byte)
     For I As UInt64 = 0 To sFiles.LongCount - 1
       Dim zFile = sFiles(I)
@@ -135,13 +128,13 @@
     Return bFile.ToArray()
   End Function
 
-  Private Function EncryptFile(zFile As ZIP.File, iAESKey As AESKeyData, Hash As HashStrength, Iterations As UInt64) As Byte()
+  Private Function EncryptFile(zFile As ZIP.File, iAESKey As AESKeyData, Hash As PBKDF2.HashStrength, Iterations As UInt64) As Byte()
     Dim bFile As New List(Of Byte)
     bFile.AddRange(iAESKey.Salt)
     bFile.AddRange(BitConverter.GetBytes(CUShort(iAESKey.PassVerifier)))
     Dim bEnc() As Byte = AESCTR(zFile.Data, iAESKey.Key)
     bFile.AddRange(bEnc)
-    If Not (Hash = HashStrength.SHA1 And Iterations = 1000) Then
+    If Not (Hash = PBKDF2.HashStrength.SHA1 And Iterations = 1000) Then
       bFile.Add(Hash)
       bFile.AddRange(BitConverter.GetBytes(Iterations))
     End If
@@ -333,48 +326,6 @@
     Return zFile
   End Function
 
-  'AES Encrypted File Contents format MODIFIED BY REALITYRIPPLE SOFTWARE
-  '[8, 12, or 16 bytes]   for Salt                      Official Standard
-  '[2 bytes]              for Pass Verifier             Official Standard
-  '[TrueDataLength bytes] for Encrypted File Data       Official Standard
-  '[1 byte]               for PBKDF2 Hash Type          OPTIONAL - NOT STANDARDIZED
-  '                            1 = HMAC-SHA-1
-  '                            2 = HMAC-SHA-256
-  '                            3 = HMAC-SHA-384
-  '                            4 = HMAC-SHA-512
-  '[8 bytes]             for PBKDF2 Rounds              OPTOINAL - NOT STANDARDIZED
-  '[10 bytes]            for MAC (Authentication Code)  Official Standard
-  '
-  'Rationale:
-  '  The two elements included in this modification to the standard are the HMAC Hash Type and iteration count for PBKDF2. By default, these
-  ' values are, of course, SHA-1 and 1000, respectively. However, the biggest security flaw in this is that these values are constants.
-  ' Not because they should be unknown, but because they should be MODIFIABLE to keep up with the changes in hardware capability. It may
-  ' be advisable in the future to even include a variable for the key generation type rather than only allowing PBKDF2, as it seems likely
-  ' that other possible standards using similar inputs will become available as technology advances further.
-  '  In this decade, however, PBKDF2 is still the best option, if it gets a few little improvements. Those improvements become possible through
-  ' the PBKDF2 Hash Type and Rounds values added above in 9 bytes. Note that while unlikely, a full 64-bit value has been provided for the
-  ' number of rounds. I have no clue how long PBKDF2 will last, and even if I did, guessing at the number of iterations considered "safe" at
-  ' any given time would be a fool's errand, especially if new hashing algorithms are implemented. I've also provided 251 free spaces for
-  ' those potential other Hash Types to use. If the time comes that all of those are used, then someone really got a little too liberal with
-  ' which hash types to include.
-  '
-  'Extra Space Usage:
-  '  These additions will only increase a ZIP file by 9 bytes per included file, which is some decently small overhead, given the amount of
-  ' added security. Additionally, the forward-compatible nature of the changes means that any future changes will take no extra storage space
-  ' beyond these 9 bytes per file. Additionally, the number works very well with the possible Salt lengths, as any leftover size in the content
-  ' beyond the known sizes must be greater than 16 even in the case of AES-128.
-  '
-  'Compatibility:
-  '  Storing these extra elements in the "compressed data" AES header means that the changes will not break or inhibit existing archive tools.
-  ' While tools that use the standards will not be able to decrypt files encrypted with this format, they will be able to add their own files
-  ' to archives that do include these modifications without getting in the way. Additionally, no changes to the general flags or compression
-  ' type value means that the files will be detected as AES-encrypted just like a normal AES-encrypted file would within the archiver.
-  ' Hopefully, the additional placement of the optional data between the file data and the final 10 byte MAC means that a parser could even
-  ' gloss over the extra 9 bytes if they happen to look for "the final 10 bytes" instead of "the next 10 bytes", and even verify the MAC.
-  '
-  'Notes:
-  ' If you would like to implement these changes, consider them public domain. No credit or license of any type is attached here.
-  ' If you wish this would become standardized, join the club. Redbubble can make us all T-shirts.
   Private Shared Function DecryptFile(bEncrypted As Byte(), sPassword As String, TrueDataLength As UInt64) As AESFileData
     Dim iSaltLen As Long = bEncrypted.LongLength - TrueDataLength - 12
     Dim iPBKLen As Long = 0
@@ -396,16 +347,10 @@
     Dim bEnc(TrueDataLength - 1) As Byte
     Array.ConstrainedCopy(bEncrypted, iSaltLen + 2, bEnc, 0, TrueDataLength)
 
-    Dim hash As HashStrength = HashStrength.SHA1
+    Dim hash As PBKDF2.HashStrength = PBKDF2.HashStrength.SHA1
     Dim iterations As UInt64 = 1000
     If Not iPBKLen = 0 Then
-      Dim bHash As Byte = bEncrypted(iSaltLen + 2 + TrueDataLength)
-      Select Case bHash
-        Case 1 : hash = HashStrength.SHA1
-        Case 2 : hash = HashStrength.SHA256
-        Case 3 : hash = HashStrength.SHA384
-        Case 4 : hash = HashStrength.SHA512
-      End Select
+      hash = bEncrypted(iSaltLen + 2 + TrueDataLength)
       iterations = BitConverter.ToUInt64(bEncrypted, iSaltLen + 2 + TrueDataLength + 1)
     End If
 
@@ -431,7 +376,7 @@
 #End Region
 
 #Region "Shared Functions"
-  Private Shared Function GenerateKey(sPassword As String, Strength As AESStrength, Optional usingSalt As Byte() = Nothing, Optional pbkdf2Hash As HashStrength = HashStrength.SHA1, Optional pbkdf2Iterations As UInt64 = 1000) As AESKeyData
+  Private Shared Function GenerateKey(sPassword As String, Strength As AESStrength, Optional usingSalt As Byte() = Nothing, Optional pbkdf2Hash As PBKDF2.HashStrength = PBKDF2.HashStrength.SHA1, Optional pbkdf2Iterations As UInt64 = 1000) As AESKeyData
     Dim keySize As Integer = 16
     Dim saltLen As Integer = 8
     Select Case Strength
@@ -444,15 +389,7 @@
       Security.Cryptography.RandomNumberGenerator.Create().GetBytes(usingSalt)
     End If
     Dim derSize As Integer = keySize * 2 + 2
-    Dim derB As Byte()
-    Dim Win7Plus As Boolean = True
-    If Environment.OSVersion.Version.Major < 6 Then Win7Plus = False
-    If Environment.OSVersion.Version.Major = 6 And Environment.OSVersion.Version.Minor < 1 Then Win7Plus = False
-    If Win7Plus Then
-      derB = Rfc2898APIDeriveBytes(sPassword, usingSalt, pbkdf2Iterations, derSize, pbkdf2Hash)
-    Else
-      derB = Rfc2898ManagedDeriveBytes(sPassword, usingSalt, pbkdf2Iterations, derSize, pbkdf2Hash)
-    End If
+    Dim derB As Byte() = PBKDF2.Rfc2898DeriveBytes(sPassword, usingSalt, pbkdf2Iterations, derSize, pbkdf2Hash)
     Dim ret As New AESKeyData
     ret.Salt = usingSalt
     Dim bKey(keySize - 1) As Byte
@@ -501,139 +438,9 @@
     Return bOut.ToArray()
   End Function
 
-  Private Declare Function BCryptOpenAlgorithmProvider Lib "bcrypt" (ByRef phAlgorithm As IntPtr, pszAlgId As IntPtr, pszImplementation As IntPtr, dwFlags As UInteger) As Integer
-  Private Declare Function BCryptCloseAlgorithmProvider Lib "bcrypt" (hAlgorithm As IntPtr, dwFlags As UInteger) As Integer
-  Private Declare Function BCryptDeriveKeyPBKDF2 Lib "bcrypt" (pPrf As IntPtr, pbPassword As IntPtr, cbPassword As UInteger, pbSalt As IntPtr, cbSalt As UInteger, cIterations As ULong, pbDerivedKey As IntPtr, cbDerivedKey As UInteger, dwFlags As UInteger) As Integer
-
-  Private Shared Function Rfc2898APIDeriveBytes(password As String, salt As Byte(), iterationCount As UInt64, keySize As Integer, hash As HashStrength) As Byte()
-    Dim hAlg As New IntPtr
-    Dim sHash As String = "SHA1"
-    Select Case hash
-      Case HashStrength.SHA1 : sHash = "SHA1"
-      Case HashStrength.SHA256 : sHash = "SHA256"
-      Case HashStrength.SHA384 : sHash = "SHA384"
-      Case HashStrength.SHA512 : sHash = "SHA512"
-    End Select
-    Dim hResult As Integer = BCryptOpenAlgorithmProvider(hAlg, Runtime.InteropServices.Marshal.StringToCoTaskMemUni(sHash), Runtime.InteropServices.Marshal.StringToCoTaskMemUni("Microsoft Primitive Provider"), 8)
-    If Not hResult = 0 Then Return {}
-
-    Dim hSalt = Runtime.InteropServices.GCHandle.Alloc(salt, Runtime.InteropServices.GCHandleType.Pinned)
-
-    Dim bPass() As Byte = Text.Encoding.GetEncoding("latin1").GetBytes(password)
-    Dim hPass = Runtime.InteropServices.GCHandle.Alloc(bPass, Runtime.InteropServices.GCHandleType.Pinned)
-    Dim bDerivedKey(keySize - 1) As Byte
-    Dim hDerived = Runtime.InteropServices.GCHandle.Alloc(bDerivedKey, Runtime.InteropServices.GCHandleType.Pinned)
-
-    Dim retSize As UInteger = keySize
-    hResult = BCryptDeriveKeyPBKDF2(hAlg, hPass.AddrOfPinnedObject, bPass.Length, hSalt.AddrOfPinnedObject, salt.Length, iterationCount, hDerived.AddrOfPinnedObject, retSize, 0)
-    If Not hResult = 0 Then Return {}
-
-    hSalt.Free()
-    hPass.Free()
-    hDerived.Free()
-
-    BCryptCloseAlgorithmProvider(hAlg, 0)
-    Return bDerivedKey
-  End Function
-
-  Private Shared Function Rfc2898ManagedDeriveBytes(password As String, salt As Byte(), iterationCount As UInt64, keySize As Integer, hash As HashStrength) As Byte()
-    Dim bPass() As Byte = Text.Encoding.GetEncoding("latin1").GetBytes(password)
-    Dim hClass As Type
-    Select Case hash
-      Case HashStrength.SHA256 : hClass = GetType(Security.Cryptography.HMACSHA256)
-      Case HashStrength.SHA384 : hClass = GetType(Security.Cryptography.HMACSHA384)
-      Case HashStrength.SHA512 : hClass = GetType(Security.Cryptography.HMACSHA512)
-      Case Else : hClass = GetType(Security.Cryptography.HMACSHA1)
-    End Select
-    Using hmac = Activator.CreateInstance(hClass, {bPass})
-      Dim hLen As Integer = hmac.HashSize / 8
-      If Not (hmac.HashSize And 7) = 0 Then hLen += 1
-      Dim keyLen As Integer = keySize / hLen
-      If keySize > (&HFFFFFFFFL * hLen) OrElse keySize < 0 Then Return {}
-      If Not keySize Mod hLen = 0 Then keyLen += 1
-      Dim extendedKey(salt.Length + 3) As Byte
-      Array.ConstrainedCopy(salt, 0, extendedKey, 0, salt.Length)
-      Using ms = New IO.MemoryStream
-        For I As Integer = 0 To keyLen - 1
-          extendedKey(salt.Length) = ((I + 1) >> 24) And &HFF
-          extendedKey(salt.Length + 1) = ((I + 1) >> 16) And &HFF
-          extendedKey(salt.Length + 2) = ((I + 1) >> 8) And &HFF
-          extendedKey(salt.Length + 3) = (I + 1) And &HFF
-          Dim u As Byte() = hmac.ComputeHash(extendedKey)
-          Array.Clear(extendedKey, salt.Length, 4)
-          Dim f As Byte() = u
-          For J As UInt64 = 1 To iterationCount - 1
-            u = hmac.ComputeHash(u)
-            For K As Integer = 0 To f.Length - 1
-              f(K) = f(K) Xor u(K)
-            Next
-          Next
-          ms.Write(f, 0, f.Length)
-          Array.Clear(u, 0, u.Length)
-          Array.Clear(f, 0, f.Length)
-        Next
-        Dim dK(keySize - 1) As Byte
-        ms.Position = 0
-        ms.Read(dK, 0, keySize)
-        ms.Position = 0
-        For I As Long = 0 To ms.Length - 1
-          ms.WriteByte(0)
-        Next
-        Array.Clear(extendedKey, 0, extendedKey.Length)
-        Return dK
-      End Using
-    End Using
-  End Function
 #End Region
 
 #Region "Basic Functions"
-  Public Shared Function BestIterationFor(hash As HashStrength) As UInt64
-    Dim Win7Plus As Boolean = True
-    If Environment.OSVersion.Version.Major < 6 Then Win7Plus = False
-    If Environment.OSVersion.Version.Major = 6 And Environment.OSVersion.Version.Minor < 1 Then Win7Plus = False
-    Dim pass As String = "CorrectHorseBatteryStaple"
-    Dim salt(15) As Byte
-    Security.Cryptography.RandomNumberGenerator.Create().GetBytes(salt)
-    Dim iterations As UInt64 = 1000
-    If Win7Plus Then iterations = 10000
-    Dim derSize As Integer = 32 * 2 + 2
-    Dim expectedIterations As UInt64 = 0
-    Do
-      Dim sw As New Diagnostics.Stopwatch
-      sw.Start()
-      Dim derB As Byte()
-      If Win7Plus Then
-        derB = Rfc2898APIDeriveBytes(pass, salt, iterations, derSize, hash)
-      Else
-        derB = Rfc2898ManagedDeriveBytes(pass, salt, iterations, derSize, hash)
-      End If
-      Dim iTime As Long = sw.ElapsedMilliseconds
-      sw.Stop()
-      Array.Clear(derB, 0, derB.Length)
-      If iTime > 1000 Then Return iterations
-      If expectedIterations = 0 Then
-        expectedIterations = iterations / iTime * 1000
-        If Win7Plus Then
-          expectedIterations = Math.Ceiling(expectedIterations / 10000) * 10000
-        Else
-          expectedIterations = Math.Ceiling(expectedIterations / 1000) * 1000
-        End If
-        If Win7Plus Then
-          iterations = expectedIterations
-        Else
-          iterations = expectedIterations
-        End If
-      Else
-        If Win7Plus Then
-          iterations = iterations + 10000
-        Else
-          iterations = iterations + 1000
-        End If
-      End If
-    Loop
-    Return 0
-  End Function
-
   Private Shared Function TimeToMSDOS(dTime As Date) As UInt16
     Dim iHour As UInt16 = dTime.Hour
     Dim iMinute As UInt16 = dTime.Minute
@@ -672,7 +479,7 @@
     Shared table As UInteger()
 
     Shared Sub New()
-      Dim poly As UInteger = &HDEBB20E3UI
+      Dim poly As UInteger = &HEDB88320UI
       table = New UInteger(255) {}
       Dim temp As UInteger = 0
       For I As UInteger = 0 To table.Length - 1

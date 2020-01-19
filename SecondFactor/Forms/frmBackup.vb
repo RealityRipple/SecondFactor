@@ -19,7 +19,7 @@
     cmdExport.Enabled = False
     Me.Cursor = Cursors.WaitCursor
     Application.DoEvents()
-    Dim iIterations As UInt64 = ZIP.BestIterationFor(ZIP.HashStrength.SHA512)
+    Dim iIterations As UInt64 = PBKDF2.BestIterationFor(PBKDF2.HashStrength.SHA512)
     'iIterations = Math.Ceiling(iIterations / cSettings.GetProfileNames.Length)
     If iIterations < 4000 Then iIterations = 4000
     iIterations = Math.Ceiling(iIterations / 1000) * 1000
@@ -121,7 +121,7 @@
     Application.DoEvents()
     Dim bSave As Byte()
     If chkExportAdvanced.CheckState = CheckState.Checked Then
-      bSave = zExport.Encrypt(sPassword, "This Zip file's encryption is enhanced with HMAC-SHA-512 and " & GoodIterations.ToString("N0") & " rounds." & vbLf & "Your archive application may have trouble opening this file." & vbLf & "See <https://gist.github.com/RealityRipple/a32f2192501f4775aff36ce143ac6894> for details.", ZIP.HashStrength.SHA512, GoodIterations)
+      bSave = zExport.Encrypt(sPassword, "This Zip file's encryption is enhanced with HMAC-SHA-512 and " & GoodIterations.ToString("N0") & " rounds." & vbLf & "Your archive application may have trouble opening this file." & vbLf & "See <https://gist.github.com/RealityRipple/a32f2192501f4775aff36ce143ac6894> for details.", PBKDF2.HashStrength.SHA512, GoodIterations)
     Else
       bSave = zExport.Encrypt(sPassword)
     End If
