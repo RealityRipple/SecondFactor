@@ -27,7 +27,7 @@
   End Property
 
   Public Shared Function Login(pass As String) As Boolean
-    Dim bPass() As Byte = System.Text.Encoding.GetEncoding("latin1").GetBytes(pass)
+    Dim bPass() As Byte = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(pass)
     Dim sha256 As New Security.Cryptography.SHA256CryptoServiceProvider()
     Dim bHash() As Byte
     Do
@@ -59,7 +59,7 @@
       RegistryPath(True).SetValue("A", bKey, Microsoft.Win32.RegistryValueKind.Binary)
       RegistryPath(True).SetValue("B", bIV, Microsoft.Win32.RegistryValueKind.Binary)
     Else
-      Dim bPass() As Byte = System.Text.Encoding.GetEncoding("latin1").GetBytes(newPass)
+      Dim bPass() As Byte = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(newPass)
       hAES.GenerateIV()
       Dim sha256 As New Security.Cryptography.SHA256CryptoServiceProvider()
       Dim bHash() As Byte
@@ -309,7 +309,7 @@
       RegistryPath(True).SetValue("B", bIV, Microsoft.Win32.RegistryValueKind.Binary)
     End If
     Dim hEnc As Security.Cryptography.ICryptoTransform = hAES.CreateEncryptor(bKey, bIV)
-    Dim bPre As Byte() = System.Text.Encoding.GetEncoding("latin1").GetBytes(prefix)
+    Dim bPre As Byte() = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(prefix)
     Dim bSecret As Byte() = Secret.ToUpper.ToByteArray()
     Using msEncrypt As New IO.MemoryStream()
       Using csEncrypt As New Security.Cryptography.CryptoStream(msEncrypt, hEnc, Security.Cryptography.CryptoStreamMode.Write)
@@ -399,8 +399,8 @@
       RegistryPath(True).SetValue("B", bIV, Microsoft.Win32.RegistryValueKind.Binary)
     End If
     Dim hEnc = hAES.CreateEncryptor(bKey, bIV)
-    Dim bPre As Byte() = System.Text.Encoding.GetEncoding("latin1").GetBytes(prefix)
-    Dim bText As Byte() = System.Text.Encoding.GetEncoding("latin1").GetBytes(Text)
+    Dim bPre As Byte() = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(prefix)
+    Dim bText As Byte() = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(Text)
     Using msEncrypt As New IO.MemoryStream()
       Using csEncrypt As New Security.Cryptography.CryptoStream(msEncrypt, hEnc, Security.Cryptography.CryptoStreamMode.Write)
         csEncrypt.Write(bPre, 0, bPre.Length)
@@ -457,7 +457,7 @@
       Return "Failed to Decrypt"
     End Try
     If bOut.Count = 0 Then Return Nothing
-    Return System.Text.Encoding.GetEncoding("latin1").GetString(bOut.ToArray)
+    Return System.Text.Encoding.GetEncoding(LATIN_1).GetString(bOut.ToArray)
   End Function
 
   Private Shared Function cryptoRandom() As String

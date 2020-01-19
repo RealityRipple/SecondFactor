@@ -91,7 +91,7 @@
         " ""digits"": """ & cSettings.ProfileDigits(sNames(iItems(I))) & """," & vbLf &
         " ""period"": """ & cSettings.ProfilePeriod(sNames(iItems(I))) & """" & vbLf &
         "}" & vbLf
-      Dim bData As Byte() = System.Text.Encoding.GetEncoding("latin1").GetBytes(sData)
+      Dim bData As Byte() = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(sData)
       zExport.AddData(idx & ".json", bData, expTime)
       idx += 1
     Next
