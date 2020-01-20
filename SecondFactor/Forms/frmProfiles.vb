@@ -227,17 +227,17 @@
   End Sub
 
   Private Sub cmdPassword_Click(sender As Object, e As EventArgs) Handles cmdPassword.Click
-    If cSettings.RequiresLogin Then
-      Using pass As New frmPassEntry
+    Using pass As New frmPassEntry
+      If cSettings.RequiresLogin Then
         pass.Prepare_ChangePass()
-        If pass.ShowDialog(Me) = DialogResult.OK Then cSettings.ChangePassword(pass.txtPassword.Text)
-      End Using
-    Else
-      Using pass As New frmPassEntry
+      Else
         pass.Prepare_NewPass()
-        If pass.ShowDialog(Me) = DialogResult.OK Then cSettings.ChangePassword(pass.txtPassword.Text)
-      End Using
-    End If
+      End If
+      If pass.ShowDialog(Me) = DialogResult.OK Then
+        cSettings.ChangePassword(pass.txtPassword.Text)
+        UpdateProfileListing()
+      End If
+    End Using
   End Sub
 
   Private Sub cmdBackup_Click(sender As Object, e As EventArgs) Handles cmdBackup.Click

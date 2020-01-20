@@ -76,6 +76,7 @@
       Dim bIV() As Byte = hAES.IV
       RegistryPath(True).SetValue("A", bKey, Microsoft.Win32.RegistryValueKind.Binary)
       RegistryPath(True).SetValue("B", bIV, Microsoft.Win32.RegistryValueKind.Binary)
+      RegistryPath(True).DeleteValue("C", False)
     Else
       Dim bPass() As Byte = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(newPass)
       hAES.GenerateIV()

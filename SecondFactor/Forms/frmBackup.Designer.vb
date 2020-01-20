@@ -124,6 +124,7 @@ Partial Class frmBackup
         'chkExportAdvanced
         '
         Me.chkExportAdvanced.AutoSize = True
+        Me.chkExportAdvanced.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.chkExportAdvanced.Location = New System.Drawing.Point(3, 3)
         Me.chkExportAdvanced.Name = "chkExportAdvanced"
         Me.chkExportAdvanced.Size = New System.Drawing.Size(150, 17)

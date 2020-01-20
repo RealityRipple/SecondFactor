@@ -28,48 +28,47 @@ Partial Class frmProfiles
     Me.cmdResetProfile = New System.Windows.Forms.Button()
     Me.lblName = New System.Windows.Forms.Label()
     Me.lblSecret = New System.Windows.Forms.Label()
-    Me.txtSecret = New SecondFactor.PasswordBox()
-    Me.lblSize = New System.Windows.Forms.Label()
-    Me.txtSize = New System.Windows.Forms.NumericUpDown()
-    Me.lblPeriod = New System.Windows.Forms.Label()
-    Me.txtPeriod = New System.Windows.Forms.NumericUpDown()
-    Me.lblAlgorithm = New System.Windows.Forms.Label()
-    Me.cmbAlgorithm = New System.Windows.Forms.ComboBox()
-    Me.pnlService = New System.Windows.Forms.TableLayoutPanel()
-    Me.txtName = New System.Windows.Forms.TextBox()
-    Me.cmdDefaultService = New System.Windows.Forms.Button()
-    Me.cmbProfiles = New System.Windows.Forms.ComboBox()
-    Me.cmdClose = New System.Windows.Forms.Button()
-    Me.cmdAdd = New System.Windows.Forms.Button()
-    Me.cmdRemove = New System.Windows.Forms.Button()
-    Me.PictureBox1 = New System.Windows.Forms.PictureBox()
-    Me.cmdPassword = New System.Windows.Forms.Button()
+        Me.lblSize = New System.Windows.Forms.Label()
+        Me.txtSize = New System.Windows.Forms.NumericUpDown()
+        Me.lblPeriod = New System.Windows.Forms.Label()
+        Me.txtPeriod = New System.Windows.Forms.NumericUpDown()
+        Me.lblAlgorithm = New System.Windows.Forms.Label()
+        Me.cmbAlgorithm = New System.Windows.Forms.ComboBox()
+        Me.pnlService = New System.Windows.Forms.TableLayoutPanel()
+        Me.txtName = New System.Windows.Forms.TextBox()
+        Me.cmdDefaultService = New System.Windows.Forms.Button()
+        Me.pctSpacer = New System.Windows.Forms.PictureBox()
+        Me.pnlProfileManager = New System.Windows.Forms.TableLayoutPanel()
+        Me.cmbProfiles = New System.Windows.Forms.ComboBox()
+        Me.cmdAdd = New System.Windows.Forms.Button()
+        Me.cmdRemove = New System.Windows.Forms.Button()
+        Me.pnlButtons = New System.Windows.Forms.TableLayoutPanel()
+        Me.cmdPassword = New System.Windows.Forms.Button()
         Me.cmdBackup = New System.Windows.Forms.Button()
+        Me.cmdClose = New System.Windows.Forms.Button()
+        Me.txtSecret = New SecondFactor.PasswordBox()
         Me.pnlProfiles.SuspendLayout()
         Me.pnlProfileSettings.SuspendLayout()
         CType(Me.txtSize, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.txtPeriod, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.pnlService.SuspendLayout()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.pctSpacer, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.pnlProfileManager.SuspendLayout()
+        Me.pnlButtons.SuspendLayout()
         Me.SuspendLayout()
         '
         'pnlProfiles
         '
         Me.pnlProfiles.AutoSize = True
         Me.pnlProfiles.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.pnlProfiles.ColumnCount = 3
+        Me.pnlProfiles.ColumnCount = 1
         Me.pnlProfiles.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
-        Me.pnlProfiles.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
-        Me.pnlProfiles.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.pnlProfiles.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
+        Me.pnlProfiles.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20.0!))
         Me.pnlProfiles.Controls.Add(Me.pnlProfileSettings, 0, 1)
-        Me.pnlProfiles.Controls.Add(Me.cmbProfiles, 0, 0)
-        Me.pnlProfiles.Controls.Add(Me.cmdClose, 2, 3)
-        Me.pnlProfiles.Controls.Add(Me.cmdAdd, 1, 0)
-        Me.pnlProfiles.Controls.Add(Me.cmdRemove, 2, 0)
-        Me.pnlProfiles.Controls.Add(Me.PictureBox1, 0, 2)
-        Me.pnlProfiles.Controls.Add(Me.cmdPassword, 0, 3)
-        Me.pnlProfiles.Controls.Add(Me.cmdBackup, 1, 3)
-        Me.pnlProfiles.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlProfiles.Controls.Add(Me.pctSpacer, 0, 2)
+        Me.pnlProfiles.Controls.Add(Me.pnlProfileManager, 0, 0)
+        Me.pnlProfiles.Controls.Add(Me.pnlButtons, 0, 3)
         Me.pnlProfiles.Location = New System.Drawing.Point(0, 0)
         Me.pnlProfiles.Name = "pnlProfiles"
         Me.pnlProfiles.RowCount = 4
@@ -85,7 +84,6 @@ Partial Class frmProfiles
         Me.pnlProfileSettings.AutoSize = True
         Me.pnlProfileSettings.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.pnlProfileSettings.ColumnCount = 4
-        Me.pnlProfiles.SetColumnSpan(Me.pnlProfileSettings, 3)
         Me.pnlProfileSettings.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
         Me.pnlProfileSettings.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.pnlProfileSettings.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
@@ -165,17 +163,6 @@ Partial Class frmProfiles
         Me.lblSecret.Size = New System.Drawing.Size(41, 13)
         Me.lblSecret.TabIndex = 2
         Me.lblSecret.Text = "Secret:"
-        '
-        'txtSecret
-        '
-        Me.txtSecret.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnlProfileSettings.SetColumnSpan(Me.txtSecret, 3)
-        Me.txtSecret.Location = New System.Drawing.Point(55, 30)
-        Me.txtSecret.Name = "txtSecret"
-        Me.txtSecret.PasswordChar = Global.Microsoft.VisualBasic.ChrW(9679)
-        Me.txtSecret.ShowContents = False
-        Me.txtSecret.Size = New System.Drawing.Size(271, 20)
-        Me.txtSecret.TabIndex = 3
         '
         'lblSize
         '
@@ -286,6 +273,37 @@ Partial Class frmProfiles
         Me.cmdDefaultService.Text = "●"
         Me.cmdDefaultService.UseVisualStyleBackColor = True
         '
+        'pctSpacer
+        '
+        Me.pctSpacer.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.pctSpacer.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
+        Me.pctSpacer.Location = New System.Drawing.Point(3, 141)
+        Me.pctSpacer.Margin = New System.Windows.Forms.Padding(3, 1, 3, 1)
+        Me.pctSpacer.Name = "pctSpacer"
+        Me.pctSpacer.Size = New System.Drawing.Size(323, 4)
+        Me.pctSpacer.TabIndex = 6
+        Me.pctSpacer.TabStop = False
+        '
+        'pnlProfileManager
+        '
+        Me.pnlProfileManager.AutoSize = True
+        Me.pnlProfileManager.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.pnlProfileManager.ColumnCount = 3
+        Me.pnlProfileManager.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.pnlProfileManager.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.pnlProfileManager.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.pnlProfileManager.Controls.Add(Me.cmbProfiles, 0, 0)
+        Me.pnlProfileManager.Controls.Add(Me.cmdAdd, 1, 0)
+        Me.pnlProfileManager.Controls.Add(Me.cmdRemove, 2, 0)
+        Me.pnlProfileManager.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlProfileManager.Location = New System.Drawing.Point(0, 0)
+        Me.pnlProfileManager.Margin = New System.Windows.Forms.Padding(0)
+        Me.pnlProfileManager.Name = "pnlProfileManager"
+        Me.pnlProfileManager.RowCount = 1
+        Me.pnlProfileManager.RowStyles.Add(New System.Windows.Forms.RowStyle())
+        Me.pnlProfileManager.Size = New System.Drawing.Size(329, 32)
+        Me.pnlProfileManager.TabIndex = 1
+        '
         'cmbProfiles
         '
         Me.cmbProfiles.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
@@ -295,22 +313,6 @@ Partial Class frmProfiles
         Me.cmbProfiles.Name = "cmbProfiles"
         Me.cmbProfiles.Size = New System.Drawing.Size(139, 21)
         Me.cmbProfiles.TabIndex = 0
-        '
-        'cmdClose
-        '
-        Me.cmdClose.Anchor = System.Windows.Forms.AnchorStyles.Right
-        Me.cmdClose.AutoSize = True
-        Me.cmdClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
-        Me.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdClose.Location = New System.Drawing.Point(252, 146)
-        Me.cmdClose.Margin = New System.Windows.Forms.Padding(0, 0, 2, 2)
-        Me.cmdClose.MinimumSize = New System.Drawing.Size(75, 28)
-        Me.cmdClose.Name = "cmdClose"
-        Me.cmdClose.Padding = New System.Windows.Forms.Padding(2)
-        Me.cmdClose.Size = New System.Drawing.Size(75, 28)
-        Me.cmdClose.TabIndex = 5
-        Me.cmdClose.Text = "Close"
-        Me.cmdClose.UseVisualStyleBackColor = True
         '
         'cmdAdd
         '
@@ -343,31 +345,40 @@ Partial Class frmProfiles
         Me.cmdRemove.Text = "Remove Profile"
         Me.cmdRemove.UseVisualStyleBackColor = True
         '
-        'PictureBox1
+        'pnlButtons
         '
-        Me.PictureBox1.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.PictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D
-        Me.pnlProfiles.SetColumnSpan(Me.PictureBox1, 3)
-        Me.PictureBox1.Location = New System.Drawing.Point(3, 141)
-        Me.PictureBox1.Margin = New System.Windows.Forms.Padding(3, 1, 3, 1)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(323, 4)
-        Me.PictureBox1.TabIndex = 6
-        Me.PictureBox1.TabStop = False
+        Me.pnlButtons.AutoSize = True
+        Me.pnlButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.pnlButtons.ColumnCount = 3
+        Me.pnlButtons.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.pnlButtons.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.pnlButtons.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
+        Me.pnlButtons.Controls.Add(Me.cmdPassword, 0, 0)
+        Me.pnlButtons.Controls.Add(Me.cmdBackup, 1, 0)
+        Me.pnlButtons.Controls.Add(Me.cmdClose, 2, 0)
+        Me.pnlButtons.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.pnlButtons.Location = New System.Drawing.Point(0, 146)
+        Me.pnlButtons.Margin = New System.Windows.Forms.Padding(0)
+        Me.pnlButtons.Name = "pnlButtons"
+        Me.pnlButtons.RowCount = 1
+        Me.pnlButtons.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
+        Me.pnlButtons.Size = New System.Drawing.Size(329, 30)
+        Me.pnlButtons.TabIndex = 2
         '
         'cmdPassword
         '
+        Me.cmdPassword.Anchor = System.Windows.Forms.AnchorStyles.Left
         Me.cmdPassword.AutoSize = True
         Me.cmdPassword.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.cmdPassword.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdPassword.Location = New System.Drawing.Point(3, 146)
+        Me.cmdPassword.Location = New System.Drawing.Point(3, 1)
         Me.cmdPassword.Margin = New System.Windows.Forms.Padding(3, 0, 0, 0)
         Me.cmdPassword.MinimumSize = New System.Drawing.Size(75, 26)
         Me.cmdPassword.Name = "cmdPassword"
         Me.cmdPassword.Padding = New System.Windows.Forms.Padding(3)
-        Me.cmdPassword.Size = New System.Drawing.Size(127, 28)
-        Me.cmdPassword.TabIndex = 7
-        Me.cmdPassword.Text = "Protect Authenticator"
+        Me.cmdPassword.Size = New System.Drawing.Size(113, 28)
+        Me.cmdPassword.TabIndex = 2
+        Me.cmdPassword.Text = "Change Password"
         Me.cmdPassword.UseVisualStyleBackColor = True
         '
         'cmdBackup
@@ -376,15 +387,42 @@ Partial Class frmProfiles
         Me.cmdBackup.AutoSize = True
         Me.cmdBackup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.cmdBackup.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdBackup.Location = New System.Drawing.Point(148, 146)
+        Me.cmdBackup.Location = New System.Drawing.Point(151, 0)
         Me.cmdBackup.Margin = New System.Windows.Forms.Padding(2, 0, 2, 2)
         Me.cmdBackup.MinimumSize = New System.Drawing.Size(75, 28)
         Me.cmdBackup.Name = "cmdBackup"
         Me.cmdBackup.Padding = New System.Windows.Forms.Padding(2)
-        Me.cmdBackup.Size = New System.Drawing.Size(75, 28)
-        Me.cmdBackup.TabIndex = 6
-        Me.cmdBackup.Text = "Backup"
+        Me.cmdBackup.Size = New System.Drawing.Size(99, 28)
+        Me.cmdBackup.TabIndex = 1
+        Me.cmdBackup.Text = "Backup Profiles"
         Me.cmdBackup.UseVisualStyleBackColor = True
+        '
+        'cmdClose
+        '
+        Me.cmdClose.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.cmdClose.AutoSize = True
+        Me.cmdClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.cmdClose.FlatStyle = System.Windows.Forms.FlatStyle.System
+        Me.cmdClose.Location = New System.Drawing.Point(252, 0)
+        Me.cmdClose.Margin = New System.Windows.Forms.Padding(0, 0, 2, 2)
+        Me.cmdClose.MinimumSize = New System.Drawing.Size(75, 28)
+        Me.cmdClose.Name = "cmdClose"
+        Me.cmdClose.Padding = New System.Windows.Forms.Padding(2)
+        Me.cmdClose.Size = New System.Drawing.Size(75, 28)
+        Me.cmdClose.TabIndex = 0
+        Me.cmdClose.Text = "Close"
+        Me.cmdClose.UseVisualStyleBackColor = True
+        '
+        'txtSecret
+        '
+        Me.txtSecret.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.pnlProfileSettings.SetColumnSpan(Me.txtSecret, 3)
+        Me.txtSecret.Location = New System.Drawing.Point(55, 30)
+        Me.txtSecret.Name = "txtSecret"
+        Me.txtSecret.PasswordChar = Global.Microsoft.VisualBasic.ChrW(9679)
+        Me.txtSecret.ShowContents = False
+        Me.txtSecret.Size = New System.Drawing.Size(271, 20)
+        Me.txtSecret.TabIndex = 3
         '
         'frmProfiles
         '
@@ -409,7 +447,11 @@ Partial Class frmProfiles
         CType(Me.txtPeriod, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlService.ResumeLayout(False)
         Me.pnlService.PerformLayout()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.pctSpacer, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.pnlProfileManager.ResumeLayout(False)
+        Me.pnlProfileManager.PerformLayout()
+        Me.pnlButtons.ResumeLayout(False)
+        Me.pnlButtons.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -429,7 +471,7 @@ Partial Class frmProfiles
   Friend WithEvents txtSize As NumericUpDown
   Friend WithEvents cmdResetProfile As Button
   Friend WithEvents cmdSaveProfile As Button
-  Friend WithEvents PictureBox1 As PictureBox
+  Friend WithEvents pctSpacer As PictureBox
   Friend WithEvents lblPeriod As Label
   Friend WithEvents txtPeriod As NumericUpDown
   Friend WithEvents lblAlgorithm As Label
@@ -438,4 +480,6 @@ Partial Class frmProfiles
   Friend WithEvents cmdDefaultService As Button
   Friend WithEvents cmdPassword As Button
     Friend WithEvents cmdBackup As Button
+    Friend WithEvents pnlProfileManager As TableLayoutPanel
+    Friend WithEvents pnlButtons As TableLayoutPanel
 End Class
