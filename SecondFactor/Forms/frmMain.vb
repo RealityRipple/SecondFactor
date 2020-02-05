@@ -41,18 +41,6 @@
     End If
   End Sub
 
-  Private Function ArrayStr(arr() As Byte)
-    Dim sOut As String = Nothing
-    For I As Integer = 0 To arr.Length - 1
-      If I = 0 Then
-        sOut = IIf(Hex(arr(I)).Length = 1, "0", "") & Hex(arr(I))
-      Else
-        sOut &= IIf(Hex(arr(I)).Length = 1, "0", "") & Hex(arr(I))
-      End If
-    Next
-    Return sOut
-  End Function
-
   Private Function GetCode(secret As String, size As Integer, algo As cSettings.HashAlg, period As UInt16, timeOffset As Int16) As String
     Dim timeSlice As UInt32 = Math.Floor(DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) / period) + timeOffset
     Dim secretKey As Byte() = Base32.ToByteArray(secret.ToUpper)
