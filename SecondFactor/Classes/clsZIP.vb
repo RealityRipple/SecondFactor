@@ -270,7 +270,7 @@
     zFile.Offset = iStart
     If bData.LongLength <= iPos + 2 Then Return zFile
     Dim iVer As UInt16 = BitConverter.ToUInt16(bData, iPos) : iPos += 2
-    If iVer > &H33 Then Return zFile
+    If (iVer And &HFF) > &H33 Then Return zFile
     If bData.LongLength <= iPos + 2 Then Return zFile
     Dim iGenFlags As UInt16 = BitConverter.ToUInt16(bData, iPos) : iPos += 2
     If Not (iGenFlags And &H1) = &H1 Then Return zFile
