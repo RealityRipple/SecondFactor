@@ -135,6 +135,7 @@ Partial Class frmPassEntry
     Me.Controls.Add(Me.pnlPassword)
     Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow
     Me.Name = "frmPassEntry"
+    Me.Icon = Global.SecondFactor.My.Resources.Resources.key
     Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
     Me.Text = "Password"
     Me.pnlPassword.ResumeLayout(False)
