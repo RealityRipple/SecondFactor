@@ -132,6 +132,7 @@
       txtName.Enabled = False
       txtSecret.Text = Nothing
       txtSecret.Enabled = False
+      cmdDefaultService.Visible = False
       txtSize.Value = txtSize.Minimum
       txtSize.Enabled = False
       cmbAlgorithm.SelectedIndex = -1
