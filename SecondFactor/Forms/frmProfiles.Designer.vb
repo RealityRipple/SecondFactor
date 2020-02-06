@@ -20,14 +20,15 @@ Partial Class frmProfiles
   'NOTE: The following procedure is required by the Windows Form Designer
   'It can be modified using the Windows Form Designer.  
   'Do not modify it using the code editor.
-  <System.Diagnostics.DebuggerStepThrough()> _
+  <System.Diagnostics.DebuggerStepThrough()>
   Private Sub InitializeComponent()
-    Me.pnlProfiles = New System.Windows.Forms.TableLayoutPanel()
-    Me.pnlProfileSettings = New System.Windows.Forms.TableLayoutPanel()
-    Me.cmdSaveProfile = New System.Windows.Forms.Button()
-    Me.cmdResetProfile = New System.Windows.Forms.Button()
-    Me.lblName = New System.Windows.Forms.Label()
-    Me.lblSecret = New System.Windows.Forms.Label()
+        Me.pnlProfiles = New System.Windows.Forms.TableLayoutPanel()
+        Me.pnlProfileSettings = New System.Windows.Forms.TableLayoutPanel()
+        Me.cmdSaveProfile = New System.Windows.Forms.Button()
+        Me.cmdResetProfile = New System.Windows.Forms.Button()
+        Me.lblName = New System.Windows.Forms.Label()
+        Me.lblSecret = New System.Windows.Forms.Label()
+        Me.txtSecret = New SecondFactor.PasswordBox()
         Me.lblSize = New System.Windows.Forms.Label()
         Me.txtSize = New System.Windows.Forms.NumericUpDown()
         Me.lblPeriod = New System.Windows.Forms.Label()
@@ -46,7 +47,6 @@ Partial Class frmProfiles
         Me.cmdPassword = New System.Windows.Forms.Button()
         Me.cmdBackup = New System.Windows.Forms.Button()
         Me.cmdClose = New System.Windows.Forms.Button()
-        Me.txtSecret = New SecondFactor.PasswordBox()
         Me.pnlProfiles.SuspendLayout()
         Me.pnlProfileSettings.SuspendLayout()
         CType(Me.txtSize, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -163,6 +163,17 @@ Partial Class frmProfiles
         Me.lblSecret.Size = New System.Drawing.Size(41, 13)
         Me.lblSecret.TabIndex = 2
         Me.lblSecret.Text = "Secret:"
+        '
+        'txtSecret
+        '
+        Me.txtSecret.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.pnlProfileSettings.SetColumnSpan(Me.txtSecret, 3)
+        Me.txtSecret.Location = New System.Drawing.Point(55, 30)
+        Me.txtSecret.Name = "txtSecret"
+        Me.txtSecret.PasswordChar = Global.Microsoft.VisualBasic.ChrW(9679)
+        Me.txtSecret.ShowContents = False
+        Me.txtSecret.Size = New System.Drawing.Size(271, 20)
+        Me.txtSecret.TabIndex = 3
         '
         'lblSize
         '
@@ -412,17 +423,6 @@ Partial Class frmProfiles
         Me.cmdClose.TabIndex = 0
         Me.cmdClose.Text = "Close"
         Me.cmdClose.UseVisualStyleBackColor = True
-        '
-        'txtSecret
-        '
-        Me.txtSecret.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.pnlProfileSettings.SetColumnSpan(Me.txtSecret, 3)
-        Me.txtSecret.Location = New System.Drawing.Point(55, 30)
-        Me.txtSecret.Name = "txtSecret"
-        Me.txtSecret.PasswordChar = Global.Microsoft.VisualBasic.ChrW(9679)
-        Me.txtSecret.ShowContents = False
-        Me.txtSecret.Size = New System.Drawing.Size(271, 20)
-        Me.txtSecret.TabIndex = 3
         '
         'frmProfiles
         '

@@ -20,27 +20,27 @@ Partial Class frmQR
   'NOTE: The following procedure is required by the Windows Form Designer
   'It can be modified using the Windows Form Designer.  
   'Do not modify it using the code editor.
-  <System.Diagnostics.DebuggerStepThrough()> _
+  <System.Diagnostics.DebuggerStepThrough()>
   Private Sub InitializeComponent()
-    Me.SuspendLayout()
-    '
-    'frmQR
-    '
-    Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
-    Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-    Me.BackColor = System.Drawing.Color.Black
-    Me.ClientSize = New System.Drawing.Size(640, 480)
-    Me.ControlBox = False
-    Me.DoubleBuffered = True
-    Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
-    Me.MaximizeBox = False
-    Me.MinimizeBox = False
-    Me.Name = "frmQR"
-    Me.ShowIcon = False
-    Me.ShowInTaskbar = False
-    Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
-    Me.TopMost = True
-    Me.ResumeLayout(False)
+        Me.SuspendLayout()
+        '
+        'frmQR
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.BackColor = System.Drawing.Color.Black
+        Me.ClientSize = New System.Drawing.Size(640, 480)
+        Me.ControlBox = False
+        Me.DoubleBuffered = True
+        Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None
+        Me.MaximizeBox = False
+        Me.MinimizeBox = False
+        Me.Name = "frmQR"
+        Me.ShowIcon = False
+        Me.ShowInTaskbar = False
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.Manual
+        Me.TopMost = True
+        Me.ResumeLayout(False)
 
-  End Sub
+    End Sub
 End Class

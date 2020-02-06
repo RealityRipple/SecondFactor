@@ -20,27 +20,27 @@ Partial Class frmBackup
   'NOTE: The following procedure is required by the Windows Form Designer
   'It can be modified using the Windows Form Designer.  
   'Do not modify it using the code editor.
-  <System.Diagnostics.DebuggerStepThrough()> _
+  <System.Diagnostics.DebuggerStepThrough()>
   Private Sub InitializeComponent()
-    Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBackup))
-    Me.tbsSelection = New System.Windows.Forms.TabControl()
-    Me.tabExport = New System.Windows.Forms.TabPage()
-    Me.pnlExport = New System.Windows.Forms.TableLayoutPanel()
-    Me.lstExportProfiles = New System.Windows.Forms.CheckedListBox()
-    Me.pnlExportActions = New System.Windows.Forms.TableLayoutPanel()
-    Me.chkExportAdvanced = New System.Windows.Forms.CheckBox()
-    Me.cmdExport = New System.Windows.Forms.Button()
-    Me.lblExportAdvanced = New System.Windows.Forms.Label()
-    Me.chkExportAll = New System.Windows.Forms.CheckBox()
-    Me.tabImport = New System.Windows.Forms.TabPage()
-    Me.pnlImport = New System.Windows.Forms.TableLayoutPanel()
-    Me.lstImportProfiles = New System.Windows.Forms.CheckedListBox()
-    Me.chkImportAll = New System.Windows.Forms.CheckBox()
-    Me.cmdImport = New System.Windows.Forms.Button()
-    Me.pnlImportActions = New System.Windows.Forms.TableLayoutPanel()
-    Me.lblImportFile = New System.Windows.Forms.Label()
-    Me.txtImportFile = New System.Windows.Forms.TextBox()
-    Me.cmdImportFile = New System.Windows.Forms.Button()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(frmBackup))
+        Me.tbsSelection = New System.Windows.Forms.TabControl()
+        Me.tabExport = New System.Windows.Forms.TabPage()
+        Me.pnlExport = New System.Windows.Forms.TableLayoutPanel()
+        Me.lstExportProfiles = New System.Windows.Forms.CheckedListBox()
+        Me.pnlExportActions = New System.Windows.Forms.TableLayoutPanel()
+        Me.chkExportAdvanced = New System.Windows.Forms.CheckBox()
+        Me.cmdExport = New System.Windows.Forms.Button()
+        Me.lblExportAdvanced = New System.Windows.Forms.Label()
+        Me.chkExportAll = New System.Windows.Forms.CheckBox()
+        Me.tabImport = New System.Windows.Forms.TabPage()
+        Me.pnlImport = New System.Windows.Forms.TableLayoutPanel()
+        Me.lstImportProfiles = New System.Windows.Forms.CheckedListBox()
+        Me.chkImportAll = New System.Windows.Forms.CheckBox()
+        Me.cmdImport = New System.Windows.Forms.Button()
+        Me.pnlImportActions = New System.Windows.Forms.TableLayoutPanel()
+        Me.lblImportFile = New System.Windows.Forms.Label()
+        Me.txtImportFile = New System.Windows.Forms.TextBox()
+        Me.cmdImportFile = New System.Windows.Forms.Button()
         Me.tbsSelection.SuspendLayout()
         Me.tabExport.SuspendLayout()
         Me.pnlExport.SuspendLayout()
@@ -98,7 +98,7 @@ Partial Class frmBackup
         Me.lstExportProfiles.IntegralHeight = False
         Me.lstExportProfiles.Location = New System.Drawing.Point(3, 27)
         Me.lstExportProfiles.Name = "lstExportProfiles"
-        Me.lstExportProfiles.Size = New System.Drawing.Size(335, 244)
+        Me.lstExportProfiles.Size = New System.Drawing.Size(335, 243)
         Me.lstExportProfiles.TabIndex = 0
         '
         'pnlExportActions
@@ -111,14 +111,14 @@ Partial Class frmBackup
         Me.pnlExportActions.Controls.Add(Me.cmdExport, 0, 2)
         Me.pnlExportActions.Controls.Add(Me.lblExportAdvanced, 0, 1)
         Me.pnlExportActions.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.pnlExportActions.Location = New System.Drawing.Point(0, 274)
+        Me.pnlExportActions.Location = New System.Drawing.Point(0, 273)
         Me.pnlExportActions.Margin = New System.Windows.Forms.Padding(0)
         Me.pnlExportActions.Name = "pnlExportActions"
         Me.pnlExportActions.RowCount = 3
         Me.pnlExportActions.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.pnlExportActions.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.pnlExportActions.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.pnlExportActions.Size = New System.Drawing.Size(341, 221)
+        Me.pnlExportActions.Size = New System.Drawing.Size(341, 222)
         Me.pnlExportActions.TabIndex = 2
         '
         'chkExportAdvanced
@@ -127,7 +127,7 @@ Partial Class frmBackup
         Me.chkExportAdvanced.FlatStyle = System.Windows.Forms.FlatStyle.System
         Me.chkExportAdvanced.Location = New System.Drawing.Point(3, 3)
         Me.chkExportAdvanced.Name = "chkExportAdvanced"
-        Me.chkExportAdvanced.Size = New System.Drawing.Size(150, 17)
+        Me.chkExportAdvanced.Size = New System.Drawing.Size(156, 18)
         Me.chkExportAdvanced.TabIndex = 0
         Me.chkExportAdvanced.Text = "Use Advanced Encryption"
         Me.chkExportAdvanced.UseVisualStyleBackColor = True
@@ -138,7 +138,7 @@ Partial Class frmBackup
         Me.cmdExport.AutoSize = True
         Me.cmdExport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.cmdExport.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdExport.Location = New System.Drawing.Point(100, 191)
+        Me.cmdExport.Location = New System.Drawing.Point(100, 192)
         Me.cmdExport.Margin = New System.Windows.Forms.Padding(2, 0, 2, 2)
         Me.cmdExport.MinimumSize = New System.Drawing.Size(140, 28)
         Me.cmdExport.Name = "cmdExport"
@@ -151,7 +151,7 @@ Partial Class frmBackup
         'lblExportAdvanced
         '
         Me.lblExportAdvanced.AutoSize = True
-        Me.lblExportAdvanced.Location = New System.Drawing.Point(6, 29)
+        Me.lblExportAdvanced.Location = New System.Drawing.Point(6, 30)
         Me.lblExportAdvanced.Margin = New System.Windows.Forms.Padding(6)
         Me.lblExportAdvanced.Name = "lblExportAdvanced"
         Me.lblExportAdvanced.Size = New System.Drawing.Size(328, 156)
