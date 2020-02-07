@@ -335,5 +335,6 @@
         Exit For
       End If
     Next
+    If frmProfiles.Visible Then frmProfiles.UpdateProfileListing()
   End Sub
 End Class

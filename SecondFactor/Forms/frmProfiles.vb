@@ -105,7 +105,7 @@
     Me.Close()
   End Sub
 
-  Private Sub UpdateProfileListing()
+  Friend Sub UpdateProfileListing()
     Dim selProf As String = Nothing
     If cmbProfiles.SelectedIndex > -1 Then selProf = cmbProfiles.SelectedItem
     cmbProfiles.Items.Clear()
