@@ -323,7 +323,7 @@
     If fromQR Then
       If MsgBox("Detected new Authenticator Profile:" & vbNewLine & sDetection & vbNewLine & vbNewLine & "Do you wish to add this profile to SecondFactor?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton1, "Add New Profile?") = MsgBoxResult.No Then Return
     Else
-      If MsgBox("Received new Authenticator Profile:" & vbNewLine & sDetection & vbNewLine & vbNewLine & "Do you wish to add this profile to SecondFactor?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton1, "Add New Profile?") = MsgBoxResult.No Then Return
+      If MsgBox("Received new Authenticator Profile:" & vbNewLine & sDetection & vbNewLine & vbNewLine & "Do you wish to add this profile to SecondFactor?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton1 Or MsgBoxStyle.SystemModal, "Add New Profile?") = MsgBoxResult.No Then Return
     End If
     If Not cSettings.AddProfile(sName, sSecret, iSize, sAlg, iPeriod, trueName) Then
       MsgBox("Failed to create new profile.", MsgBoxStyle.Exclamation)
