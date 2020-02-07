@@ -57,6 +57,15 @@
       txtName.Focus()
       Return
     End If
+    Dim sProfiles() As String = cSettings.GetProfileNames
+    For I As Integer = 0 To sProfiles.Length - 1
+      If cmbProfiles.SelectedItem = sProfiles(I) Then Continue For
+      If sProfiles(I).ToLower = txtName.Text.ToLower Then
+        MsgBox("Please enter a unique name for this Profile.", MsgBoxStyle.Exclamation)
+        txtName.Focus()
+        Return
+      End If
+    Next
     Dim deSecret() As Byte = txtSecret.Text.ToUpper.ToByteArray()
     If deSecret.Length < 1 Then
       MsgBox("Invalid secret value. Please double-check your entry.", MsgBoxStyle.Exclamation)

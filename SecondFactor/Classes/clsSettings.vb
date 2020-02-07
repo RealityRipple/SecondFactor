@@ -280,12 +280,13 @@
     Return True
   End Function
 
-  Public Shared Function AddProfile(Name As String, Secret As String, Optional Digits As Byte = 6, Optional Algorithm As HashAlg = HashAlg.SHA1, Optional Period As UInt16 = 30) As Boolean
+  Public Shared Function AddProfile(Name As String, Secret As String, Optional Digits As Byte = 6, Optional Algorithm As HashAlg = HashAlg.SHA1, Optional Period As UInt16 = 30, Optional TrueName As String = Nothing) As Boolean
     If RequiresLogin AndAlso Not LoggedIn Then Return Nothing
     If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then RegistryPath(True).CreateSubKey("Profiles")
     If RegistryPath().OpenSubKey("Profiles").GetSubKeyNames.Contains(Name) Then Return False
     RegistryPath(True).OpenSubKey("Profiles", True).CreateSubKey(Name)
-    If Not String.IsNullOrEmpty(Secret) Then RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(Name, True).SetValue("", EncrypText(Name), Microsoft.Win32.RegistryValueKind.Binary)
+    If String.IsNullOrEmpty(TrueName) Then TrueName = Name
+    If Not String.IsNullOrEmpty(Secret) Then RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(Name, True).SetValue("", EncrypText(TrueName), Microsoft.Win32.RegistryValueKind.Binary)
     RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(Name, True).SetValue("Secret", Secrypt(Secret), Microsoft.Win32.RegistryValueKind.Binary)
     RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(Name, True).SetValue("Size", Digits, Microsoft.Win32.RegistryValueKind.DWord)
     Select Case Algorithm

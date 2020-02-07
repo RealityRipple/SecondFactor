@@ -311,15 +311,15 @@
       End Using
       If String.IsNullOrEmpty(sName) OrElse String.IsNullOrEmpty(sSecret) OrElse String.IsNullOrEmpty(sAlg) OrElse iDigits = 0 OrElse iPeriod = 0 Then Continue For
       If iDigits < 6 Or iDigits > 8 Then Continue For
-      Dim bFound As Boolean = False
+      Dim sOldName As String = Nothing
       For J As Integer = 0 To sProfiles.Length - 1
         If sProfiles(J).ToLower = sName.ToLower Then
-          bFound = True
+          sOldName = sProfiles(J)
           Exit For
         End If
       Next
-      If bFound Then
-        If Not cSettings.RemoveProfile(sName) Then
+      If Not String.IsNullOrEmpty(sOldName) Then
+        If Not cSettings.RemoveProfile(sOldName) Then
           allOK = False
           Exit For
         End If

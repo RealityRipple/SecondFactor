@@ -294,6 +294,27 @@
       End If
       Return
     End If
+    Dim trueName As String = sName
+    Dim sProfiles() As String = cSettings.GetProfileNames
+    Do
+      Dim foundMatch As Boolean = False
+      For I As Integer = 0 To sProfiles.Length - 1
+        If sProfiles(I).ToLower = sName.ToLower Then
+          Dim idx As Integer = 2
+          If sName.Contains(" ") Then
+            Dim sEnd As String = sName.Substring(sName.LastIndexOf(" ") + 1)
+            If Not Integer.TryParse(sEnd, idx) Then
+              idx = 2
+            Else
+              sName = sName.Substring(0, sName.LastIndexOf(" "))
+              idx += 1
+            End If
+          End If
+          sName &= " " & idx
+        End If
+      Next
+      If Not foundMatch Then Exit Do
+    Loop
     Dim sDetection As String = "  " & sName
     If Not iSize = 6 Then sDetection &= vbNewLine & "  " & iSize & " digits"
     If Not sAlg = cSettings.HashAlg.SHA1 Then sDetection &= vbNewLine & "  " & sAlg.ToString & " Hashing algorithm"
@@ -304,7 +325,7 @@
     Else
       If MsgBox("Received new Authenticator Profile:" & vbNewLine & sDetection & vbNewLine & vbNewLine & "Do you wish to add this profile to SecondFactor?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton1, "Add New Profile?") = MsgBoxResult.No Then Return
     End If
-    If Not cSettings.AddProfile(sName, sSecret, iSize, sAlg, iPeriod) Then
+    If Not cSettings.AddProfile(sName, sSecret, iSize, sAlg, iPeriod, trueName) Then
       MsgBox("Failed to create new profile.", MsgBoxStyle.Exclamation)
       Return
     End If
