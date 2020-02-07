@@ -120,8 +120,8 @@
     Using pass As New frmPassEntry
       pass.Prepare_Export()
       If pass.ShowDialog() = DialogResult.Cancel Then Return
-      If String.IsNullOrEmpty(pass.txtPassword.Text) Then Return
-      sPassword = pass.txtPassword.Text
+      If String.IsNullOrEmpty(pass.Password) Then Return
+      sPassword = pass.Password
     End Using
     cmdExport.Enabled = False
     Me.Cursor = Cursors.WaitCursor
@@ -199,8 +199,8 @@
     Using pass As New frmPassEntry
       pass.Prepare_Import()
       If pass.ShowDialog() = DialogResult.Cancel Then Return
-      If String.IsNullOrEmpty(pass.txtPassword.Text) Then Return
-      sPassword = pass.txtPassword.Text
+      If String.IsNullOrEmpty(pass.Password) Then Return
+      sPassword = pass.Password
     End Using
     cmdImport.Enabled = False
     cmdImportFile.Enabled = False

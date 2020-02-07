@@ -39,7 +39,7 @@ Namespace My
               e.Cancel = True
               Exit For
             End If
-            If cSettings.Login(pass.txtPassword.Text) Then
+            If cSettings.Login(pass.Password) Then
               e.Cancel = False
               Exit For
             End If

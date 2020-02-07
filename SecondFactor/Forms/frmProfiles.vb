@@ -235,7 +235,7 @@
         pass.Prepare_NewPass()
       End If
       If pass.ShowDialog(Me) = DialogResult.OK Then
-        cSettings.ChangePassword(pass.txtPassword.Text)
+        cSettings.ChangePassword(pass.Password)
         UpdateProfileListing()
       End If
     End Using
