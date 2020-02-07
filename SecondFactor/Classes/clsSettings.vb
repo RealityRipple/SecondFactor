@@ -62,7 +62,7 @@
     Dim sProfiles() As String = GetProfileNames
     Dim sProfSel As String = LastSelectedProfileName
     Dim profData As New Dictionary(Of String, String())
-    For Each sProfile In sProfiles
+    For Each sProfile As String In sProfiles
       Dim sSecret As String = ProfileSecret(sProfile)
       Dim sOrig As String = ProfileDefaultName(sProfile)
       profData.Add(sProfile, {sSecret, sOrig})
@@ -95,7 +95,7 @@
       RegistryPath(True).SetValue("B", bIV, Microsoft.Win32.RegistryValueKind.Binary)
       RegistryPath(True).SetValue("A", EncrypText(Application.ProductName, True), Microsoft.Win32.RegistryValueKind.Binary)
     End If
-    For Each sProfile In profData.Keys
+    For Each sProfile As String In profData.Keys
       Dim sSecret As String = profData(sProfile)(0)
       Dim sOrig As String = profData(sProfile)(1)
       If Not String.IsNullOrEmpty(sSecret) Then ProfileSecret(sProfile) = sSecret

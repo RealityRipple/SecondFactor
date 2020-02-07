@@ -217,9 +217,9 @@
       Dim sName As String = Nothing
       Using fStream As New IO.MemoryStream(sFile.Data)
         Dim jReader As New JSONReader(fStream, False)
-        For Each el In jReader.Serial(0).SubElements
-          If el.Key = "name" Then
-            sName = el.Value
+        For Each jEl As JSONReader.JSElement In jReader.Serial(0).SubElements
+          If jEl.Key = "name" Then
+            sName = jEl.Value
             Exit For
           End If
         Next
@@ -301,7 +301,7 @@
       Dim iPeriod As UInt16 = 0
       Using fStream As New IO.MemoryStream(ImportedFiles(iItems(I)).Data)
         Dim jReader As New JSONReader(fStream, False)
-        For Each el In jReader.Serial(0).SubElements
+        For Each el As JSONReader.JSElement In jReader.Serial(0).SubElements
           If el.Key = "name" Then sName = el.Value
           If el.Key = "secret" Then sSecret = el.Value
           If el.Key = "alg" Then sAlg = el.Value

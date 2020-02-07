@@ -61,7 +61,7 @@
       Case HashStrength.SHA512 : hClass = GetType(Security.Cryptography.HMACSHA512)
       Case Else : hClass = GetType(Security.Cryptography.HMACSHA1)
     End Select
-    Using hmac = Activator.CreateInstance(hClass, {bPass})
+    Using hmac As Security.Cryptography.HMAC = Activator.CreateInstance(hClass, {bPass})
       Dim hLen As Integer = hmac.HashSize / 8
       If Not (hmac.HashSize And 7) = 0 Then hLen += 1
       Dim keyLen As Integer = keySize / hLen

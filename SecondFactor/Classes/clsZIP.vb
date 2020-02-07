@@ -428,7 +428,7 @@
             Exit For
           End If
         Next
-        For Each b2 In ctrModeBlock
+        For Each b2 As Byte In ctrModeBlock
           xorMask.Enqueue(b2)
         Next
       End If
