@@ -296,22 +296,21 @@
     End If
     Dim trueName As String = sName
     Dim sProfiles() As String = cSettings.GetProfileNames
+    Dim idx As Integer = 2
     Do
       Dim foundMatch As Boolean = False
       For I As Integer = 0 To sProfiles.Length - 1
-        If sProfiles(I).ToLower = sName.ToLower Then
-          Dim idx As Integer = 2
-          If sName.Contains(" ") Then
-            Dim sEnd As String = sName.Substring(sName.LastIndexOf(" ") + 1)
-            If Not Integer.TryParse(sEnd, idx) Then
-              idx = 2
-            Else
-              sName = sName.Substring(0, sName.LastIndexOf(" "))
-              idx += 1
-            End If
+        If Not sProfiles(I).ToLower = sName.ToLower Then Continue For
+        foundMatch = True
+        If sName.Contains(" ") Then
+          Dim sEnd As String = sName.Substring(sName.LastIndexOf(" ") + 1)
+          Dim iTmp As Integer
+          If Integer.TryParse(sEnd, iTmp) Then
+            sName = sName.Substring(0, sName.LastIndexOf(" "))
+            idx += 1
           End If
-          sName &= " " & idx
         End If
+        sName &= " " & idx
       Next
       If Not foundMatch Then Exit Do
     Loop
