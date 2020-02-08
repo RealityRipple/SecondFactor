@@ -129,6 +129,12 @@
     <Compile Include="Forms\frmProfiles.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\frmProgress.Designer.vb">
+      <DependentUpon>frmProgress.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmProgress.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Forms\frmQR.Designer.vb">
       <DependentUpon>frmQR.vb</DependentUpon>
     </Compile>
@@ -165,6 +171,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmProfiles.resx">
       <DependentUpon>frmProfiles.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmProgress.resx">
+      <DependentUpon>frmProgress.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmQR.resx">
       <DependentUpon>frmQR.vb</DependentUpon>

@@ -80,7 +80,19 @@
     Next
   End Sub
 
-  Public Function Encrypt(sPassword As String, Optional sComment As String = Nothing, Optional Hash As PBKDF2.HashStrength = PBKDF2.HashStrength.SHA1, Optional Iterations As UInt64 = 1000) As Byte()
+  Public Function Encrypt(sPassword As String, Optional sComment As String = Nothing, Optional Hash As PBKDF2.HashStrength = PBKDF2.HashStrength.SHA1, Optional Iterations As UInt64 = 1000, Optional ParentForm As Form = Nothing) As Byte()
+    If sFiles.Count > 1 Then
+      frmProgress.Prepare_Encrypt()
+      If ParentForm IsNot Nothing Then
+        ParentForm.Enabled = False
+        frmProgress.Show(ParentForm)
+        frmProgress.Location = New Point(ParentForm.Left + ParentForm.Width / 2 - frmProgress.Width / 2, ParentForm.Top + ParentForm.Height / 2 - frmProgress.Height / 2)
+      Else
+        frmProgress.Show()
+        frmProgress.Location = New Point(Screen.PrimaryScreen.Bounds.Left + Screen.PrimaryScreen.Bounds.Width / 2 - frmProgress.Width / 2, Screen.PrimaryScreen.Bounds.Top + Screen.PrimaryScreen.Bounds.Height / 2 - frmProgress.Height / 2)
+      End If
+      Application.DoEvents()
+    End If
     Dim bZip As New List(Of Byte)
     For I As UInt64 = 0 To sFiles.LongCount - 1
       Dim zFile = sFiles(I)
@@ -91,6 +103,7 @@
       bZip.AddRange(GenerateFileHeader(zFile))
       bZip.AddRange(bEnc)
       sFiles(I) = zFile
+      If sFiles.Count > 1 Then frmProgress.Progress = (I + 1) / sFiles.Count
       Application.DoEvents()
     Next
     Dim cdrStart As UInt32 = bZip.LongCount
@@ -99,6 +112,14 @@
     bZip.AddRange(bCDR)
     Dim bEoCDR As Byte() = GenerateEoCDR(cdrStart, cdrLen, sComment)
     bZip.AddRange(bEoCDR)
+    If sFiles.Count > 1 Then
+      frmProgress.Close()
+      If ParentForm IsNot Nothing Then
+        ParentForm.Enabled = True
+        ParentForm.Activate()
+      End If
+    End If
+
     Return bZip.ToArray()
   End Function
 
@@ -229,7 +250,35 @@
 #End Region
 
 #Region "Read Functions"
-  Public Shared Function Decrypt(bData As Byte(), sPassword As String) As ZIP.File()
+  Public Shared Function Decrypt(bData As Byte(), sPassword As String, Optional ParentForm As Form = Nothing) As ZIP.File()
+    Dim pCount As UInt64 = 0
+    For I As Int64 = bData.LongLength - 4 To 0 Step -1
+      Dim iDWORD As UInt32 = BitConverter.ToUInt32(bData, I)
+      Select Case iDWORD
+        Case &H4034B50
+          'file
+          Application.DoEvents()
+        Case &H2014B50
+          'cdr entry
+          Exit For
+        Case &H6054B50
+          pCount = BitConverter.ToUInt16(bData, I + 8)
+          'eocdr
+          Exit For
+      End Select
+    Next
+    If pCount > 1 Then
+      frmProgress.Prepare_Decrypt()
+      If ParentForm IsNot Nothing Then
+        ParentForm.Enabled = False
+        frmProgress.Show(ParentForm)
+        frmProgress.Location = New Point(ParentForm.Left + ParentForm.Width / 2 - frmProgress.Width / 2, ParentForm.Top + ParentForm.Height / 2 - frmProgress.Height / 2)
+      Else
+        frmProgress.Show()
+        frmProgress.Location = New Point(Screen.PrimaryScreen.Bounds.Left + Screen.PrimaryScreen.Bounds.Width / 2 - frmProgress.Width / 2, Screen.PrimaryScreen.Bounds.Top + Screen.PrimaryScreen.Bounds.Height / 2 - frmProgress.Height / 2)
+      End If
+      Application.DoEvents()
+    End If
     Dim sFiles As New List(Of ZIP.File)
     For I As UInt64 = 0 To bData.LongLength - 4
       Dim iDWORD As UInt32 = BitConverter.ToUInt32(bData, I)
@@ -239,6 +288,7 @@
           If Not zFile.Problem = 0 Then Continue For
           If zFile.Data.Length < 1 Then Continue For
           sFiles.Add(zFile)
+          If pCount > 1 Then frmProgress.Progress = 1 - (sFiles.Count / pCount)
           Application.DoEvents()
         Case &H2014B50
           'cdr entry
@@ -248,6 +298,13 @@
           Exit For
       End Select
     Next
+    If pCount > 1 Then
+      frmProgress.Close()
+      If ParentForm IsNot Nothing Then
+        ParentForm.Enabled = True
+        ParentForm.Activate()
+      End If
+    End If
     Return sFiles.ToArray
   End Function
 

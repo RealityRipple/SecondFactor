@@ -128,9 +128,9 @@
     Application.DoEvents()
     Dim bSave As Byte()
     If chkExportAdvanced.CheckState = CheckState.Checked Then
-      bSave = zExport.Encrypt(sPassword, "This Zip file's encryption is enhanced with HMAC-SHA-512 and " & GoodIterations.ToString("N0") & " rounds." & vbLf & "Your archive application may have trouble opening this file." & vbLf & "See <https://gist.github.com/RealityRipple/a32f2192501f4775aff36ce143ac6894> for details.", PBKDF2.HashStrength.SHA512, GoodIterations)
+      bSave = zExport.Encrypt(sPassword, "This Zip file's encryption is enhanced with HMAC-SHA-512 and " & GoodIterations.ToString("N0") & " rounds." & vbLf & "Your archive application may have trouble opening this file." & vbLf & "See <https://gist.github.com/RealityRipple/a32f2192501f4775aff36ce143ac6894> for details.", PBKDF2.HashStrength.SHA512, GoodIterations, Me)
     Else
-      bSave = zExport.Encrypt(sPassword)
+      bSave = zExport.Encrypt(sPassword,,,, Me)
     End If
     My.Computer.FileSystem.WriteAllBytes(sPath, bSave, False)
     MsgBox("Your Backup has been saved to """ & sPath & """. Please keep this backup safe!", MsgBoxStyle.Information, "Backup Completed")
@@ -208,7 +208,7 @@
     Me.Cursor = Cursors.WaitCursor
     lstImportProfiles.Items.Clear()
     Application.DoEvents()
-    ImportedFiles = ZIP.Decrypt(bImport, sPassword)
+    ImportedFiles = ZIP.Decrypt(bImport, sPassword, Me)
     lstImportProfiles.Tag = "WORKING"
     chkImportAll.Tag = "WORKING"
     Dim allChecked As Boolean = True
