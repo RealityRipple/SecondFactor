@@ -8,7 +8,7 @@
     chkExportAll.Tag = "WORKING"
     Dim sProfiles As String() = cSettings.GetProfileNames
     For Each sName As String In sProfiles
-      lstExportProfiles.Items.Add(sName, CheckState.Checked)
+      If Not String.IsNullOrEmpty(cSettings.ProfileSecret(sName)) Then lstExportProfiles.Items.Add(sName, CheckState.Checked)
     Next
     chkExportAll.CheckState = CheckState.Checked
     lstExportProfiles.Tag = Nothing
@@ -216,15 +216,15 @@
     Dim sProfiles As String() = cSettings.GetProfileNames
     For Each sFile As ZIP.File In ImportedFiles
       Dim sName As String = Nothing
+      Dim secretFound As Boolean = False
       Using fStream As New IO.MemoryStream(sFile.Data)
         Dim jReader As New JSONReader(fStream, False)
         For Each jEl As JSONReader.JSElement In jReader.Serial(0).SubElements
-          If jEl.Key = "name" Then
-            sName = jEl.Value
-            Exit For
-          End If
+          If jEl.Key = "name" Then sName = jEl.Value
+          If jEl.Key = "secret" AndAlso Not String.IsNullOrEmpty(jEl.Value) Then secretFound = True
         Next
       End Using
+      If Not secretFound Then Continue For
       If String.IsNullOrEmpty(sName) Then Continue For
       Dim bFound As Boolean = False
       For J As Integer = 0 To sProfiles.Length - 1
@@ -291,7 +291,11 @@
         sNames &= vbNewLine & sName
         If bFound Then sNames &= "*"
       Next
-      If MsgBox("Are you sure you want to import the following " & iItems.Count & " profiles?" & vbNewLine & "Any existing profiles with the same names (marked with an asterisk below) will be overwritten." & vbNewLine & sNames, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, "Import Profiles?") = MsgBoxResult.No Then Return
+      If sNames.Contains("*") Then
+        If MsgBox("Are you sure you want to import the following " & iItems.Count & " profiles?" & vbNewLine & "Any existing profiles with the same names (marked with an asterisk below) will be overwritten." & vbNewLine & sNames, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, "Import Profiles?") = MsgBoxResult.No Then Return
+      Else
+        If MsgBox("Are you sure you want to import the following " & iItems.Count & " profiles?" & vbNewLine & sNames, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, "Import Profiles?") = MsgBoxResult.No Then Return
+      End If
     End If
     Dim allOK As Boolean = True
     Dim didCount As Integer = 0
