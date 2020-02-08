@@ -204,6 +204,7 @@
     End Using
     cmdImport.Enabled = False
     cmdImportFile.Enabled = False
+    txtImportFile.Enabled = False
     Me.Cursor = Cursors.WaitCursor
     lstImportProfiles.Items.Clear()
     Application.DoEvents()
@@ -251,6 +252,7 @@
     chkImportAll.Tag = Nothing
     cmdImport.Enabled = True
     cmdImportFile.Enabled = True
+    txtImportFile.Enabled = True
     Me.Cursor = Me.DefaultCursor
   End Sub
 
