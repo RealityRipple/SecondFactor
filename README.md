@@ -1,10 +1,10 @@
 # ![](https://github.com/RealityRipple/SecondFactor/raw/master/SecondFactor/Resources/key.png) SecondFactor
 Two-Factor authentication on your Windows PC, backed by AES-256 security.
 
-#### Version 1.3
+#### Version 1.4
 > Author: Andrew Sachen  
 > Created: October 20, 2018  
-> Updated: January 20, 2020  
+> Updated: February 8, 2020  
 
 Language: Visual Basic.NET  
 Compiler: Visual Studio 2019  
