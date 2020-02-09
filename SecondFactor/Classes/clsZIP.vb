@@ -280,16 +280,29 @@
       Application.DoEvents()
     End If
     Dim sFiles As New List(Of ZIP.File)
+    Dim pIDX As Integer = 0
     For I As UInt64 = 0 To bData.LongLength - 4
       Dim iDWORD As UInt32 = BitConverter.ToUInt32(bData, I)
       Select Case iDWORD
         Case &H4034B50
+          pIDX += 1
           Dim zFile As ZIP.File = ParseFileInfo(bData, sPassword, I)
+          If pCount > 1 Then frmProgress.Progress = 1 - (pIDX / pCount)
+          Application.DoEvents()
+          If zFile.Problem = 3 Then
+            If pCount > 1 Then
+              frmProgress.Close()
+              If ParentForm IsNot Nothing Then
+                ParentForm.Enabled = True
+                ParentForm.Activate()
+              End If
+            End If
+            MsgBox("Unable to decrypt this backup. Please double-check your password.", MsgBoxStyle.Critical)
+            Return {}
+          End If
           If Not zFile.Problem = 0 Then Continue For
           If zFile.Data.Length < 1 Then Continue For
           sFiles.Add(zFile)
-          If pCount > 1 Then frmProgress.Progress = 1 - (sFiles.Count / pCount)
-          Application.DoEvents()
         Case &H2014B50
           'cdr entry
           Exit For
