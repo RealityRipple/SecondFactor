@@ -204,6 +204,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
-    <PostBuildEvent>D:\Development\Certification\Certify.exe -nt "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
