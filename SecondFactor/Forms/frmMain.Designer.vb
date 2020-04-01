@@ -40,6 +40,8 @@ Partial Class frmMain
         '
         'pnlInterface
         '
+        Me.pnlInterface.AutoSize = True
+        Me.pnlInterface.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.pnlInterface.ColumnCount = 2
         Me.pnlInterface.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.pnlInterface.ColumnStyles.Add(New System.Windows.Forms.ColumnStyle())
@@ -56,7 +58,7 @@ Partial Class frmMain
         Me.pnlInterface.RowStyles.Add(New System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100.0!))
         Me.pnlInterface.RowStyles.Add(New System.Windows.Forms.RowStyle())
         Me.pnlInterface.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.pnlInterface.Size = New System.Drawing.Size(299, 127)
+        Me.pnlInterface.Size = New System.Drawing.Size(299, 121)
         Me.pnlInterface.TabIndex = 0
         '
         'cmdProfiles
@@ -65,7 +67,7 @@ Partial Class frmMain
         Me.cmdProfiles.AutoSize = True
         Me.cmdProfiles.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.cmdProfiles.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdProfiles.Location = New System.Drawing.Point(63, 96)
+        Me.cmdProfiles.Location = New System.Drawing.Point(63, 90)
         Me.cmdProfiles.Margin = New System.Windows.Forms.Padding(3, 0, 3, 3)
         Me.cmdProfiles.MinimumSize = New System.Drawing.Size(75, 28)
         Me.cmdProfiles.Name = "cmdProfiles"
@@ -79,7 +81,7 @@ Partial Class frmMain
         '
         Me.pbTime.Anchor = CType((System.Windows.Forms.AnchorStyles.Left Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.pnlInterface.SetColumnSpan(Me.pbTime, 2)
-        Me.pbTime.Location = New System.Drawing.Point(3, 81)
+        Me.pbTime.Location = New System.Drawing.Point(3, 75)
         Me.pbTime.Maximum = 29
         Me.pbTime.Name = "pbTime"
         Me.pbTime.Size = New System.Drawing.Size(293, 12)
@@ -118,14 +120,14 @@ Partial Class frmMain
         Me.pnlNumbers.Name = "pnlNumbers"
         Me.pnlNumbers.RowCount = 1
         Me.pnlNumbers.RowStyles.Add(New System.Windows.Forms.RowStyle())
-        Me.pnlNumbers.Size = New System.Drawing.Size(299, 43)
+        Me.pnlNumbers.Size = New System.Drawing.Size(299, 37)
         Me.pnlNumbers.TabIndex = 0
         '
         'txtCode
         '
         Me.txtCode.Anchor = System.Windows.Forms.AnchorStyles.None
         Me.txtCode.Font = New System.Drawing.Font("Lucida Console", 20.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCode.Location = New System.Drawing.Point(87, 6)
+        Me.txtCode.Location = New System.Drawing.Point(87, 3)
         Me.txtCode.Margin = New System.Windows.Forms.Padding(3, 3, 3, 0)
         Me.txtCode.Name = "txtCode"
         Me.txtCode.ReadOnly = True
@@ -168,7 +170,7 @@ Partial Class frmMain
         Me.cmdQR.AutoSize = True
         Me.cmdQR.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
         Me.cmdQR.FlatStyle = System.Windows.Forms.FlatStyle.System
-        Me.cmdQR.Location = New System.Drawing.Point(255, 97)
+        Me.cmdQR.Location = New System.Drawing.Point(255, 91)
         Me.cmdQR.Margin = New System.Windows.Forms.Padding(3, 0, 3, 3)
         Me.cmdQR.Name = "cmdQR"
         Me.cmdQR.Padding = New System.Windows.Forms.Padding(2)
@@ -190,11 +192,14 @@ Partial Class frmMain
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
-        Me.ClientSize = New System.Drawing.Size(299, 127)
+        Me.AutoSize = True
+        Me.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink
+        Me.ClientSize = New System.Drawing.Size(299, 121)
         Me.Controls.Add(Me.pnlInterface)
         Me.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle
         Me.Icon = Global.SecondFactor.My.Resources.Resources.key
         Me.MaximizeBox = False
+        Me.MinimumSize = New System.Drawing.Size(315, 160)
         Me.Name = "frmMain"
         Me.Text = "SecondFactor"
         Me.pnlInterface.ResumeLayout(False)
@@ -202,6 +207,7 @@ Partial Class frmMain
         Me.pnlNumbers.ResumeLayout(False)
         Me.pnlNumbers.PerformLayout()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 

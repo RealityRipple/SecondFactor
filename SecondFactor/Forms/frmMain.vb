@@ -101,7 +101,17 @@
   End Sub
 
   Private Sub LoadProfileData(ProfileName As String)
+    Dim codeW As Integer
     If String.IsNullOrEmpty(ProfileName) OrElse Not cSettings.GetProfileNames.Contains(ProfileName) Then
+      codeW = TextRenderer.MeasureText(txtCodePast.CreateGraphics, "000 000", txtCodePast.Font, New Size(Integer.MaxValue, Integer.MaxValue), TextFormatFlags.TextBoxControl).Width
+      If codeW < 50 Then codeW = 50
+      txtCodePast.Width = codeW
+      codeW = TextRenderer.MeasureText(txtCode.CreateGraphics, "000 000", txtCode.Font, New Size(Integer.MaxValue, Integer.MaxValue), TextFormatFlags.TextBoxControl).Width
+      If codeW < 125 Then codeW = 125
+      txtCode.Width = codeW
+      codeW = TextRenderer.MeasureText(txtCodeFuture.CreateGraphics, "000 000", txtCodeFuture.Font, New Size(Integer.MaxValue, Integer.MaxValue), TextFormatFlags.TextBoxControl).Width
+      If codeW < 50 Then codeW = 50
+      txtCodeFuture.Width = codeW
       txtCodePast.Text = "000 000"
       txtCode.Text = "000 000"
       txtCodeFuture.Text = "000 000"
@@ -124,17 +134,28 @@
       sPast = sPast.Substring(0, 3) & " " & sPast.Substring(3)
       sPresent = sPresent.Substring(0, 3) & " " & sPresent.Substring(3)
       sFuture = sFuture.Substring(0, 3) & " " & sFuture.Substring(3)
-      txtCode.Width = 125
-      txtCodePast.Width = 50
-      txtCodeFuture.Width = 50
+      codeW = TextRenderer.MeasureText(txtCodePast.CreateGraphics, sPast, txtCodePast.Font, New Size(Integer.MaxValue, Integer.MaxValue), TextFormatFlags.TextBoxControl).Width
+      If codeW < 50 Then codeW = 50
+      txtCodePast.Width = codeW
+      codeW = TextRenderer.MeasureText(txtCode.CreateGraphics, sPresent, txtCode.Font, New Size(Integer.MaxValue, Integer.MaxValue), TextFormatFlags.TextBoxControl).Width
+      If codeW < 125 Then codeW = 125
+      txtCode.Width = codeW
+      codeW = TextRenderer.MeasureText(txtCodeFuture.CreateGraphics, sFuture, txtCodeFuture.Font, New Size(Integer.MaxValue, Integer.MaxValue), TextFormatFlags.TextBoxControl).Width
+      If codeW < 50 Then codeW = 50
     ElseIf iSize = 8 Then
       sPast = sPast.Substring(0, 4) & " " & sPast.Substring(4)
       sPresent = sPresent.Substring(0, 4) & " " & sPresent.Substring(4)
       sFuture = sFuture.Substring(0, 4) & " " & sFuture.Substring(4)
-      txtCode.Width = 150
-      txtCodePast.Width = 65
-      txtCodeFuture.Width = 65
+      codeW = TextRenderer.MeasureText(txtCodePast.CreateGraphics, sPast, txtCodePast.Font, New Size(Integer.MaxValue, Integer.MaxValue), TextFormatFlags.TextBoxControl).Width
+      If codeW < 65 Then codeW = 65
+      txtCodePast.Width = codeW
+      codeW = TextRenderer.MeasureText(txtCode.CreateGraphics, sPresent, txtCode.Font, New Size(Integer.MaxValue, Integer.MaxValue), TextFormatFlags.TextBoxControl).Width
+      If codeW < 150 Then codeW = 150
+      txtCode.Width = codeW
+      codeW = TextRenderer.MeasureText(txtCodeFuture.CreateGraphics, sFuture, txtCodeFuture.Font, New Size(Integer.MaxValue, Integer.MaxValue), TextFormatFlags.TextBoxControl).Width
+      If codeW < 65 Then codeW = 65
     End If
+    txtCodeFuture.Width = codeW
     txtCodePast.Text = sPast
     txtCode.Text = sPresent
     txtCodeFuture.Text = sFuture
