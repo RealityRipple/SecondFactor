@@ -4,6 +4,7 @@
     Group
     Array
     KeyValue
+    [String]
   End Enum
   Public Structure JSElement
     Public Type As ElementType
@@ -159,6 +160,7 @@
         el.Type = ElementType.None
         Return el
       ElseIf sRead = """" Then
+
         el.Type = ElementType.KeyValue
         Dim sKey As String = Nothing
         Dim sText As String = ReadCharacter(stream, streamEncoding)
@@ -188,14 +190,40 @@
           el.Key = Nothing
           Return el
         End If
+
+        Dim sSplit As String = ReadCharacter(stream, streamEncoding)
+        Do Until String.IsNullOrEmpty(sSplit)
+          If Not String.IsNullOrEmpty(sSplit) Then
+            If sSplit = ":" Then Exit Do
+            If sSplit = "," Then Exit Do
+            If sSplit = "[" Then Exit Do
+            If sSplit = "]" Then Exit Do
+            If sSplit = "{" Then Exit Do
+            If sSplit = "}" Then Exit Do
+          End If
+          If Not stream.CanRead Then
+            Exit Do
+          End If
+          sSplit = ReadCharacter(stream, streamEncoding)
+        Loop
+        If Not sSplit = ":" Then
+          el.Type = ElementType.String
+          el.Value = el.Key
+          stream.Seek(-1, IO.SeekOrigin.Current)
+          Return el
+        End If
+
         Dim sNext As String = ReadCharacter(stream, streamEncoding)
         Do Until String.IsNullOrEmpty(sNext)
-          If sNext = """" Then Exit Do
-          If sNext = "[" Then Exit Do
+          If Not String.IsNullOrEmpty(sNext) Then
+            If sNext = """" Then Exit Do
+            If sNext = "[" Then Exit Do
+            If sNext = "{" Then Exit Do
+            If sNext.ToLower = "t" Or sNext.ToLower = "f" Or sNext.ToLower = "n" Then Exit Do
+            If IsNumeric(sNext) Or sNext = "-" Then Exit Do
+          End If
           If Not stream.CanRead Then
-            el.Type = ElementType.None
-            el.Key = Nothing
-            Return el
+            Exit Do
           End If
           sNext = ReadCharacter(stream, streamEncoding)
         Loop
@@ -209,6 +237,92 @@
             If Not stream.CanRead Then Exit Do
             workElement = ReadElement(stream, streamEncoding)
           Loop
+        ElseIf sNext = "{" Then
+          el.Type = ElementType.Group
+          el.SubElements = New List(Of JSElement)
+          Dim workElement As JSElement = ReadElement(stream, streamEncoding)
+          Do Until workElement.Type = ElementType.None
+            el.SubElements.Add(workElement)
+            workElement = Nothing
+            If Not stream.CanRead Then Exit Do
+            workElement = ReadElement(stream, streamEncoding)
+          Loop
+        ElseIf sNext.ToLower = "t" Then
+          sText = sNext
+          Dim sVal As String = Nothing
+          Do Until String.IsNullOrEmpty(sText)
+            If (sText = "," Or sText = "]" Or sText = "}") And Not String.IsNullOrEmpty(sVal) Then
+              stream.Seek(-1, IO.SeekOrigin.Current)
+              If (sVal.ToLower = "true") Then Exit Do
+            Else
+              sVal &= sText
+            End If
+            If Not stream.CanRead Then
+              el.Type = ElementType.None
+              el.Key = Nothing
+              el.Value = Nothing
+              Return el
+            End If
+            sText = ReadCharacter(stream, streamEncoding)
+          Loop
+          el.Value = sVal
+        ElseIf sNext.ToLower = "f" Then
+          sText = sNext
+          Dim sVal As String = Nothing
+          Do Until String.IsNullOrEmpty(sText)
+            If (sText = "," Or sText = "]" Or sText = "}") And Not String.IsNullOrEmpty(sVal) Then
+              stream.Seek(-1, IO.SeekOrigin.Current)
+              If (sVal.ToLower = "false") Then Exit Do
+            Else
+              sVal &= sText
+            End If
+            If Not stream.CanRead Then
+              el.Type = ElementType.None
+              el.Key = Nothing
+              el.Value = Nothing
+              Return el
+            End If
+            sText = ReadCharacter(stream, streamEncoding)
+          Loop
+          el.Value = sVal
+        ElseIf sNext.ToLower = "n" Then
+          sText = sNext
+          Dim sVal As String = Nothing
+          Do Until String.IsNullOrEmpty(sText)
+            If (sText = "," Or sText = "]" Or sText = "}") And Not String.IsNullOrEmpty(sVal) Then
+              stream.Seek(-1, IO.SeekOrigin.Current)
+              If (sVal.ToLower = "null") Then Exit Do
+            Else
+              sVal &= sText
+            End If
+            If Not stream.CanRead Then
+              el.Type = ElementType.None
+              el.Key = Nothing
+              el.Value = Nothing
+              Return el
+            End If
+            sText = ReadCharacter(stream, streamEncoding)
+          Loop
+          el.Value = sVal
+        ElseIf IsNumeric(sNext) Or sNext = "-" Then
+          sText = sNext
+          Dim sVal As String = Nothing
+          Do Until String.IsNullOrEmpty(sText)
+            If (sText = "," Or sText = "]" Or sText = "}") And Not String.IsNullOrEmpty(sVal) Then
+              stream.Seek(-1, IO.SeekOrigin.Current)
+              If IsNumeric(sVal) Then Exit Do
+            Else
+              sVal &= sText
+            End If
+            If Not stream.CanRead Then
+              el.Type = ElementType.None
+              el.Key = Nothing
+              el.Value = Nothing
+              Return el
+            End If
+            sText = ReadCharacter(stream, streamEncoding)
+          Loop
+          el.Value = sVal
         Else
           sText = ReadCharacter(stream, streamEncoding)
           escape = False
