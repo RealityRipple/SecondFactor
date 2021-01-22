@@ -42,6 +42,7 @@
   End Sub
 
   Private Function GetCode(secret As String, size As Integer, algo As cSettings.HashAlg, period As UInt16, timeOffset As Int16) As String
+    If String.IsNullOrEmpty(secret) Then Return StrDup(size, "0")
     Dim timeSlice As UInt32 = Math.Floor(DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) / period) + timeOffset
     Dim secretKey As Byte() = Base32.ToByteArray(secret.ToUpper)
     Dim btime(7) As Byte
