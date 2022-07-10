@@ -31,7 +31,7 @@
       Case HashStrength.SHA512 : sHash = "SHA512"
     End Select
     Dim hResult As Integer = BCryptOpenAlgorithmProvider(hAlg, Runtime.InteropServices.Marshal.StringToCoTaskMemUni(sHash), Runtime.InteropServices.Marshal.StringToCoTaskMemUni("Microsoft Primitive Provider"), 8)
-    If Not hResult = 0 Then Return {}
+    If Not hResult = 0 Then Return New Byte(-1) {}
 
     Dim hSalt = Runtime.InteropServices.GCHandle.Alloc(salt, Runtime.InteropServices.GCHandleType.Pinned)
 
@@ -42,7 +42,7 @@
 
     Dim retSize As UInteger = keySize
     hResult = BCryptDeriveKeyPBKDF2(hAlg, hPass.AddrOfPinnedObject, bPass.Length, hSalt.AddrOfPinnedObject, salt.Length, iterationCount, hDerived.AddrOfPinnedObject, retSize, 0)
-    If Not hResult = 0 Then Return {}
+    If Not hResult = 0 Then Return New Byte(-1) {}
 
     hSalt.Free()
     hPass.Free()
@@ -65,7 +65,7 @@
       Dim hLen As Integer = hmac.HashSize / 8
       If Not (hmac.HashSize And 7) = 0 Then hLen += 1
       Dim keyLen As Integer = keySize / hLen
-      If keySize > (&HFFFFFFFFL * hLen) OrElse keySize < 0 Then Return {}
+      If keySize > (&HFFFFFFFFL * hLen) OrElse keySize < 0 Then Return New Byte(-1) {}
       If Not keySize Mod hLen = 0 Then keyLen += 1
       Dim extendedKey(salt.Length + 3) As Byte
       Array.ConstrainedCopy(salt, 0, extendedKey, 0, salt.Length)

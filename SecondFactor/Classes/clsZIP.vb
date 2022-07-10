@@ -298,7 +298,7 @@
               End If
             End If
             MsgBox("Unable to decrypt this backup. Please double-check your password.", MsgBoxStyle.Critical)
-            Return {}
+            Return New ZIP.File(-1) {}
           End If
           If Not zFile.Problem = 0 Then Continue For
           If zFile.Data.Length < 1 Then Continue For
