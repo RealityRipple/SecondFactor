@@ -369,7 +369,7 @@
     If bData.LongLength <= iPos + 2 Then Return zFile
     Dim iExtraField As UInt16 = BitConverter.ToUInt16(bData, iPos) : iPos += 2
     If bData.LongLength <= iPos + iFileName Then Return zFile
-    Dim sFileName As String = Text.Encoding.UTF8.GetString(bData, iPos, iFileName) : iPos += iFileName
+    Dim sFileName As String = System.Text.Encoding.UTF8.GetString(bData, iPos, iFileName) : iPos += iFileName
     If bData.LongLength <= iPos + iExtraField Then Return zFile
     Dim bExtraField(iExtraField - 1) As Byte
     Array.ConstrainedCopy(bData, iPos, bExtraField, 0, iExtraField) : iPos += iExtraField
