@@ -9,8 +9,9 @@ Namespace My
   ' NetworkAvailabilityChanged: Raised when the network connection is connected or disconnected.
   Partial Friend Class MyApplication
     Private Sub MyApplication_Startup(sender As Object, e As StartupEventArgs) Handles Me.Startup
-      If Not Authenticode.IsSelfSigned(Reflection.Assembly.GetExecutingAssembly().Location) Then
-        MsgBox("The Executable """ & IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location) & """ is not signed and may be corrupted or modified.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
+      Dim v As Authenticode.Validity = Authenticode.IsSelfSigned(Reflection.Assembly.GetExecutingAssembly().Location)
+      If Not (v = Authenticode.Validity.SignedAndValid Or v = Authenticode.Validity.SignedButUntrusted) Then
+        MsgBox("The Executable """ & IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location) & """ is not signed and may be corrupted or modified." & vbNewLine & "Error Code: 0x" & Hex(v), MsgBoxStyle.Critical, My.Application.Info.ProductName)
         e.Cancel = True
         Return
       End If
