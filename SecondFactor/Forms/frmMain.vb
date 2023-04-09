@@ -63,9 +63,10 @@
     Dim value As UInt32 = 0
     For I As Integer = 0 To 3
       Dim RoL As Integer = ((3 - I) * 8)
-      value = value + (CULng(hashpart(I)) << RoL)
+      Dim lValue As ULong = CULng(value) + (CULng(hashpart(I)) << RoL)
+      value = lValue And &H7FFFFFFF
+      lValue = 0
     Next
-    value = value And &H7FFFFFFF
     Dim modulo As UInt32 = 10 ^ size
     Dim ret As String = (value Mod modulo)
     Return StrDup(size - ret.Length, "0") & ret
