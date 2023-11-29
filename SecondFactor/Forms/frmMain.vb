@@ -177,7 +177,13 @@
 
   Private Sub txtCodePast_MouseUp(sender As Object, e As MouseEventArgs) Handles txtCodePast.MouseUp
     txtCodePast.SelectAll()
-    If (e.Button And MouseButtons.Left) = MouseButtons.Left Then Clipboard.SetText(txtCodePast.Text.Replace(" ", ""), TextDataFormat.Text)
+    If (e.Button And MouseButtons.Left) = MouseButtons.Left Then
+      Try
+        Clipboard.SetText(txtCodePast.Text.Replace(" ", ""), TextDataFormat.Text)
+      Catch ex As Exception
+
+      End Try
+    End If
   End Sub
 
   Private Sub txtCode_MouseDown(sender As Object, e As MouseEventArgs) Handles txtCode.MouseDown
@@ -186,7 +192,13 @@
 
   Private Sub txtCode_MouseUp(sender As Object, e As MouseEventArgs) Handles txtCode.MouseUp
     txtCode.SelectAll()
-    If (e.Button And MouseButtons.Left) = MouseButtons.Left Then Clipboard.SetText(txtCode.Text.Replace(" ", ""), TextDataFormat.Text)
+    If (e.Button And MouseButtons.Left) = MouseButtons.Left Then
+      Try
+        Clipboard.SetText(txtCode.Text.Replace(" ", ""), TextDataFormat.Text)
+      Catch ex As Exception
+
+      End Try
+    End If
   End Sub
 
   Private Sub txtCodeFuture_MouseDown(sender As Object, e As MouseEventArgs) Handles txtCodeFuture.MouseDown
@@ -195,7 +207,13 @@
 
   Private Sub txtCodeFuture_MouseUp(sender As Object, e As MouseEventArgs) Handles txtCodeFuture.MouseUp
     txtCodeFuture.SelectAll()
-    If (e.Button And MouseButtons.Left) = MouseButtons.Left Then Clipboard.SetText(txtCodeFuture.Text.Replace(" ", ""), TextDataFormat.Text)
+    If (e.Button And MouseButtons.Left) = MouseButtons.Left Then
+      Try
+        Clipboard.SetText(txtCodeFuture.Text.Replace(" ", ""), TextDataFormat.Text)
+      Catch ex As Exception
+
+      End Try
+    End If
   End Sub
 
   Private Sub cmdQR_Click(sender As Object, e As EventArgs) Handles cmdQR.Click
