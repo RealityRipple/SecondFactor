@@ -11,7 +11,9 @@ Namespace My
     Private Sub MyApplication_Startup(sender As Object, e As StartupEventArgs) Handles Me.Startup
       Dim v As Authenticode.Validity = Authenticode.IsSelfSigned(Reflection.Assembly.GetExecutingAssembly().Location)
       If Not (v = Authenticode.Validity.SignedAndValid Or v = Authenticode.Validity.SignedButUntrusted) Then
-        MsgBox("The Executable """ & IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location) & """ is not signed and may be corrupted or modified." & vbNewLine & "Error Code: 0x" & Hex(v), MsgBoxStyle.Critical, My.Application.Info.ProductName)
+        Dim sErr As String = "0x" & v.ToString("x")
+        If Not CStr(v) = v.ToString Then sErr = v.ToString & " (0x" & v.ToString("x") & ")"
+        MsgBox("The Executable """ & IO.Path.GetFileName(Reflection.Assembly.GetExecutingAssembly().Location) & """ is not signed and may be corrupted or modified." & vbNewLine & "Error Code: " & sErr, MsgBoxStyle.Critical, My.Application.Info.ProductName)
         e.Cancel = True
         Return
       End If
