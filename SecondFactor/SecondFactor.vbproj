@@ -77,6 +77,7 @@
     <Compile Include="ApplicationEvents.vb" />
     <Compile Include="Classes\clsAuthenticode.vb" />
     <Compile Include="Classes\clsJSON.vb" />
+    <Compile Include="Classes\clsNativeMethods.vb" />
     <Compile Include="Classes\clsPasswordBox.vb">
       <SubType>Component</SubType>
     </Compile>

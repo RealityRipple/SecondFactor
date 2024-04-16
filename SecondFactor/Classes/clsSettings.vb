@@ -15,6 +15,22 @@
     Return My.Computer.Registry.CurrentUser.OpenSubKey("Software", writable).OpenSubKey(Application.CompanyName, writable).OpenSubKey(Application.ProductName, writable)
   End Function
 
+  Public Shared Property TopMost As Boolean
+    Get
+      If Not RegistryPath.GetValueNames.Contains("Topmost") Then Return False
+      If Not RegistryPath.GetValueKind("Topmost") = Microsoft.Win32.RegistryValueKind.String Then Return Nothing
+      Return RegistryPath.GetValue("Topmost", "N") = "Y"
+    End Get
+    Set(value As Boolean)
+      If value Then
+        RegistryPath(True).SetValue("Topmost", "Y", Microsoft.Win32.RegistryValueKind.String)
+      Else
+        If Not RegistryPath.GetValueNames.Contains("Topmost") Then Return
+        RegistryPath(True).DeleteValue("Topmost")
+      End If
+    End Set
+  End Property
+
   Public Shared ReadOnly Property RequiresLogin As Boolean
     Get
       If Not RegistryPath.GetValueNames.Contains("A") Then Return False

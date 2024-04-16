@@ -41,6 +41,34 @@
     End If
   End Sub
 
+#Region "App Menu"
+  Protected Overrides Sub OnHandleCreated(e As System.EventArgs)
+    MyBase.OnHandleCreated(e)
+    Try
+      Dim hSysMenu As IntPtr = NativeMethods.GetSystemMenu(Me.Handle, False)
+      Me.TopMost = cSettings.TopMost
+      Dim uChecked As Integer = NativeMethods.MenuFlags.MF_UNCHECKED
+      If Me.TopMost Then uChecked = NativeMethods.MenuFlags.MF_CHECKED
+      NativeMethods.InsertMenu(hSysMenu, 0, NativeMethods.MenuFlags.MF_STRING Or uChecked Or NativeMethods.MenuFlags.MF_BYPOSITION, TOPMOST_MENU_ID, TOPMOST_MENU_TEXT)
+      NativeMethods.InsertMenu(hSysMenu, 1, NativeMethods.MenuFlags.MF_SEPARATOR Or NativeMethods.MenuFlags.MF_BYPOSITION, 0, String.Empty)
+    Catch ex As Exception
+
+    End Try
+  End Sub
+
+  Protected Overrides Sub WndProc(ByRef m As Message)
+    MyBase.WndProc(m)
+    If Not m.Msg = NativeMethods.WM_SYSCOMMAND Then Return
+    If Not m.WParam.ToInt64 = TOPMOST_MENU_ID Then Return
+    Me.TopMost = Not Me.TopMost
+    cSettings.TopMost = Me.TopMost
+    Dim uChecked As Integer = NativeMethods.MenuFlags.MF_UNCHECKED
+    If Me.TopMost Then uChecked = NativeMethods.MenuFlags.MF_CHECKED
+    Dim hSysMenu As IntPtr = NativeMethods.GetSystemMenu(Me.Handle, False)
+    NativeMethods.ModifyMenu(hSysMenu, TOPMOST_MENU_ID, NativeMethods.MenuFlags.MF_STRING Or uChecked, TOPMOST_MENU_ID, TOPMOST_MENU_TEXT)
+  End Sub
+#End Region
+
   Private Function GetCode(secret As String, size As Integer, algo As cSettings.HashAlg, period As UInt16, timeOffset As Int16) As String
     If String.IsNullOrEmpty(secret) Then Return StrDup(size, "0")
     Dim timeSlice As UInt32 = Math.Floor(DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) / period) + timeOffset
