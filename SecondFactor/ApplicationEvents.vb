@@ -1,5 +1,4 @@
 ﻿Imports Microsoft.VisualBasic.ApplicationServices
-
 Namespace My
   ' The following events are available for MyApplication:
   ' Startup: Raised when the application starts, before the startup form is created.
@@ -62,7 +61,6 @@ Namespace My
         Next
       End If
     End Sub
-
     Private Sub CheckRegistry()
       If Not My.Computer.Registry.ClassesRoot.GetSubKeyNames.Contains("otpauth") Then My.Computer.Registry.ClassesRoot.CreateSubKey("otpauth")
       My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth", True).SetValue("", "URL:OTPAUTH Protocol")
@@ -74,11 +72,9 @@ Namespace My
       If Not My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth").GetSubKeyNames.Contains("DefaultIcon") Then My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth", True).CreateSubKey("DefaultIcon")
       My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth", True).OpenSubKey("DefaultIcon", True).SetValue("", Reflection.Assembly.GetExecutingAssembly().Location & ",1")
     End Sub
-
     Private Sub DeleteRegistry()
       If My.Computer.Registry.ClassesRoot.GetSubKeyNames.Contains("otpauth") Then My.Computer.Registry.ClassesRoot.DeleteSubKeyTree("otpauth")
     End Sub
-
     Private Sub MyApplication_StartupNextInstance(sender As Object, e As Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventArgs) Handles Me.StartupNextInstance
       Dim sImport As String = Nothing
       If e.CommandLine IsNot Nothing AndAlso e.CommandLine.Count > 0 Then

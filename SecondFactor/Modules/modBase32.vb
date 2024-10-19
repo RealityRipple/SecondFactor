@@ -1,6 +1,5 @@
 ﻿Imports System.Runtime.CompilerServices
 Imports System.Text
-
 Module Base32
   Private Const Base32AllowedCharacters As String = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567"
   <Extension()>
@@ -18,7 +17,6 @@ Module Base32
     Dim result = bytes.ToBase32String(addPadding)
     Return result
   End Function
-
   <Extension()>
   Function DecodeFromBase32String(ByVal input As String) As String
     If String.IsNullOrEmpty(input) Then Return String.Empty
@@ -26,7 +24,6 @@ Module Base32
     Dim result = Encoding.UTF8.GetString(bytes)
     Return result
   End Function
-
   <Extension()>
   Function ToByteArray(ByVal input As String) As Byte()
     If String.IsNullOrEmpty(input) Then Return New Byte(-1) {}

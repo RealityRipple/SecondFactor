@@ -1,29 +1,24 @@
 ﻿Imports System
-
 Namespace QRCode.Decoder.ECC
   Public Class BCH15_5
     Private c_gf16 As Integer()()
     Private c_recieveData As Boolean()
     Private c_numCorrectedError As Integer
-
     Public Overridable ReadOnly Property NumCorrectedError As Integer
       Get
         Return c_numCorrectedError
       End Get
     End Property
-
     Public Sub New(ByVal source As Boolean())
       c_gf16 = createGF16()
       c_recieveData = source
     End Sub
-
     Public Overridable Function correct() As Boolean()
       Dim s As Integer() = calcSyndrome(c_recieveData)
       Dim errorPos As Integer() = detectErrorBitPosition(s)
       Dim output As Boolean() = correctErrorBit(c_recieveData, errorPos)
       Return output
     End Function
-
     Friend Overridable Function createGF16() As Integer()()
       c_gf16 = New Integer(15)() {}
       For I As Integer = 0 To 16 - 1
@@ -48,7 +43,6 @@ Namespace QRCode.Decoder.ECC
       Next
       Return c_gf16
     End Function
-
     Friend Overridable Function searchElement(ByVal x As Integer()) As Integer
       Dim k As Integer
       For k = 0 To 15 - 1
@@ -56,7 +50,6 @@ Namespace QRCode.Decoder.ECC
       Next
       Return k
     End Function
-
     Friend Overridable Function addGF(ByVal arg1 As Integer, ByVal arg2 As Integer) As Integer
       Dim p As Integer() = New Integer(3) {}
       For m As Integer = 0 To 4 - 1
@@ -66,7 +59,6 @@ Namespace QRCode.Decoder.ECC
       Next
       Return searchElement(p)
     End Function
-
     Friend Overridable Function calcSyndrome(ByVal y As Boolean()) As Integer()
       Dim s As Integer() = New Integer(4) {}
       Dim p As Integer() = New Integer(3) {}
@@ -102,7 +94,6 @@ Namespace QRCode.Decoder.ECC
       s(4) = If((k >= 15), -1, k)
       Return s
     End Function
-
     Friend Overridable Function calcErrorPositionVariable(ByVal s As Integer()) As Integer()
       Dim e As Integer() = New Integer(3) {}
       e(0) = s(0)
@@ -119,7 +110,6 @@ Namespace QRCode.Decoder.ECC
       e(2) = addGF(t1, t)
       Return e
     End Function
-
     Friend Overridable Function detectErrorBitPosition(ByVal s As Integer()) As Integer()
       Dim e As Integer() = calcErrorPositionVariable(s)
       Dim errorPos As Integer() = New Integer(3) {}
@@ -148,7 +138,6 @@ Namespace QRCode.Decoder.ECC
       Next
       Return errorPos
     End Function
-
     Friend Overridable Function correctErrorBit(ByVal y As Boolean(), ByVal errorPos As Integer()) As Boolean()
       For I As Integer = 1 To errorPos(0)
         y(errorPos(I)) = Not y(errorPos(I))

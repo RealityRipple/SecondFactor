@@ -14,7 +14,6 @@
     lstExportProfiles.Tag = Nothing
     chkExportAll.Tag = Nothing
   End Sub
-
   Private Sub frmBackup_Shown(sender As Object, e As EventArgs) Handles Me.Shown
     cmdExport.Enabled = False
     Me.Cursor = Cursors.WaitCursor
@@ -32,7 +31,6 @@
     cmdExport.Enabled = True
     Me.Cursor = Me.DefaultCursor
   End Sub
-
   Private Sub lstExportProfiles_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles lstExportProfiles.ItemCheck
     If chkExportAll.Tag IsNot Nothing Then Return
     lstExportProfiles.Tag = "WORKING"
@@ -60,7 +58,6 @@
     End If
     lstExportProfiles.Tag = Nothing
   End Sub
-
   Private Sub chkExportAll_CheckStateChanged(sender As Object, e As EventArgs) Handles chkExportAll.CheckStateChanged
     If lstExportProfiles.Tag IsNot Nothing Then Return
     chkExportAll.Tag = "WORKING"
@@ -73,7 +70,6 @@
     Next
     chkExportAll.Tag = Nothing
   End Sub
-
   Private Sub cmdExport_Click(sender As Object, e As EventArgs) Handles cmdExport.Click
     Dim zExport As New ZIP(ZIP.AESStrength.AES256)
     Dim iItems As New List(Of Integer)
@@ -115,7 +111,6 @@
       If cdlSave.ShowDialog(Me) = DialogResult.OK Then sPath = cdlSave.FileName
     End Using
     If String.IsNullOrEmpty(sPath) Then Return
-
     Dim sPassword As String = Nothing
     Using pass As New frmPassEntry
       pass.Prepare_Export()
@@ -130,14 +125,13 @@
     If chkExportAdvanced.CheckState = CheckState.Checked Then
       bSave = zExport.Encrypt(sPassword, "This Zip file's encryption is enhanced with HMAC-SHA-512 and " & GoodIterations.ToString("N0") & " rounds." & vbLf & "Your archive application may have trouble opening this file." & vbLf & "See <https://gist.github.com/RealityRipple/a32f2192501f4775aff36ce143ac6894> for details.", PBKDF2.HashStrength.SHA512, GoodIterations, Me)
     Else
-      bSave = zExport.Encrypt(sPassword,,,, Me)
+      bSave = zExport.Encrypt(sPassword, , , , Me)
     End If
     My.Computer.FileSystem.WriteAllBytes(sPath, bSave, False)
     MsgBox("Your Backup has been saved to """ & sPath & """. Please keep this backup safe!", MsgBoxStyle.Information, "Backup Completed")
     cmdExport.Enabled = True
     Me.Cursor = Me.DefaultCursor
   End Sub
-
   Private Sub chkImportAll_CheckedChanged(sender As Object, e As EventArgs) Handles chkImportAll.CheckedChanged
     If lstImportProfiles.Tag IsNot Nothing Then Return
     chkImportAll.Tag = "WORKING"
@@ -150,7 +144,6 @@
     Next
     chkImportAll.Tag = Nothing
   End Sub
-
   Private Sub lstImportProfiles_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles lstImportProfiles.ItemCheck
     If chkImportAll.Tag IsNot Nothing Then Return
     lstImportProfiles.Tag = "WORKING"
@@ -178,7 +171,6 @@
     End If
     lstImportProfiles.Tag = Nothing
   End Sub
-
   Private Sub cmdImportFile_Click(sender As Object, e As EventArgs) Handles cmdImportFile.Click
     Using dlgOpen As New OpenFileDialog()
       dlgOpen.Filter = "ZIP Files|*.zip"
@@ -188,7 +180,6 @@
       End If
     End Using
   End Sub
-
   Private Sub txtImportFile_TextChanged(sender As Object, e As EventArgs) Handles txtImportFile.TextChanged
     ReDim ImportedFiles(0)
     Dim sPath As String = txtImportFile.Text
@@ -255,7 +246,6 @@
     txtImportFile.Enabled = True
     Me.Cursor = Me.DefaultCursor
   End Sub
-
   Private Sub cmdImport_Click(sender As Object, e As EventArgs) Handles cmdImport.Click
     Dim iItems As New List(Of Integer)
     For I As Integer = 0 To lstImportProfiles.Items.Count - 1

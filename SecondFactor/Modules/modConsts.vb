@@ -5,7 +5,6 @@
   Public Const UTF_16_BE As Integer = 1201
   Public Const UTF_32_LE As Integer = 12000
   Public Const UTF_32_BE As Integer = 12001
-
   Public Const TOPMOST_MENU_ID As Int64 = &H4815
   Public Const TOPMOST_MENU_TEXT As String = "&Topmost"
 End Module

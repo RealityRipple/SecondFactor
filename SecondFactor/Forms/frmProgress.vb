@@ -1,5 +1,4 @@
 ﻿Imports System.ComponentModel
-
 Public Class frmProgress
   Public Property Progress As Double
     Get

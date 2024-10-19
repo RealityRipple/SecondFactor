@@ -10,7 +10,6 @@
         Return c_NErrors
       End Get
     End Property
-
     Private c_y As Integer()
     Private c_gexp As Integer() = New Integer(511) {}
     Private c_glog As Integer() = New Integer(255) {}
@@ -24,7 +23,6 @@
     Private c_ErasureLocs As Integer() = New Integer(255) {}
     Private c_NErasures As Integer = 0
     Private c_correctionSucceeded As Boolean = True
-
     Public Sub New(ByVal source As Integer(), ByVal NPAR As Integer)
       initializeGaloisTables()
       c_y = source
@@ -34,7 +32,6 @@
       c_Lambda = New Integer(c_MAXDEG - 1) {}
       c_Omega = New Integer(c_MAXDEG - 1) {}
     End Sub
-
     Friend Overridable Sub initializeGaloisTables()
       Dim i, z As Integer
       Dim pinit, p1, p2, p3, p4, p5, p6, p7, p8 As Integer
@@ -72,7 +69,6 @@
         Next
       Next
     End Sub
-
     Friend Overridable Function gmult(ByVal a As Integer, ByVal b As Integer) As Integer
       Dim i, j As Integer
       If a = 0 OrElse b = 0 Then Return (0)
@@ -80,11 +76,9 @@
       j = c_glog(b)
       Return (c_gexp(i + j))
     End Function
-
     Friend Overridable Function ginv(ByVal elt As Integer) As Integer
       Return (c_gexp(255 - c_glog(elt)))
     End Function
-
     Friend Overridable Sub decode_data(ByVal data As Integer())
       Dim i, j, sum As Integer
       For j = 0 To c_MAXDEG - 1
@@ -95,7 +89,6 @@
         c_synBytes(j) = sum
       Next
     End Sub
-
     Public Overridable Sub correct()
       decode_data(c_y)
       c_correctionSucceeded = True
@@ -105,7 +98,6 @@
       Next
       If hasError Then c_correctionSucceeded = correct_errors_erasures(c_y, c_y.Length, 0, New Integer(0) {})
     End Sub
-
     Friend Overridable Sub Modified_Berlekamp_Massey()
       Dim n, L, L2, k, d, i As Integer
       Dim psi As Integer() = New Integer(c_MAXDEG - 1) {}
@@ -143,7 +135,6 @@
       Next
       compute_modified_omega()
     End Sub
-
     Friend Overridable Sub compute_modified_omega()
       Dim i As Integer
       Dim product As Integer() = New Integer(c_MAXDEG * 2 - 1) {}
@@ -153,7 +144,6 @@
         c_Omega(i) = product(i)
       Next
     End Sub
-
     Friend Overridable Sub mult_polys(ByVal dst As Integer(), ByVal p1 As Integer(), ByVal p2 As Integer())
       Dim i, j As Integer
       Dim tmp1 As Integer() = New Integer(c_MAXDEG * 2 - 1) {}
@@ -178,7 +168,6 @@
         Next
       Next
     End Sub
-
     Friend Overridable Sub init_gamma(ByVal gamma As Integer())
       Dim e As Integer
       Dim tmp As Integer() = New Integer(c_MAXDEG - 1) {}
@@ -192,7 +181,6 @@
         add_polys(gamma, tmp)
       Next
     End Sub
-
     Friend Overridable Function compute_discrepancy(ByVal lambda As Integer(), ByVal S As Integer(), ByVal L As Integer, ByVal n As Integer) As Integer
       Dim sum As Integer = 0
       For I As Integer = 0 To L
@@ -200,38 +188,32 @@
       Next
       Return (sum)
     End Function
-
     Friend Overridable Sub add_polys(ByVal dst As Integer(), ByVal src As Integer())
       For I As Integer = 0 To c_MAXDEG - 1
         dst(I) = dst(I) Xor src(I)
       Next
     End Sub
-
     Friend Overridable Sub copy_poly(ByVal dst As Integer(), ByVal src As Integer())
       For I As Integer = 0 To c_MAXDEG - 1
         dst(I) = src(I)
       Next
     End Sub
-
     Friend Overridable Sub scale_poly(ByVal k As Integer, ByVal poly As Integer())
       For I As Integer = 0 To c_MAXDEG - 1
         poly(I) = gmult(k, poly(I))
       Next
     End Sub
-
     Friend Overridable Sub zero_poly(ByVal poly As Integer())
       For I As Integer = 0 To c_MAXDEG - 1
         poly(I) = 0
       Next
     End Sub
-
     Friend Overridable Sub mul_z_poly(ByVal src As Integer())
       For I As Integer = c_MAXDEG - 1 To 1 Step -1
         src(I) = src(I - 1)
       Next
       src(0) = 0
     End Sub
-
     Friend Overridable Sub Find_Roots()
       Dim sum, r, k As Integer
       c_NErrors = 0
@@ -246,7 +228,6 @@
         End If
       Next
     End Sub
-
     Friend Overridable Function correct_errors_erasures(ByVal codeword As Integer(), ByVal csize As Integer, ByVal nerasures As Integer, ByVal erasures As Integer()) As Boolean
       Dim r, i, j, err As Integer
       nerasures = nerasures
@@ -275,7 +256,6 @@
           err = gmult(num, ginv(denom))
           codeword(csize - i - 1) = codeword(csize - i - 1) Xor err
         Next
-
         Return True
       Else
         Return False

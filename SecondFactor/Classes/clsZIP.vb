@@ -34,43 +34,35 @@
       Problem = 0
     End Sub
   End Structure
-
   Public Enum AESStrength As Byte
     AES128 = 1
     AES192 = 2
     AES256 = 3
   End Enum
-
   Private Structure AESKeyData
     Public Key As Byte()
     Public Salt As Byte()
     Public AuthKey As Byte()
     Public PassVerifier As UInt16
   End Structure
-
   Private Structure AESFileData
     Public DecryptedFile As Byte()
     Public Problem As Byte
   End Structure
-
   Private sFiles As List(Of ZIP.File)
   Private UsingAES As AESStrength
   Private AEXVersion As Byte
-
   Public Sub New(Optional strength As AESStrength = AESStrength.AES256, Optional Version As Byte = 2)
     sFiles = New List(Of ZIP.File)
     UsingAES = strength
     AEXVersion = Version
   End Sub
-
   Public Sub AddData(sName As String, bData As Byte(), dTime As Date, Optional sComment As String = Nothing)
     sFiles.Add(New ZIP.File(sName, bData, dTime, sComment))
   End Sub
-
   Public Sub AddFile(sPath As String, Optional sComment As String = Nothing)
     sFiles.Add(New ZIP.File(sPath, sComment))
   End Sub
-
   Public Sub RemoveFile(sName As String)
     For I As UInt64 = 0 To sFiles.LongCount - 1
       If sFiles(I).Name.ToLower = sName.ToLower Then
@@ -79,7 +71,6 @@
       End If
     Next
   End Sub
-
   Public Function Encrypt(sPassword As String, Optional sComment As String = Nothing, Optional Hash As PBKDF2.HashStrength = PBKDF2.HashStrength.SHA1, Optional Iterations As UInt64 = 1000, Optional ParentForm As Form = Nothing) As Byte()
     If sFiles.Count > 1 Then
       frmProgress.Prepare_Encrypt()
@@ -119,10 +110,8 @@
         ParentForm.Activate()
       End If
     End If
-
     Return bZip.ToArray()
   End Function
-
 #Region "Write Functions"
   Private Function GenerateFileHeader(zFile As ZIP.File) As Byte()
     Dim bFile As New List(Of Byte)
@@ -148,7 +137,6 @@
     bFile.AddRange(bExtra)
     Return bFile.ToArray()
   End Function
-
   Private Function EncryptFile(zFile As ZIP.File, iAESKey As AESKeyData, Hash As PBKDF2.HashStrength, Iterations As UInt64) As Byte()
     Dim bFile As New List(Of Byte)
     bFile.AddRange(iAESKey.Salt)
@@ -165,7 +153,6 @@
     bFile.AddRange(bAuth)
     Return bFile.ToArray()
   End Function
-
   Private Function GenerateCDR() As Byte()
     Dim bCDR As New List(Of Byte)
     For I As UInt64 = 0 To sFiles.LongCount - 1
@@ -204,7 +191,6 @@
     Next
     Return bCDR.ToArray()
   End Function
-
   Private Function GenerateExtraField_NTFS(zFile As ZIP.File) As Byte()
     Dim bNTFS As New List(Of Byte)
     bNTFS.AddRange(BitConverter.GetBytes(&HAUS))
@@ -217,7 +203,6 @@
     bNTFS.AddRange(BitConverter.GetBytes(zFile.Created.ToFileTime))
     Return bNTFS.ToArray()
   End Function
-
   Private Function GenerateExtraField_AES(zFile As ZIP.File, ver As Byte) As Byte()
     Dim bAES As New List(Of Byte)
     bAES.AddRange(BitConverter.GetBytes(&H9901US))
@@ -228,7 +213,6 @@
     bAES.AddRange(BitConverter.GetBytes(&H0US))
     Return bAES.ToArray()
   End Function
-
   Private Function GenerateEoCDR(cdrStart As UInt32, cdrLen As UInt32, Optional comment As String = Nothing) As Byte()
     Dim bEoCDR As New List(Of Byte)
     bEoCDR.AddRange(BitConverter.GetBytes(&H6054B50UI))
@@ -248,7 +232,6 @@
     Return bEoCDR.ToArray()
   End Function
 #End Region
-
 #Region "Read Functions"
   Public Shared Function Decrypt(bData As Byte(), sPassword As String, Optional ParentForm As Form = Nothing) As ZIP.File()
     Dim pCount As UInt64 = 0
@@ -320,7 +303,6 @@
     End If
     Return sFiles.ToArray
   End Function
-
   Private Shared Function ParseFileInfo(bData As Byte(), sPassword As String, ByRef iStart As UInt64) As ZIP.File
     Dim AEXVer As Byte = 0
     Dim zFile As ZIP.File
@@ -395,7 +377,6 @@
     zFile.Problem = 0
     Return zFile
   End Function
-
   Private Shared Function DecryptFile(bEncrypted As Byte(), sPassword As String, TrueDataLength As UInt64) As AESFileData
     Dim iSaltLen As Long = bEncrypted.LongLength - TrueDataLength - 12
     Dim iPBKLen As Long = 0
@@ -413,38 +394,29 @@
     Dim bSalt(iSaltLen - 1) As Byte
     Array.ConstrainedCopy(bEncrypted, 0, bSalt, 0, iSaltLen)
     Dim iPassVerifier As UInt16 = BitConverter.ToUInt16(bEncrypted, iSaltLen)
-
     Dim bEnc(TrueDataLength - 1) As Byte
     Array.ConstrainedCopy(bEncrypted, iSaltLen + 2, bEnc, 0, TrueDataLength)
-
     Dim hash As PBKDF2.HashStrength = PBKDF2.HashStrength.SHA1
     Dim iterations As UInt64 = 1000
     If Not iPBKLen = 0 Then
       hash = bEncrypted(iSaltLen + 2 + TrueDataLength)
       iterations = BitConverter.ToUInt64(bEncrypted, iSaltLen + 2 + TrueDataLength + 1)
     End If
-
     Dim iAESKey As AESKeyData = GenerateKey(sPassword, iAESBits, bSalt, hash, iterations)
     If Not iAESKey.PassVerifier = iPassVerifier Then Return New AESFileData With {.Problem = 3}
-
     Dim bAuthMAC(9) As Byte
     Array.ConstrainedCopy(bEncrypted, iSaltLen + 2 + TrueDataLength + iPBKLen, bAuthMAC, 0, 10)
-
     Dim hmacsha1 = New Security.Cryptography.HMACSHA1(iAESKey.AuthKey, True)
     Dim bAuthCompare() As Byte = hmacsha1.ComputeHash(bEnc)
-
     For I As Integer = 0 To 9
       If Not bAuthMAC(I) = bAuthCompare(I) Then Return New AESFileData With {.Problem = 2}
     Next
-
     Dim ret As AESFileData
     ret.Problem = 0
-
     ret.DecryptedFile = AESCTR(bEnc, iAESKey.Key)
     Return ret
   End Function
 #End Region
-
 #Region "Shared Functions"
   Private Shared Function GenerateKey(sPassword As String, Strength As AESStrength, Optional usingSalt As Byte() = Nothing, Optional pbkdf2Hash As PBKDF2.HashStrength = PBKDF2.HashStrength.SHA1, Optional pbkdf2Iterations As UInt64 = 1000) As AESKeyData
     Dim keySize As Integer = 16
@@ -473,7 +445,6 @@
     ret.PassVerifier = BitConverter.ToUInt16(passVerifier, 0)
     Return ret
   End Function
-
   Private Shared Function AESCTR(bData() As Byte, bKey() As Byte) As Byte()
     Dim hAES As New Security.Cryptography.AesManaged()
     hAES.Padding = Security.Cryptography.PaddingMode.None
@@ -507,9 +478,7 @@
     Next
     Return bOut.ToArray()
   End Function
-
 #End Region
-
 #Region "Basic Functions"
   Private Shared Function TimeToMSDOS(dTime As Date) As UInt16
     Dim iHour As UInt16 = dTime.Hour
@@ -521,7 +490,6 @@
     iTime = iTime Or (iSecond And &H1F)
     Return iTime
   End Function
-
   Private Shared Function DateToMSDOS(dDate As Date) As UInt16
     If dDate.Year < 1980 Then Return 0
     If dDate.Year > 2107 Then Return 0
@@ -534,7 +502,6 @@
     iDate = iDate Or (iDay And &H1F)
     Return iDate
   End Function
-
   Private Shared Function MSDOSToDateTime(iDate As UInt16, iTime As UInt16) As Date
     Dim iYear As UInt16 = (iDate And &HFE00) >> 9
     Dim iMonth As UInt16 = (iDate And &H1E0) >> 5
@@ -544,10 +511,8 @@
     Dim iSecond As UInt16 = (iTime And &H1F)
     Return New Date(iYear + 1980, iMonth, iDay, iHour, iMinute, iSecond)
   End Function
-
   Private Class CRC32
     Shared table As UInteger()
-
     Shared Sub New()
       Dim poly As UInteger = &HEDB88320UI
       table = New UInteger(255) {}
@@ -564,7 +529,6 @@
         table(I) = temp
       Next
     End Sub
-
     Public Shared Function ComputeChecksum(bytes As Byte()) As UInteger
       Dim crc As UInteger = &HFFFFFFFFUI
       For i As Integer = 0 To bytes.Length - 1

@@ -54,7 +54,6 @@
         Return Util.SystemUtils.ToSByteArray(output.ToArray())
       End Get
     End Property
-
     Public Overridable ReadOnly Property DataString As String
       Get
         Dim dString As String = ""
@@ -78,7 +77,6 @@
         Return dString
       End Get
     End Property
-
     Friend c_blocks As Integer()
     Friend c_dataLengthMode As Integer
     Friend c_blockPointer As Integer
@@ -90,7 +88,6 @@
     Const MODE_8BIT_BYTE As Integer = 4
     Const MODE_KANJI As Integer = 8
     Private sizeOfDataLengthInfo As Integer()() = New Integer()() {New Integer() {10, 9, 8, 8}, New Integer() {12, 11, 16, 10}, New Integer() {14, 13, 16, 12}}
-
     Public Sub New(ByVal blocks As Integer(), ByVal version As Integer, ByVal numErrorCorrectionCode As Integer)
       c_blockPointer = 0
       c_bitPointer = 7
@@ -105,7 +102,6 @@
         c_dataLengthMode = 2
       End If
     End Sub
-
     Friend Overridable Function getNextBits(ByVal numBits As Integer) As Integer
       Dim bits As Integer = 0
       If numBits < c_bitPointer + 1 Then
@@ -155,7 +151,6 @@
         Return 0
       End If
     End Function
-
     Friend Overridable Function getDataLength(ByVal modeIndicator As Integer) As Integer
       Dim index As Integer = 0
       While True
@@ -164,7 +159,6 @@
       End While
       Return getNextBits(sizeOfDataLengthInfo(c_dataLengthMode)(index))
     End Function
-
     Friend Overridable Function getFigureString(ByVal dataLength As Integer) As String
       Dim length As Integer = dataLength
       Dim intData As Integer = 0
@@ -187,7 +181,6 @@
       Loop While length > 0
       Return strData
     End Function
-
     Friend Overridable Function getRomanAndFigureString(ByVal dataLength As Integer) As String
       Dim length As Integer = dataLength
       Dim intData As Integer = 0
@@ -209,7 +202,6 @@
       Loop While length > 0
       Return strData
     End Function
-
     Public Overridable Function get8bitByteArray(ByVal dataLength As Integer) As SByte()
       Dim length As Integer = dataLength
       Dim intData As Integer = 0
@@ -221,7 +213,6 @@
       Loop While length > 0
       Return Util.SystemUtils.ToSByteArray(output.ToArray())
     End Function
-
     Friend Overridable Function get8bitByteString(ByVal dataLength As Integer) As String
       Dim length As Integer = dataLength
       Dim intData As Integer = 0
@@ -233,7 +224,6 @@
       Loop While length > 0
       Return strData
     End Function
-
     Friend Overridable Function getKanjiString(ByVal dataLength As Integer) As String
       Dim length As Integer = dataLength
       Dim intData As Integer = 0

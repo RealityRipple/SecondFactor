@@ -1,11 +1,9 @@
 ﻿Namespace QRCode.Decoder.Reader.Pattern
   Public Class LogicalSeed
     Private Shared seed As Integer()()
-
     Public Shared Function getSeed(ByVal version As Integer) As Integer()
       Return (seed(version - 1))
     End Function
-
     Shared Sub New()
       If True Then
         seed = New Integer(39)() {}

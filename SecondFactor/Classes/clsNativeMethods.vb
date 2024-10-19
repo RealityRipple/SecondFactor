@@ -1,5 +1,4 @@
 ﻿Imports System.Runtime.InteropServices
-
 Public Class NativeMethods
   Public Const WM_SYSCOMMAND As Integer = &H112
   <Flags()>

@@ -9,11 +9,9 @@
       End If
     Next
   End Sub
-
   Private Sub cmbProfiles_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbProfiles.SelectedIndexChanged
     LoadProfileData(cmbProfiles.SelectedItem)
   End Sub
-
   Private Sub cmdAdd_Click(sender As Object, e As EventArgs) Handles cmdAdd.Click
     Dim I As Integer = 0
     For Each sProfile As String In cmbProfiles.Items
@@ -37,7 +35,6 @@
       End If
     Next
   End Sub
-
   Private Sub cmdRemove_Click(sender As Object, e As EventArgs) Handles cmdRemove.Click
     If cmbProfiles.SelectedIndex = -1 Then
       Beep()
@@ -50,7 +47,6 @@
     cSettings.RemoveProfile(cmbProfiles.SelectedItem)
     UpdateProfileListing()
   End Sub
-
   Private Sub cmdSaveProfile_Click(sender As Object, e As EventArgs) Handles cmdSaveProfile.Click
     If String.IsNullOrEmpty(txtName.Text) Then
       MsgBox("Please enter a name for this Profile.", MsgBoxStyle.Exclamation)
@@ -95,16 +91,13 @@
       End If
     Next
   End Sub
-
   Private Sub cmdResetProfile_Click(sender As Object, e As EventArgs) Handles cmdResetProfile.Click
     LoadProfileData(cmbProfiles.SelectedItem)
   End Sub
-
   Private Sub cmdClose_Click(sender As Object, e As EventArgs) Handles cmdClose.Click
     If cmdSaveProfile.Enabled AndAlso MsgBox("Are you sure you want to close without saving the changes to your Profile?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton2, "Discard Changes?") = MsgBoxResult.No Then Return
     Me.Close()
   End Sub
-
   Friend Sub UpdateProfileListing()
     Dim selProf As String = Nothing
     If cmbProfiles.SelectedIndex > -1 Then selProf = cmbProfiles.SelectedItem
@@ -134,7 +127,6 @@
       cmdPassword.Text = "Require Login"
     End If
   End Sub
-
   Private Sub LoadProfileData(ProfileName As String)
     If String.IsNullOrEmpty(ProfileName) Then
       txtName.Text = Nothing
@@ -178,7 +170,6 @@
     mBusy = False
     SettingsChanged()
   End Sub
-
   Private Sub SettingsChanged()
     If mBusy Then Return
     Dim changeDetected As Boolean = False
@@ -198,11 +189,9 @@
     cmdSaveProfile.Enabled = changeDetected
     cmdResetProfile.Enabled = changeDetected
   End Sub
-
   Private Sub txtName_TextChanged(sender As Object, e As EventArgs) Handles txtName.TextChanged
     SettingsChanged()
   End Sub
-
   Private Sub cmdDefaultService_Click(sender As Object, e As EventArgs) Handles cmdDefaultService.Click
     Dim sDefault As String = cSettings.ProfileDefaultName(cmbProfiles.SelectedItem)
     If String.IsNullOrEmpty(sDefault) Then
@@ -219,23 +208,18 @@
     End If
     If MsgBox("Do you want to reset the name for this profile to its default value of """ & sDefault & """?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton2, "Reset Profile Name?") = MsgBoxResult.Yes Then txtName.Text = sDefault
   End Sub
-
   Private Sub txtSecret_TextChanged(sender As Object, e As EventArgs) Handles txtSecret.TextChanged
     SettingsChanged()
   End Sub
-
   Private Sub txtSize_ValueChanged(sender As Object, e As EventArgs) Handles txtSize.ValueChanged
     SettingsChanged()
   End Sub
-
   Private Sub txtPeriod_ValueChanged(sender As Object, e As EventArgs) Handles txtPeriod.ValueChanged
     SettingsChanged()
   End Sub
-
   Private Sub cmbAlgorithm_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbAlgorithm.SelectedIndexChanged
     SettingsChanged()
   End Sub
-
   Private Sub cmdPassword_Click(sender As Object, e As EventArgs) Handles cmdPassword.Click
     Using pass As New frmPassEntry
       If cSettings.RequiresLogin Then
@@ -249,7 +233,6 @@
       End If
     End Using
   End Sub
-
   Private Sub cmdBackup_Click(sender As Object, e As EventArgs) Handles cmdBackup.Click
     Using fBackup As New frmBackup
       fBackup.ShowDialog(Me)

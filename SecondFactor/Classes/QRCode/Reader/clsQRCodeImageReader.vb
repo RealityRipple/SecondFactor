@@ -5,7 +5,6 @@
     Public Const POINT_LIGHT As Boolean = False
     Private c_samplingGrid As Geom.SamplingGrid
     Private c_bitmap As Boolean()()
-
     Private Class ModulePitch
       Public top As Integer
       Public left As Integer
@@ -24,7 +23,6 @@
         End Get
       End Property
     End Class
-
     Friend Overridable Function applyCrossMaskingMedianFilter(ByVal image As Boolean()(), ByVal threshold As Integer) As Boolean()()
       Dim filteredMatrix As Boolean()() = New Boolean(image.Length - 1)() {}
       For I As Integer = 0 To image.Length - 1
@@ -43,13 +41,11 @@
       Next
       Return filteredMatrix
     End Function
-
     Friend Overridable Function filterImage(ByVal image As Integer()()) As Boolean()()
       imageToGrayScale(image)
       Dim bitmap As Boolean()() = grayScaleToBitmap(image)
       Return bitmap
     End Function
-
     Friend Overridable Sub imageToGrayScale(ByVal image As Integer()())
       For y As Integer = 0 To image(0).Length - 1
         For x As Integer = 0 To image.Length - 1
@@ -61,7 +57,6 @@
         Next
       Next
     End Sub
-
     Friend Overridable Function grayScaleToBitmap(ByVal grayScale As Integer()()) As Boolean()()
       Dim middle As Integer()() = getMiddleBrightnessPerArea(grayScale)
       Dim sqrtNumArea As Integer = middle.Length
@@ -82,7 +77,6 @@
       Next
       Return bitmap
     End Function
-
     Friend Overridable Function getMiddleBrightnessPerArea(ByVal image As Integer()()) As Integer()()
       Dim numSqrtArea As Integer = 4
       Dim areaWidth As Integer = Math.Floor(image.Length / numSqrtArea)
@@ -117,7 +111,6 @@
       Next
       Return middle
     End Function
-
     Public Overridable Function getQRCodeSymbol(ByVal image As Integer()()) As Data.QRCodeSymbol
       Dim longSide As Integer = image.Length
       If image.Length < image(0).Length Then longSide = image(0).Length
@@ -158,7 +151,6 @@
         Next
       Next
       c_samplingGrid = getSamplingGrid(finderPattern, alignmentPattern)
-
       Dim qRCodeMatrix As Boolean()() = Nothing
       Try
         qRCodeMatrix = getQRCodeMatrix(c_bitmap, c_samplingGrid)
@@ -167,7 +159,6 @@
       End Try
       Return New Data.QRCodeSymbol(qRCodeMatrix)
     End Function
-
     Public Overridable Function getQRCodeSymbolWithAdjustedGrid(ByVal adjust As Geom.Point) As Data.QRCodeSymbol
       If c_bitmap Is Nothing OrElse c_samplingGrid Is Nothing Then
         Throw New System.SystemException("This method must be called after QRCodeImageReader.getQRCodeSymbol() called")
@@ -181,7 +172,6 @@
       End Try
       Return New Data.QRCodeSymbol(qRCodeMatrix)
     End Function
-
     Friend Overridable Function getSamplingGrid(ByVal finderPattern As Pattern.FinderPattern, ByVal alignmentPattern As Pattern.AlignmentPattern) As Geom.SamplingGrid
       Dim centers As Geom.Point()() = alignmentPattern.getCenter()
       Dim version As Integer = finderPattern.Version
@@ -322,7 +312,6 @@
       Next
       Return samplingGrid
     End Function
-
     Friend Overridable Function getAreaModulePitch(ByVal start As Geom.Point, ByVal [end] As Geom.Point, ByVal logicalDistance As Integer) As Integer
       Dim tempLine As Geom.Line
       tempLine = New Geom.Line(start, [end])
@@ -330,7 +319,6 @@
       Dim modulePitch As Integer = Math.Floor((realDistance << DECIMAL_POINT) / logicalDistance)
       Return modulePitch
     End Function
-
     Friend Overridable Function getQRCodeMatrix(ByVal image As Boolean()(), ByVal gridLines As Geom.SamplingGrid) As Boolean()()
       Dim gridSize As Integer = gridLines.TotalWidth
       Dim bottomRightPoint As Geom.Point = Nothing

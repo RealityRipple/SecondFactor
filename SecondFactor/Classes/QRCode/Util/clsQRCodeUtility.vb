@@ -1,5 +1,4 @@
 ﻿Imports System.Text
-
 Namespace QRCode.Decoder.Util
   Public Class QRCodeUtility
     Public Shared Function sqrt(ByVal val As Integer) As Integer
@@ -18,7 +17,6 @@ Namespace QRCode.Decoder.Util
       Loop While (b > 0)
       Return g
     End Function
-
     Public Shared Function IsUnicode(ByVal byteData As Byte()) As Boolean
       Dim value1 As String = FromASCIIByteArray(byteData)
       Dim value2 As String = FromUnicodeByteArray(byteData)
@@ -27,24 +25,20 @@ Namespace QRCode.Decoder.Util
       If ascii(0) <> unicode(0) Then Return True
       Return False
     End Function
-
     Private Shared Function FromASCIIByteArray(ByVal characters As Byte()) As String
       Dim encoding As ASCIIEncoding = New ASCIIEncoding()
       Dim constructedString As String = encoding.GetString(characters)
       Return constructedString
     End Function
-
     Private Shared Function FromUnicodeByteArray(ByVal characters As Byte()) As String
       Dim encoding As UnicodeEncoding = New UnicodeEncoding()
       Dim constructedString As String = encoding.GetString(characters)
       Return constructedString
     End Function
-
     Private Shared Function AsciiStringToByteArray(ByVal str As String) As Byte()
       Dim encoding As ASCIIEncoding = New ASCIIEncoding()
       Return encoding.GetBytes(str)
     End Function
-
     Private Shared Function UnicodeStringToByteArray(ByVal str As String) As Byte()
       Dim encoding As UnicodeEncoding = New UnicodeEncoding()
       Return encoding.GetBytes(str)

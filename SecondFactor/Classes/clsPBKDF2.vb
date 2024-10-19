@@ -2,16 +2,13 @@
   Private Declare Function BCryptOpenAlgorithmProvider Lib "bcrypt" (ByRef phAlgorithm As IntPtr, pszAlgId As IntPtr, pszImplementation As IntPtr, dwFlags As UInteger) As Integer
   Private Declare Function BCryptCloseAlgorithmProvider Lib "bcrypt" (hAlgorithm As IntPtr, dwFlags As UInteger) As Integer
   Private Declare Function BCryptDeriveKeyPBKDF2 Lib "bcrypt" (pPrf As IntPtr, pbPassword As IntPtr, cbPassword As UInteger, pbSalt As IntPtr, cbSalt As UInteger, cIterations As ULong, pbDerivedKey As IntPtr, cbDerivedKey As UInteger, dwFlags As UInteger) As Integer
-
   Public Enum HashStrength As Byte
     SHA1 = 1
     SHA256 = 2
     SHA384 = 3
     SHA512 = 4
   End Enum
-
   Private Shared mBestIter(3) As UInt64
-
 #Region "RFC2898"
   Public Shared Function Rfc2898DeriveBytes(password As String, salt As Byte(), iterationCount As UInt64, keySize As Integer, hash As HashStrength) As Byte()
     Dim Win7Plus As Boolean = True
@@ -20,7 +17,6 @@
     If Win7Plus Then Return Rfc2898APIDeriveBytes(password, salt, iterationCount, keySize, hash)
     Return Rfc2898ManagedDeriveBytes(password, salt, iterationCount, keySize, hash)
   End Function
-
   Private Shared Function Rfc2898APIDeriveBytes(password As String, salt As Byte(), iterationCount As UInt64, keySize As Integer, hash As HashStrength) As Byte()
     Dim hAlg As New IntPtr
     Dim sHash As String = "SHA1"
@@ -32,26 +28,20 @@
     End Select
     Dim hResult As Integer = BCryptOpenAlgorithmProvider(hAlg, Runtime.InteropServices.Marshal.StringToCoTaskMemUni(sHash), Runtime.InteropServices.Marshal.StringToCoTaskMemUni("Microsoft Primitive Provider"), 8)
     If Not hResult = 0 Then Return New Byte(-1) {}
-
     Dim hSalt = Runtime.InteropServices.GCHandle.Alloc(salt, Runtime.InteropServices.GCHandleType.Pinned)
-
     Dim bPass() As Byte = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(password)
     Dim hPass = Runtime.InteropServices.GCHandle.Alloc(bPass, Runtime.InteropServices.GCHandleType.Pinned)
     Dim bDerivedKey(keySize - 1) As Byte
     Dim hDerived = Runtime.InteropServices.GCHandle.Alloc(bDerivedKey, Runtime.InteropServices.GCHandleType.Pinned)
-
     Dim retSize As UInteger = keySize
     hResult = BCryptDeriveKeyPBKDF2(hAlg, hPass.AddrOfPinnedObject, bPass.Length, hSalt.AddrOfPinnedObject, salt.Length, iterationCount, hDerived.AddrOfPinnedObject, retSize, 0)
     If Not hResult = 0 Then Return New Byte(-1) {}
-
     hSalt.Free()
     hPass.Free()
     hDerived.Free()
-
     BCryptCloseAlgorithmProvider(hAlg, 0)
     Return bDerivedKey
   End Function
-
   Private Shared Function Rfc2898ManagedDeriveBytes(password As String, salt As Byte(), iterationCount As UInt64, keySize As Integer, hash As HashStrength) As Byte()
     Dim bPass() As Byte = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(password)
     Dim hClass As Type
@@ -101,7 +91,6 @@
     End Using
   End Function
 #End Region
-
 #Region "Iterative Time"
   Public Shared ReadOnly Property BestIterationFor(hash As PBKDF2.HashStrength) As UInt64
     Get
@@ -109,7 +98,6 @@
       Return mBestIter(hash - 1)
     End Get
   End Property
-
   Private Shared Function GetBestIterationFor(hash As PBKDF2.HashStrength) As UInt64
     Dim Win7Plus As Boolean = True
     If Environment.OSVersion.Version.Major < 6 Then Win7Plus = False

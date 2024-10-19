@@ -6,7 +6,6 @@
     Private c_imageReader As Reader.QRCodeImageReader
     Private c_numLastCorrections As Integer
     Private c_correctionSucceeded As Boolean
-
     Friend Overridable ReadOnly Property AdjustPoints As Geom.Point()
       Get
         Dim aPoints As ArrayList = ArrayList.Synchronized(New ArrayList(10))
@@ -30,54 +29,45 @@
         Return adjusts
       End Get
     End Property
-
     Friend Class DecodeResult
       Private c_numCorrections As Integer
       Private c_correctionSucceeded As Boolean
       Private c_decodedBytes As SByte()
       Private enclosingInstance As QRCodeDecoder
-
       Public Sub New(ByVal enclosingInstance As QRCodeDecoder, ByVal decodedBytes As SByte(), ByVal numErrors As Integer, ByVal correctionSucceeded As Boolean)
         InitBlock(enclosingInstance)
         c_decodedBytes = decodedBytes
         c_numCorrections = numErrors
         c_correctionSucceeded = correctionSucceeded
       End Sub
-
       Private Sub InitBlock(ByVal enclosingInstance As QRCodeDecoder)
         Me.enclosingInstance = enclosingInstance
       End Sub
-
       Public Overridable ReadOnly Property DecodedBytes As SByte()
         Get
           Return c_decodedBytes
         End Get
       End Property
-
       Public Overridable ReadOnly Property NumErrors As Integer
         Get
           Return c_numCorrections
         End Get
       End Property
-
       Public Overridable ReadOnly Property CorrectionSucceeded As Boolean
         Get
           Return c_correctionSucceeded
         End Get
       End Property
-
       Public ReadOnly Property Enclosing_Instance As QRCodeDecoder
         Get
           Return enclosingInstance
         End Get
       End Property
     End Class
-
     Public Sub New()
       c_numTryDecode = 0
       c_results = ArrayList.Synchronized(New ArrayList(10))
     End Sub
-
     Public Overridable Function decodeBytes(ByVal qrCodeImage As Data.IQRCodeImage) As SByte()
       Dim adjusts As Geom.Point() = AdjustPoints
       Dim results As ArrayList = ArrayList.Synchronized(New ArrayList(10))
@@ -107,7 +97,6 @@
       Next
       Return (CType(results(lowestErrorIndex), DecodeResult)).DecodedBytes
     End Function
-
     Public Overridable Function decode(ByVal qrCodeImage As Data.IQRCodeImage, ByVal encoding As System.Text.Encoding) As String
       Dim data As SByte() = decodeBytes(qrCodeImage)
       Dim byteData As Byte() = New Byte(data.Length - 1) {}
@@ -116,12 +105,10 @@
       decodedData = encoding.GetString(byteData)
       Return decodedData
     End Function
-
     Public Overridable Function decode(ByVal qrCodeImage As Image) As String
       Dim iScr As New Data.QRCodeBitmapImage(qrCodeImage)
       Return decode(iScr)
     End Function
-
     Public Overridable Function decode(ByVal qrCodeImage As Data.IQRCodeImage) As String
       Dim data As SByte() = decodeBytes(qrCodeImage)
       Dim byteData As Byte() = New Byte(data.Length - 1) {}
@@ -136,7 +123,6 @@
       decodedData = encoding.GetString(byteData)
       Return decodedData
     End Function
-
     Friend Overridable Function decode(ByVal qrCodeImage As Data.IQRCodeImage, ByVal adjust As Geom.Point) As DecodeResult
       Try
         If c_numTryDecode = 0 Then
@@ -158,7 +144,6 @@
         Throw New ExceptionHandler.DecodingFailedException(e.Message)
       End Try
     End Function
-
     Friend Overridable Function imageToIntArray(ByVal image As Data.IQRCodeImage) As Integer()()
       Dim width As Integer = image.Width
       Dim height As Integer = image.Height
@@ -173,7 +158,6 @@
       Next
       Return intImage
     End Function
-
     Friend Overridable Function correctDataBlocks(ByVal blocks As Integer()) As Integer()
       Dim numCorrections As Integer = 0
       Dim dataCapacity As Integer = c_qrCodeSymbol.DataCapacity
@@ -266,7 +250,6 @@
         Return dataBlocks
       End If
     End Function
-
     Friend Overridable Function getDecodedByteArray(ByVal blocks As Integer(), ByVal version As Integer, ByVal numErrorCorrectionCode As Integer) As SByte()
       Dim byteArray As SByte()
       Dim reader As New Reader.QRCodeDataBlockReader(blocks, version, numErrorCorrectionCode)
@@ -277,7 +260,6 @@
       End Try
       Return byteArray
     End Function
-
     Friend Overridable Function getDecodedString(ByVal blocks As Integer(), ByVal version As Integer, ByVal numErrorCorrectionCode As Integer) As String
       Dim dataString As String = Nothing
       Dim reader As New Reader.QRCodeDataBlockReader(blocks, version, numErrorCorrectionCode)

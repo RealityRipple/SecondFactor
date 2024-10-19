@@ -1,6 +1,5 @@
 ﻿Public Class frmMain
   Private priorSlice As UInt32
-
   Private Sub tmrAuthVals_Tick(sender As Object, e As EventArgs) Handles tmrAuthVals.Tick
     Dim iPeriod As UInt16 = 30
     If cmbProfile.Items.Count > 0 Then iPeriod = cSettings.ProfilePeriod(cmbProfile.SelectedItem)
@@ -21,7 +20,6 @@
       LoadProfileData(Nothing)
     End If
   End Sub
-
   Private Sub frmMain_Shown(sender As Object, e As EventArgs) Handles Me.Shown
     UpdateProfileListing()
     Dim selProfile As String = cSettings.LastSelectedProfileName
@@ -40,7 +38,6 @@
       End If
     End If
   End Sub
-
 #Region "App Menu"
   Protected Overrides Sub OnHandleCreated(e As System.EventArgs)
     MyBase.OnHandleCreated(e)
@@ -52,10 +49,8 @@
       NativeMethods.InsertMenu(hSysMenu, 0, NativeMethods.MenuFlags.MF_STRING Or uChecked Or NativeMethods.MenuFlags.MF_BYPOSITION, TOPMOST_MENU_ID, TOPMOST_MENU_TEXT)
       NativeMethods.InsertMenu(hSysMenu, 1, NativeMethods.MenuFlags.MF_SEPARATOR Or NativeMethods.MenuFlags.MF_BYPOSITION, 0, String.Empty)
     Catch ex As Exception
-
     End Try
   End Sub
-
   Protected Overrides Sub WndProc(ByRef m As Message)
     MyBase.WndProc(m)
     If Not m.Msg = NativeMethods.WM_SYSCOMMAND Then Return
@@ -68,7 +63,6 @@
     NativeMethods.ModifyMenu(hSysMenu, TOPMOST_MENU_ID, NativeMethods.MenuFlags.MF_STRING Or uChecked, TOPMOST_MENU_ID, TOPMOST_MENU_TEXT)
   End Sub
 #End Region
-
   Private Function GetCode(secret As String, size As Integer, algo As cSettings.HashAlg, period As UInt16, timeOffset As Int16) As String
     If String.IsNullOrEmpty(secret) Then Return StrDup(size, "0")
     Dim timeSlice As UInt32 = Math.Floor(DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) / period) + timeOffset
@@ -99,12 +93,10 @@
     Dim ret As String = (value Mod modulo)
     Return StrDup(size - ret.Length, "0") & ret
   End Function
-
   Private Sub cmdProfiles_Click(sender As Object, e As EventArgs) Handles cmdProfiles.Click
     frmProfiles.ShowDialog(Me)
     UpdateProfileListing()
   End Sub
-
   Private Sub UpdateProfileListing()
     Dim selText As String = Nothing
     If cmbProfile.SelectedIndex > -1 Then selText = cmbProfile.SelectedItem
@@ -129,7 +121,6 @@
       'LoadProfileData(cmbProfile.SelectedItem)
     End If
   End Sub
-
   Private Sub LoadProfileData(ProfileName As String)
     Dim codeW As Integer
     If String.IsNullOrEmpty(ProfileName) OrElse Not cSettings.GetProfileNames.Contains(ProfileName) Then
@@ -194,56 +185,45 @@
     txtCode.SelectAll()
     If priorSlice > 0 Then cSettings.LastSelectedProfileName = ProfileName
   End Sub
-
   Private Sub cmbProfile_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbProfile.SelectedIndexChanged
     If cSettings.Count > 0 Then LoadProfileData(cmbProfile.SelectedItem)
   End Sub
-
   Private Sub txtCodePast_MouseDown(sender As Object, e As MouseEventArgs) Handles txtCodePast.MouseDown
     txtCodePast.SelectAll()
   End Sub
-
   Private Sub txtCodePast_MouseUp(sender As Object, e As MouseEventArgs) Handles txtCodePast.MouseUp
     txtCodePast.SelectAll()
     If (e.Button And MouseButtons.Left) = MouseButtons.Left Then
       Try
         Clipboard.SetText(txtCodePast.Text.Replace(" ", ""), TextDataFormat.Text)
       Catch ex As Exception
-
       End Try
     End If
   End Sub
-
   Private Sub txtCode_MouseDown(sender As Object, e As MouseEventArgs) Handles txtCode.MouseDown
     txtCode.SelectAll()
   End Sub
-
   Private Sub txtCode_MouseUp(sender As Object, e As MouseEventArgs) Handles txtCode.MouseUp
     txtCode.SelectAll()
     If (e.Button And MouseButtons.Left) = MouseButtons.Left Then
       Try
         Clipboard.SetText(txtCode.Text.Replace(" ", ""), TextDataFormat.Text)
       Catch ex As Exception
-
       End Try
     End If
   End Sub
-
   Private Sub txtCodeFuture_MouseDown(sender As Object, e As MouseEventArgs) Handles txtCodeFuture.MouseDown
     txtCodeFuture.SelectAll()
   End Sub
-
   Private Sub txtCodeFuture_MouseUp(sender As Object, e As MouseEventArgs) Handles txtCodeFuture.MouseUp
     txtCodeFuture.SelectAll()
     If (e.Button And MouseButtons.Left) = MouseButtons.Left Then
       Try
         Clipboard.SetText(txtCodeFuture.Text.Replace(" ", ""), TextDataFormat.Text)
       Catch ex As Exception
-
       End Try
     End If
   End Sub
-
   Private Sub cmdQR_Click(sender As Object, e As EventArgs) Handles cmdQR.Click
     cmdQR.Enabled = False
     Me.Opacity = 0
@@ -257,7 +237,6 @@
     End Using
     cmdQR.Enabled = True
   End Sub
-
   Friend Sub ParseOTPURL(sURL As String, fromQR As Boolean)
     If String.IsNullOrEmpty(sURL) Then
       If fromQR Then

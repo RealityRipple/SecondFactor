@@ -1,6 +1,5 @@
 ﻿Imports System.Runtime.InteropServices
 Imports System.Security.Cryptography.X509Certificates
-
 Public Class Authenticode
   <DllImport("wintrust", PreserveSig:=True, SetLastError:=True)>
   Private Shared Function WinVerifyTrust(hWnd As IntPtr, pgActionID As IntPtr, pWinTrustData As IntPtr) As UInt32

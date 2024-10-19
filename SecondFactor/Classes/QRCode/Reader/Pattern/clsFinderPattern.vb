@@ -9,43 +9,33 @@
     Private c_sincos As Integer()
     Private c_width As Integer()
     Private c_moduleSize As Integer()
-
     Public Overridable ReadOnly Property Version As Integer
       Get
         Return c_version
       End Get
     End Property
-
     Public Shared Function findFinderPattern(ByVal image As Boolean()()) As FinderPattern
       Dim lineAcross As Geom.Line() = findLineAcross(image)
       Dim lineCross As Geom.Line() = findLineCross(lineAcross)
       Dim center As Geom.Point() = Nothing
-
       Try
         center = getCenter(lineCross)
       Catch e As ExceptionHandler.FinderPatternNotFoundException
         Throw e
       End Try
-
       Dim sincos As Integer() = getAngle(center)
       center = sort(center, sincos)
       Dim width As Integer() = getWidth(image, center, sincos)
-
       Dim moduleSize As Integer() = New Integer() {Math.Floor((width(UL) << QRCodeImageReader.DECIMAL_POINT) / 7), Math.Floor((width(UR) << QRCodeImageReader.DECIMAL_POINT) / 7), Math.Floor((width(DL) << QRCodeImageReader.DECIMAL_POINT) / 7)}
-
       Dim version As Integer = calcRoughVersion(center, width)
-
       If version > 6 Then
-
         Try
           version = calcExactVersion(center, sincos, moduleSize, image)
         Catch e As ExceptionHandler.VersionInformationException
         End Try
       End If
-
       Return New FinderPattern(center, version, sincos, width, moduleSize)
     End Function
-
     Friend Sub New(ByVal center As Geom.Point(), ByVal version As Integer, ByVal sincos As Integer(), ByVal width As Integer(), ByVal moduleSize As Integer())
       c_center = center
       c_version = version
@@ -53,11 +43,9 @@
       c_width = width
       c_moduleSize = moduleSize
     End Sub
-
     Public Overridable Function getCenter() As Geom.Point()
       Return c_center
     End Function
-
     Public Overridable Function getCenter(ByVal position As Integer) As Geom.Point
       If position >= UL AndAlso position <= DL Then
         Return c_center(position)
@@ -65,23 +53,18 @@
         Return Nothing
       End If
     End Function
-
     Public Overridable Function getWidth(ByVal position As Integer) As Integer
       Return c_width(position)
     End Function
-
     Public Overridable Function getAngle() As Integer()
       Return c_sincos
     End Function
-
     Public Overridable Function getModuleSize() As Integer
       Return c_moduleSize(UL)
     End Function
-
     Public Overridable Function getModuleSize(ByVal place As Integer) As Integer
       Return c_moduleSize(place)
     End Function
-
     Friend Shared Function findLineAcross(ByVal image As Boolean()()) As Geom.Line()
       Dim READ_HORIZONTAL As Integer = 0
       Dim READ_VERTICAL As Integer = 1
@@ -153,7 +136,6 @@
       Next
       Return foundLines
     End Function
-
     Friend Shared Function checkPattern(ByVal buffer As Integer(), ByVal pointer As Integer) As Boolean
       Dim modelRatio As Integer() = New Integer() {1, 1, 3, 1, 1}
       Dim baselength As Integer = 0
@@ -170,7 +152,6 @@
       Next
       Return True
     End Function
-
     Friend Shared Function findLineCross(ByVal lineAcross As Geom.Line()) As Geom.Line()
       Dim crossLines As ArrayList = ArrayList.Synchronized(New ArrayList(10))
       Dim lineNeighbor As ArrayList = ArrayList.Synchronized(New ArrayList(10))
@@ -237,7 +218,6 @@
       Next
       Return foundLines
     End Function
-
     Friend Shared Function cantNeighbor(ByVal line1 As Geom.Line, ByVal line2 As Geom.Line) As Boolean
       If Geom.Line.isCross(line1, line2) Then Return True
       If line1.Horizontal Then
@@ -254,7 +234,6 @@
         End If
       End If
     End Function
-
     Friend Shared Function getAngle(ByVal centers As Geom.Point()) As Integer()
       Dim additionalLine As Geom.Line() = New Geom.Line(2) {}
       For I As Integer = 0 To additionalLine.Length - 1
@@ -298,7 +277,6 @@
       angle(1) = ((remotePoint.X - originPoint.X) << QRCodeImageReader.DECIMAL_POINT) / r
       Return angle
     End Function
-
     Friend Shared Function getCenter(ByVal crossLines As Geom.Line()) As Geom.Point()
       Dim centers As ArrayList = ArrayList.Synchronized(New ArrayList(10))
       For I As Integer = 0 To crossLines.Length - 1 - 1
@@ -329,7 +307,6 @@
         Throw New ExceptionHandler.FinderPatternNotFoundException("Invalid number of Finder Pattern detected")
       End If
     End Function
-
     Friend Shared Function sort(ByVal centers As Geom.Point(), ByVal angle As Integer()) As Geom.Point()
       Dim sortedCenters As Geom.Point() = New Geom.Point(2) {}
       Dim quadant As Integer = getURQuadant(angle)
@@ -354,7 +331,6 @@
       Next
       Return sortedCenters
     End Function
-
     Friend Shared Function getURQuadant(ByVal angle As Integer()) As Integer
       Dim sin As Integer = angle(0)
       Dim cos As Integer = angle(1)
@@ -369,7 +345,6 @@
       End If
       Return 0
     End Function
-
     Friend Shared Function getPointAtSide(ByVal points As Geom.Point(), ByVal side1 As Integer, ByVal side2 As Integer) As Geom.Point
       Dim sidePoint As New Geom.Point()
       Dim x As Integer = (If((side1 = Geom.Point.RIGHT OrElse side2 = Geom.Point.RIGHT), 0, System.Int32.MaxValue))
@@ -437,7 +412,6 @@
       Next
       Return sidePoint
     End Function
-
     Friend Shared Function getWidth(ByVal image As Boolean()(), ByVal centers As Geom.Point(), ByVal sincos As Integer()) As Integer()
       Dim width As Integer() = New Integer(2) {}
       For I As Integer = 0 To 3 - 1
@@ -467,7 +441,6 @@
       Next
       Return width
     End Function
-
     Friend Shared Function calcRoughVersion(ByVal center As Geom.Point(), ByVal width As Integer()) As Integer
       Dim dp As Integer = QRCodeImageReader.DECIMAL_POINT
       Dim lengthAdditionalLine As Integer = (New Geom.Line(center(UL), center(UR)).Length) << dp
@@ -476,7 +449,6 @@
       If ((lengthAdditionalLine / avarageWidth) - 10) Mod 4 >= 2 Then roughVersion += 1
       Return roughVersion
     End Function
-
     Friend Shared Function calcExactVersion(ByVal centers As Geom.Point(), ByVal angle As Integer(), ByVal moduleSize As Integer(), ByVal image As Boolean()()) As Integer
       Dim versionInformation As Boolean() = New Boolean(17) {}
       Dim points As Geom.Point() = New Geom.Point(17) {}
@@ -511,7 +483,6 @@
       End Try
       Return exactVersion
     End Function
-
     Friend Shared Function checkVersionInfo(ByVal target As Boolean()) As Integer
       Dim versionBase As Integer, errorCount As Integer = 0
       For versionBase = 0 To VersionInfoBit.Length - 1

@@ -1,10 +1,8 @@
 ﻿Public Class frmQR
   Public Sub New()
     mQRCode = Nothing
-
     ' This call is required by the designer.
     InitializeComponent()
-
     ' Add any initialization after the InitializeComponent() call.
     Me.Location = SystemInformation.WorkingArea.Location
     Me.Size = SystemInformation.WorkingArea.Size
@@ -104,11 +102,9 @@
       Me.DialogResult = DialogResult.Yes
     End If
   End Sub
-
   Private Sub frmQR_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
     If e.KeyCode = Keys.Escape Then Me.DialogResult = DialogResult.No
   End Sub
-
   Private Function TakeScreenShot() As Bitmap
     Dim screenSize As Size = New Size(SystemInformation.WorkingArea.Width, SystemInformation.WorkingArea.Height)
     Dim screenGrab As New Bitmap(screenSize.Width, screenSize.Height)

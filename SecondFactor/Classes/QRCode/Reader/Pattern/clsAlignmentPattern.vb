@@ -7,18 +7,15 @@ Namespace QRCode.Decoder.Reader.Pattern
     Private Const TOP As Integer = 4
     Private c_center As Geom.Point()()
     Private c_patternDistance As Integer
-
     Public Overridable ReadOnly Property LogicalDistance As Integer
       Get
         Return c_patternDistance
       End Get
     End Property
-
     Friend Sub New(ByVal center As Geom.Point()(), ByVal patternDistance As Integer)
       c_center = center
       c_patternDistance = patternDistance
     End Sub
-
     Public Shared Function findAlignmentPattern(ByVal image As Boolean()(), ByVal finderPattern As FinderPattern) As AlignmentPattern
       Dim logicalCenters As Geom.Point()() = getLogicalCenter(finderPattern)
       Dim logicalDistance As Integer = logicalCenters(1)(0).X - logicalCenters(0)(0).X
@@ -26,15 +23,12 @@ Namespace QRCode.Decoder.Reader.Pattern
       centers = getCenter(image, finderPattern, logicalCenters)
       Return New AlignmentPattern(centers, logicalDistance)
     End Function
-
     Public Overridable Function getCenter() As Geom.Point()()
       Return c_center
     End Function
-
     Public Overridable Sub setCenter(ByVal center As Geom.Point()())
       c_center = center
     End Sub
-
     Friend Shared Function getCenter(ByVal image As Boolean()(), ByVal finderPattern As FinderPattern, ByVal logicalCenters As Geom.Point()()) As Geom.Point()()
       Dim moduleSize As Integer = finderPattern.getModuleSize()
       Dim axis As New Geom.Axis(finderPattern.getAngle(), moduleSize)
@@ -84,7 +78,6 @@ Namespace QRCode.Decoder.Reader.Pattern
       Next
       Return centers
     End Function
-
     Friend Shared Function getPrecisionCenter(ByVal image As Boolean()(), ByVal targetPoint As Geom.Point) As Geom.Point
       Dim tx As Integer = targetPoint.X, ty As Integer = targetPoint.Y
       If (tx < 0 OrElse ty < 0) OrElse (tx > image.Length - 1 OrElse ty > image(0).Length - 1) Then Throw New ExceptionHandler.AlignmentPatternNotFoundException("Alignment Pattern finder exceeded out of image")
@@ -127,7 +120,6 @@ Namespace QRCode.Decoder.Reader.Pattern
       End While
       Return New Geom.Point(Math.Floor((lx + rx + 1) / 2), Math.Floor((uy + dy2 + 1) / 2))
     End Function
-
     Friend Shared Function targetPointOnTheCorner(ByVal image As Boolean()(), ByVal x As Integer, ByVal y As Integer, ByVal nx As Integer, ByVal ny As Integer) As Boolean
       If x < 0 OrElse y < 0 OrElse nx < 0 OrElse ny < 0 OrElse x > image.Length OrElse y > image(0).Length OrElse nx > image.Length OrElse ny > image(0).Length Then
         Throw New ExceptionHandler.AlignmentPatternNotFoundException("Alignment Pattern Finder exceeded image edge")
@@ -135,7 +127,6 @@ Namespace QRCode.Decoder.Reader.Pattern
         Return (image(x)(y) = QRCodeImageReader.POINT_LIGHT AndAlso image(nx)(ny) = QRCodeImageReader.POINT_DARK)
       End If
     End Function
-
     Public Shared Function getLogicalCenter(ByVal finderPattern As FinderPattern) As Geom.Point()()
       Dim version As Integer = finderPattern.Version
       Dim logicalCenters As Geom.Point()() = New Geom.Point(0)() {}

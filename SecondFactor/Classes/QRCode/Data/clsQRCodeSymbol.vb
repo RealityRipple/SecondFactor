@@ -9,55 +9,46 @@
     Private c_alignmentPattern As Geom.Point()()
     Private c_numErrorCollectionCode As Integer()() = New Integer()() {New Integer() {7, 10, 13, 17}, New Integer() {10, 16, 22, 28}, New Integer() {15, 26, 36, 44}, New Integer() {20, 36, 52, 64}, New Integer() {26, 48, 72, 88}, New Integer() {36, 64, 96, 112}, New Integer() {40, 72, 108, 130}, New Integer() {48, 88, 132, 156}, New Integer() {60, 110, 160, 192}, New Integer() {72, 130, 192, 224}, New Integer() {80, 150, 224, 264}, New Integer() {96, 176, 260, 308}, New Integer() {104, 198, 288, 352}, New Integer() {120, 216, 320, 384}, New Integer() {132, 240, 360, 432}, New Integer() {144, 280, 408, 480}, New Integer() {168, 308, 448, 532}, New Integer() {180, 338, 504, 588}, New Integer() {196, 364, 546, 650}, New Integer() {224, 416, 600, 700}, New Integer() {224, 442, 644, 750}, New Integer() {252, 476, 690, 816}, New Integer() {270, 504, 750, 900}, New Integer() {300, 560, 810, 960}, New Integer() {312, 588, 870, 1050}, New Integer() {336, 644, 952, 1110}, New Integer() {360, 700, 1020, 1200}, New Integer() {390, 728, 1050, 1260}, New Integer() {420, 784, 1140, 1350}, New Integer() {450, 812, 1200, 1440}, New Integer() {480, 868, 1290, 1530}, New Integer() {510, 924, 1350, 1620}, New Integer() {540, 980, 1440, 1710}, New Integer() {570, 1036, 1530, 1800}, New Integer() {570, 1064, 1590, 1890}, New Integer() {600, 1120, 1680, 1980}, New Integer() {630, 1204, 1770, 2100}, New Integer() {660, 1260, 1860, 2220}, New Integer() {720, 1316, 1950, 2310}, New Integer() {750, 1372, 2040, 2430}}
     Private c_numRSBlocks As Integer()() = New Integer()() {New Integer() {1, 1, 1, 1}, New Integer() {1, 1, 1, 1}, New Integer() {1, 1, 2, 2}, New Integer() {1, 2, 2, 4}, New Integer() {1, 2, 4, 4}, New Integer() {2, 4, 4, 4}, New Integer() {2, 4, 6, 5}, New Integer() {2, 4, 6, 6}, New Integer() {2, 5, 8, 8}, New Integer() {4, 5, 8, 8}, New Integer() {4, 5, 8, 11}, New Integer() {4, 8, 10, 11}, New Integer() {4, 9, 12, 16}, New Integer() {4, 9, 16, 16}, New Integer() {6, 10, 12, 18}, New Integer() {6, 10, 17, 16}, New Integer() {6, 11, 16, 19}, New Integer() {6, 13, 18, 21}, New Integer() {7, 14, 21, 25}, New Integer() {8, 16, 20, 25}, New Integer() {8, 17, 23, 25}, New Integer() {9, 17, 23, 34}, New Integer() {9, 18, 25, 30}, New Integer() {10, 20, 27, 32}, New Integer() {12, 21, 29, 35}, New Integer() {12, 23, 34, 37}, New Integer() {12, 25, 34, 40}, New Integer() {13, 26, 35, 42}, New Integer() {14, 28, 38, 45}, New Integer() {15, 29, 40, 48}, New Integer() {16, 31, 43, 51}, New Integer() {17, 33, 45, 54}, New Integer() {18, 35, 48, 57}, New Integer() {19, 37, 51, 60}, New Integer() {19, 38, 53, 63}, New Integer() {20, 40, 56, 66}, New Integer() {21, 43, 59, 70}, New Integer() {22, 45, 62, 74}, New Integer() {24, 47, 65, 77}, New Integer() {25, 49, 68, 81}}
-
     Public Overridable ReadOnly Property NumErrorCollectionCode As Integer
       Get
         Return c_numErrorCollectionCode(c_version - 1)(c_errorCollectionLevel)
       End Get
     End Property
-
     Public Overridable ReadOnly Property NumRSBlocks As Integer
       Get
         Return c_numRSBlocks(c_version - 1)(c_errorCollectionLevel)
       End Get
     End Property
-
     Public Overridable ReadOnly Property Version As Integer
       Get
         Return c_version
       End Get
     End Property
-
     Public Overridable ReadOnly Property AlignmentPattern As Geom.Point()()
       Get
         Return c_alignmentPattern
       End Get
     End Property
-
     Public Overridable ReadOnly Property DataCapacity As Integer
       Get
         Return c_dataCapacity
       End Get
     End Property
-
     Public Overridable ReadOnly Property MaskPatternReferer As Integer
       Get
         Return c_maskPattern
       End Get
     End Property
-
     Public Overridable ReadOnly Property Width As Integer
       Get
         Return c_width
       End Get
     End Property
-
     Public Overridable ReadOnly Property Height As Integer
       Get
         Return c_height
       End Get
     End Property
-
     Public Overridable ReadOnly Property Blocks As Integer()
       Get
         Dim w As Integer = c_width
@@ -127,18 +118,15 @@
         Return gotWords
       End Get
     End Property
-
     Public Overridable Function getElement(ByVal x As Integer, ByVal y As Integer) As Boolean
       Return c_moduleMatrix(x)(y)
     End Function
-
     Public Sub New(ByVal moduleMatrix As Boolean()())
       c_moduleMatrix = moduleMatrix
       c_width = moduleMatrix.Length
       c_height = moduleMatrix(0).Length
       initialize()
     End Sub
-
     Friend Overridable Sub initialize()
       c_version = Math.Floor((c_width - 17) / 4)
       Dim alignmentPattern As Geom.Point()() = New Geom.Point(0)() {}
@@ -165,7 +153,6 @@
       decodeFormatInformation(formatInformation)
       unmask()
     End Sub
-
     Friend Overridable Function readFormatInformation() As Boolean()
       Dim modules As Boolean() = New Boolean(14) {}
       For i As Integer = 0 To 5
@@ -199,7 +186,6 @@
       Next
       Return formatInformation
     End Function
-
     Friend Overridable Sub unmask()
       Dim maskPattern As Boolean()() = generateMaskPattern()
       Dim size As Integer = c_width
@@ -211,7 +197,6 @@
         Next
       Next
     End Sub
-
     Friend Overridable Function generateMaskPattern() As Boolean()()
       Dim maskPatternReferer As Integer = c_maskPattern
       Dim w As Integer = c_width
@@ -245,7 +230,6 @@
       Next
       Return maskPattern
     End Function
-
     Private Function calcDataCapacity() As Integer
       Dim numFunctionPatternModule As Integer = 0
       Dim numFormatAndVersionInfoModule As Integer = 0
@@ -261,7 +245,6 @@
       Dim dataCapacity As Integer = Math.Floor((c_width * c_width - numFunctionPatternModule - numFormatAndVersionInfoModule) / 8)
       Return dataCapacity
     End Function
-
     Friend Overridable Sub decodeFormatInformation(ByVal formatInformation As Boolean())
       If formatInformation(4) = False Then
         If formatInformation(3) = True Then
@@ -278,11 +261,9 @@
         If formatInformation(I) Then c_maskPattern += (1 << I)
       Next
     End Sub
-
     Public Overridable Sub reverseElement(ByVal x As Integer, ByVal y As Integer)
       c_moduleMatrix(x)(y) = Not c_moduleMatrix(x)(y)
     End Sub
-
     Public Overridable Function isInFunctionPattern(ByVal targetX As Integer, ByVal targetY As Integer) As Boolean
       If targetX < 9 AndAlso targetY < 9 Then Return True
       If targetX > c_width - 9 AndAlso targetY < 9 Then Return True
