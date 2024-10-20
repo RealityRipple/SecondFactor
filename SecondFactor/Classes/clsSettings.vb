@@ -31,16 +31,16 @@
     Get
       If Not RegistryPath.GetValueNames.Contains("A") Then Return False
       If Not RegistryPath.GetValueKind("A") = Microsoft.Win32.RegistryValueKind.Binary Then Return False
-      Dim decrypTest() As Byte = RegistryPath.GetValue("A", Nothing)
+      Dim decrypTest As Byte() = RegistryPath.GetValue("A", Nothing)
       If decrypTest Is Nothing OrElse decrypTest.Length = 0 Then Return False
       If decrypTest.Length = 32 Then Return False
       Return True
     End Get
   End Property
   Private Shared Function LegacyLogin(pass As String) As Boolean
-    Dim bPass() As Byte = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(pass)
+    Dim bPass As Byte() = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(pass)
     Dim sha256 As New Security.Cryptography.SHA256CryptoServiceProvider()
-    Dim bHash() As Byte
+    Dim bHash As Byte()
     Do
       bHash = sha256.ComputeHash(bPass, 0, bPass.Length)
       If (bHash.First > &H1F And bHash.First < &H30) And (bHash.Last Mod 16 = 2) Then Exit Do
@@ -58,7 +58,7 @@
       Return False
     End If
     If Not RegistryPath.GetValueKind("C") = Microsoft.Win32.RegistryValueKind.Binary Then Return False
-    Dim c() As Byte = RegistryPath.GetValue("C", Nothing)
+    Dim c As Byte() = RegistryPath.GetValue("C", Nothing)
     If c Is Nothing OrElse Not c.Length = 24 Then Return False
     Dim salt(15) As Byte
     Array.ConstrainedCopy(c, 0, salt, 0, 16)
@@ -68,7 +68,7 @@
   End Function
   Public Shared Function ChangePassword(newPass As String) As Boolean
     If RequiresLogin AndAlso Not LoggedIn Then Return False
-    Dim sProfiles() As String = GetProfileNames
+    Dim sProfiles As String() = GetProfileNames
     Dim sProfSel As String = LastSelectedProfileName
     Dim profData As New Dictionary(Of String, String())
     For Each sProfile As String In sProfiles
@@ -81,13 +81,13 @@
     If String.IsNullOrEmpty(newPass) Then
       hAES.GenerateKey()
       hAES.GenerateIV()
-      Dim bKey() As Byte = hAES.Key
-      Dim bIV() As Byte = hAES.IV
+      Dim bKey As Byte() = hAES.Key
+      Dim bIV As Byte() = hAES.IV
       RegistryPath(True).SetValue("A", bKey, Microsoft.Win32.RegistryValueKind.Binary)
       RegistryPath(True).SetValue("B", bIV, Microsoft.Win32.RegistryValueKind.Binary)
       RegistryPath(True).DeleteValue("C", False)
     Else
-      Dim bPass() As Byte = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(newPass)
+      Dim bPass As Byte() = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(newPass)
       hAES.GenerateIV()
       Dim bSalt(15) As Byte
       Using hRnd As New Security.Cryptography.RNGCryptoServiceProvider
@@ -97,10 +97,10 @@
       passkey = PBKDF2.Rfc2898DeriveBytes(newPass, bSalt, iterations, 32, PBKDF2.HashStrength.SHA512)
       Dim bPBKDFParams(23) As Byte
       Array.ConstrainedCopy(bSalt, 0, bPBKDFParams, 0, 16)
-      Dim bIter() As Byte = BitConverter.GetBytes(iterations)
+      Dim bIter As Byte() = BitConverter.GetBytes(iterations)
       Array.ConstrainedCopy(bIter, 0, bPBKDFParams, 16, 8)
       RegistryPath(True).SetValue("C", bPBKDFParams, Microsoft.Win32.RegistryValueKind.Binary)
-      Dim bIV() As Byte = hAES.IV
+      Dim bIV As Byte() = hAES.IV
       RegistryPath(True).SetValue("B", bIV, Microsoft.Win32.RegistryValueKind.Binary)
       RegistryPath(True).SetValue("A", EncrypText(Application.ProductName, True), Microsoft.Win32.RegistryValueKind.Binary)
     End If
@@ -116,7 +116,7 @@
   Public Shared ReadOnly Property LoggedIn As Boolean
     Get
       If passkey Is Nothing OrElse passkey.Length = 0 Then Return False
-      Dim decrypTest() As Byte = RegistryPath.GetValue("A", Nothing)
+      Dim decrypTest As Byte() = RegistryPath.GetValue("A", Nothing)
       If decrypTest Is Nothing OrElse decrypTest.Length = 0 Then Return False
       Dim outTest As String = DecrypText(decrypTest, True)
       Return outTest = Application.ProductName

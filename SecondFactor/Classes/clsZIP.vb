@@ -141,14 +141,14 @@
     Dim bFile As New List(Of Byte)
     bFile.AddRange(iAESKey.Salt)
     bFile.AddRange(BitConverter.GetBytes(CUShort(iAESKey.PassVerifier)))
-    Dim bEnc() As Byte = AESCTR(zFile.Data, iAESKey.Key)
+    Dim bEnc As Byte() = AESCTR(zFile.Data, iAESKey.Key)
     bFile.AddRange(bEnc)
     If Not (Hash = PBKDF2.HashStrength.SHA1 And Iterations = 1000) Then
       bFile.Add(Hash)
       bFile.AddRange(BitConverter.GetBytes(Iterations))
     End If
     Dim hmacsha1 = New Security.Cryptography.HMACSHA1(iAESKey.AuthKey, True)
-    Dim bAuth() As Byte = hmacsha1.ComputeHash(bEnc)
+    Dim bAuth As Byte() = hmacsha1.ComputeHash(bEnc)
     ReDim Preserve bAuth(9)
     bFile.AddRange(bAuth)
     Return bFile.ToArray()
@@ -407,7 +407,7 @@
     Dim bAuthMAC(9) As Byte
     Array.ConstrainedCopy(bEncrypted, iSaltLen + 2 + TrueDataLength + iPBKLen, bAuthMAC, 0, 10)
     Dim hmacsha1 = New Security.Cryptography.HMACSHA1(iAESKey.AuthKey, True)
-    Dim bAuthCompare() As Byte = hmacsha1.ComputeHash(bEnc)
+    Dim bAuthCompare As Byte() = hmacsha1.ComputeHash(bEnc)
     For I As Integer = 0 To 9
       If Not bAuthMAC(I) = bAuthCompare(I) Then Return New AESFileData With {.Problem = 2}
     Next
@@ -445,7 +445,7 @@
     ret.PassVerifier = BitConverter.ToUInt16(passVerifier, 0)
     Return ret
   End Function
-  Private Shared Function AESCTR(bData() As Byte, bKey() As Byte) As Byte()
+  Private Shared Function AESCTR(bData As Byte(), bKey As Byte()) As Byte()
     Dim hAES As New Security.Cryptography.AesManaged()
     hAES.Padding = Security.Cryptography.PaddingMode.None
     hAES.Mode = Security.Cryptography.CipherMode.ECB

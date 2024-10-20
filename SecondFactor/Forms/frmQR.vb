@@ -37,7 +37,7 @@
     Dim sQR As String = Nothing
     Try
       Dim sScreen As Screen = Screen.FromPoint(e.Location)
-      Dim iSizes() As Integer = {200, 350, 500, 650, 800}
+      Dim iSizes As Integer() = {200, 350, 500, 650, 800}
       For I As Integer = 0 To iSizes.Length - 1
         Dim sz As Integer = iSizes(I)
         Dim newX As Integer = e.X - (sz / 2)

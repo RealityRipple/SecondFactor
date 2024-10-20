@@ -68,7 +68,7 @@
     Dim timeSlice As UInt32 = Math.Floor(DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) / period) + timeOffset
     Dim secretKey As Byte() = Base32.ToByteArray(secret.ToUpper)
     Dim btime(7) As Byte
-    Dim bSlice() As Byte = BitConverter.GetBytes(timeSlice)
+    Dim bSlice As Byte() = BitConverter.GetBytes(timeSlice)
     For I As Integer = 0 To 3
       btime(4 + I) = bSlice(3 - I)
     Next
@@ -298,7 +298,7 @@
       Return
     End If
     If sQuery.StartsWith("?") Then sQuery = sQuery.Substring(1)
-    Dim sSegments() As String = Split(sQuery, "&")
+    Dim sSegments As String() = Split(sQuery, "&")
     For Each sSegment As String In sSegments
       If Not sSegment.Contains("=") Then Continue For
       Dim sKey As String = sSegment.Substring(0, sSegment.IndexOf("=")).ToLower
@@ -343,7 +343,7 @@
       Return
     End If
     Dim trueName As String = sName
-    Dim sProfiles() As String = cSettings.GetProfileNames
+    Dim sProfiles As String() = cSettings.GetProfileNames
     Dim idx As Integer = 2
     Do
       Dim foundMatch As Boolean = False

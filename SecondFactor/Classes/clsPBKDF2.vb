@@ -29,7 +29,7 @@
     Dim hResult As Integer = BCryptOpenAlgorithmProvider(hAlg, Runtime.InteropServices.Marshal.StringToCoTaskMemUni(sHash), Runtime.InteropServices.Marshal.StringToCoTaskMemUni("Microsoft Primitive Provider"), 8)
     If Not hResult = 0 Then Return New Byte(-1) {}
     Dim hSalt = Runtime.InteropServices.GCHandle.Alloc(salt, Runtime.InteropServices.GCHandleType.Pinned)
-    Dim bPass() As Byte = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(password)
+    Dim bPass As Byte() = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(password)
     Dim hPass = Runtime.InteropServices.GCHandle.Alloc(bPass, Runtime.InteropServices.GCHandleType.Pinned)
     Dim bDerivedKey(keySize - 1) As Byte
     Dim hDerived = Runtime.InteropServices.GCHandle.Alloc(bDerivedKey, Runtime.InteropServices.GCHandleType.Pinned)
@@ -43,7 +43,7 @@
     Return bDerivedKey
   End Function
   Private Shared Function Rfc2898ManagedDeriveBytes(password As String, salt As Byte(), iterationCount As UInt64, keySize As Integer, hash As HashStrength) As Byte()
-    Dim bPass() As Byte = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(password)
+    Dim bPass As Byte() = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(password)
     Dim hClass As Type
     Select Case hash
       Case HashStrength.SHA256 : hClass = GetType(Security.Cryptography.HMACSHA256)
