@@ -128,7 +128,7 @@
       bSave = zExport.Encrypt(sPassword, , , , Me)
     End If
     My.Computer.FileSystem.WriteAllBytes(sPath, bSave, False)
-    MsgBox("Your Backup has been saved to """ & sPath & """. Please keep this backup safe!", MsgBoxStyle.Information, "Backup Completed")
+    MsgBox("Your Backup has been saved to """ & sPath & """. Please keep this backup safe!", MsgBoxStyle.Information, Application.ProductName)
     cmdExport.Enabled = True
     Me.Cursor = Me.DefaultCursor
   End Sub
@@ -263,9 +263,9 @@
         End If
       Next
       If bFound Then
-        If MsgBox("Are you sure you want to import the """ & sName & """ profile?" & vbNewLine & "The existing profile with the same name will be overwritten.", MsgBoxStyle.Question Or MsgBoxStyle.YesNo, "Import Profile?") = MsgBoxResult.No Then Return
+        If MsgBox("Are you sure you want to import the """ & sName & """ profile?" & vbNewLine & "The existing profile with the same name will be overwritten.", MsgBoxStyle.Question Or MsgBoxStyle.YesNo, Application.ProductName) = MsgBoxResult.No Then Return
       Else
-        If MsgBox("Are you sure you want to import the """ & sName & """ profile?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo, "Import Profile?") = MsgBoxResult.No Then Return
+        If MsgBox("Are you sure you want to import the """ & sName & """ profile?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo, Application.ProductName) = MsgBoxResult.No Then Return
       End If
     Else
       Dim sNames As String = ""
@@ -282,9 +282,9 @@
         If bFound Then sNames &= "*"
       Next
       If sNames.Contains("*") Then
-        If MsgBox("Are you sure you want to import the following " & iItems.Count & " profiles?" & vbNewLine & "Any existing profiles with the same names (marked with an asterisk below) will be overwritten." & vbNewLine & sNames, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, "Import Profiles?") = MsgBoxResult.No Then Return
+        If MsgBox("Are you sure you want to import the following " & iItems.Count & " profiles?" & vbNewLine & "Any existing profiles with the same names (marked with an asterisk below) will be overwritten." & vbNewLine & sNames, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, Application.ProductName) = MsgBoxResult.No Then Return
       Else
-        If MsgBox("Are you sure you want to import the following " & iItems.Count & " profiles?" & vbNewLine & sNames, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, "Import Profiles?") = MsgBoxResult.No Then Return
+        If MsgBox("Are you sure you want to import the following " & iItems.Count & " profiles?" & vbNewLine & sNames, MsgBoxStyle.Question Or MsgBoxStyle.YesNo, Application.ProductName) = MsgBoxResult.No Then Return
       End If
     End If
     Dim allOK As Boolean = True
@@ -333,12 +333,12 @@
     Next
     If allOK And didCount = iItems.Count Then
       If didCount = 1 Then
-        MsgBox("Your backup has been restored! One profile has been added.", MsgBoxStyle.Information, "Import Completed")
+        MsgBox("Your backup has been restored! One profile has been added.", MsgBoxStyle.Information, Application.ProductName)
       Else
-        MsgBox("Your backup has been restored! " & didCount & " profiles have been added.", MsgBoxStyle.Information, "Import Completed")
+        MsgBox("Your backup has been restored! " & didCount & " profiles have been added.", MsgBoxStyle.Information, Application.ProductName)
       End If
     Else
-      MsgBox("There was an error saving a profile!", MsgBoxStyle.Critical, "Import Failed")
+      MsgBox("There was an error saving a profile!", MsgBoxStyle.Critical, Application.ProductName)
     End If
   End Sub
 End Class

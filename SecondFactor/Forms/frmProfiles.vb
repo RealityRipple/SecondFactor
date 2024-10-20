@@ -42,14 +42,14 @@
       Return
     End If
     If Not String.IsNullOrEmpty(cSettings.ProfileSecret(cmbProfiles.SelectedItem)) Then
-      If MsgBox("Are you sure you want to remove the " & cmbProfiles.SelectedItem & " profile?" & vbNewLine & "If this profile is still used by a website or service, you may no longer be able to access the associated account." & vbNewLine & "Please be absolutely certain you wish to proceed before clicking ""Yes"".", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton2, "Remove SecondFactor Profile?") = MsgBoxResult.No Then Return
+      If MsgBox("Are you sure you want to remove the " & cmbProfiles.SelectedItem & " profile?" & vbNewLine & "If this profile is still used by a website or service, you may no longer be able to access the associated account." & vbNewLine & "Please be absolutely certain you wish to proceed before clicking ""Yes"".", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton2, Application.ProductName) = MsgBoxResult.No Then Return
     End If
     cSettings.RemoveProfile(cmbProfiles.SelectedItem)
     UpdateProfileListing()
   End Sub
   Private Sub cmdSaveProfile_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdSaveProfile.Click
     If String.IsNullOrEmpty(txtName.Text) Then
-      MsgBox("Please enter a name for this Profile.", MsgBoxStyle.Exclamation)
+      MsgBox("Please enter a name for this Profile.", MsgBoxStyle.Exclamation, Application.ProductName)
       txtName.Focus()
       Return
     End If
@@ -57,19 +57,19 @@
     For I As Integer = 0 To sProfiles.Length - 1
       If cmbProfiles.SelectedItem = sProfiles(I) Then Continue For
       If sProfiles(I).ToLower = txtName.Text.ToLower Then
-        MsgBox("Please enter a unique name for this Profile.", MsgBoxStyle.Exclamation)
+        MsgBox("Please enter a unique name for this Profile.", MsgBoxStyle.Exclamation, Application.ProductName)
         txtName.Focus()
         Return
       End If
     Next
     Dim deSecret As Byte() = txtSecret.Text.ToUpper.ToByteArray()
     If deSecret.Length < 1 Then
-      MsgBox("Invalid secret value. Please double-check your entry.", MsgBoxStyle.Exclamation)
+      MsgBox("Invalid secret value. Please double-check your entry.", MsgBoxStyle.Exclamation, Application.ProductName)
       txtSecret.Focus()
       Return
     End If
     If txtSize.Value = 7 Then
-      MsgBox("Number of digits must be six or eight.", MsgBoxStyle.Exclamation)
+      MsgBox("Number of digits must be six or eight.", MsgBoxStyle.Exclamation, Application.ProductName)
       txtSize.Focus()
       Return
     End If
@@ -95,7 +95,7 @@
     LoadProfileData(cmbProfiles.SelectedItem)
   End Sub
   Private Sub cmdClose_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdClose.Click
-    If cmdSaveProfile.Enabled AndAlso MsgBox("Are you sure you want to close without saving the changes to your Profile?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton2, "Discard Changes?") = MsgBoxResult.No Then Return
+    If cmdSaveProfile.Enabled AndAlso MsgBox("Are you sure you want to close without saving the changes to your Profile?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton2, Application.ProductName) = MsgBoxResult.No Then Return
     Me.Close()
   End Sub
   Friend Sub UpdateProfileListing()
@@ -200,13 +200,13 @@
     End If
     If sDefault = txtName.Text Then
       If cmdSaveProfile.Enabled Then
-        MsgBox("The default name has already been set for this profile. Please save your changes before continuing.", MsgBoxStyle.Information)
+        MsgBox("The default name has already been set for this profile. Please save your changes before continuing.", MsgBoxStyle.Information, Application.ProductName)
       Else
         Beep()
       End If
       Return
     End If
-    If MsgBox("Do you want to reset the name for this profile to its default value of """ & sDefault & """?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton2, "Reset Profile Name?") = MsgBoxResult.Yes Then txtName.Text = sDefault
+    If MsgBox("Do you want to reset the name for this profile to its default value of """ & sDefault & """?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton2, Application.ProductName) = MsgBoxResult.Yes Then txtName.Text = sDefault
   End Sub
   Private Sub txtSecret_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles txtSecret.TextChanged
     SettingsChanged()

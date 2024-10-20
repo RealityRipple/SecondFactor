@@ -47,14 +47,14 @@ Namespace My
             End If
             e.Cancel = True
             If I = 1 Then
-              MsgBox("The password you entered was incorrect." & vbNewLine & "You have 2 attempts remaining.", MsgBoxStyle.Critical)
+              MsgBox("The password you entered was incorrect." & vbNewLine & "You have 2 attempts remaining.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
             ElseIf I = 2 Then
-              MsgBox("The password you entered was incorrect." & vbNewLine & "You have 1 attempt remaining.", MsgBoxStyle.Critical)
+              MsgBox("The password you entered was incorrect." & vbNewLine & "You have 1 attempt remaining.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
             Else
               If Not String.IsNullOrEmpty(sImport) Then
-                MsgBox("The password you entered was incorrect." & vbNewLine & "Failed to import new Authenticator Profile. You must successfully log in before adding a new profile.", MsgBoxStyle.Critical)
+                MsgBox("The password you entered was incorrect." & vbNewLine & "Failed to import new Authenticator Profile. You must successfully log in before adding a new profile.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
               Else
-                MsgBox("The password you entered was incorrect.", MsgBoxStyle.Critical)
+                MsgBox("The password you entered was incorrect.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
               End If
             End If
           End Using
@@ -96,7 +96,7 @@ Namespace My
           e.BringToForeground = True
           frmMain.ParseOTPURL(sImport, False)
         Else
-          MsgBox("Failed to import new Authenticator Profile. You must successfully log in before adding a new profile.", MsgBoxStyle.Critical)
+          MsgBox("Failed to import new Authenticator Profile. You must successfully log in before adding a new profile.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
         End If
       End If
     End Sub

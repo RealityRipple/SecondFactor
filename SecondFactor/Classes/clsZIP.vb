@@ -280,7 +280,7 @@
                 ParentForm.Activate()
               End If
             End If
-            MsgBox("Unable to decrypt this backup. Please double-check your password.", MsgBoxStyle.Critical)
+            MsgBox("Unable to decrypt this backup. Please double-check your password.", MsgBoxStyle.Critical, Application.ProductName)
             Return New ZIP.File(-1) {}
           End If
           If Not zFile.Problem = 0 Then Continue For

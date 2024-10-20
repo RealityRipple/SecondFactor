@@ -240,9 +240,9 @@
   Friend Sub ParseOTPURL(ByVal sURL As String, ByVal fromQR As Boolean)
     If String.IsNullOrEmpty(sURL) Then
       If fromQR Then
-        MsgBox("Unable to find any QR codes on the screen.", MsgBoxStyle.Exclamation)
+        MsgBox("Unable to find any QR codes on the screen.", MsgBoxStyle.Exclamation, Application.ProductName)
       Else
-        MsgBox("The One-Time-Password Auth URL could not be read.", MsgBoxStyle.Exclamation)
+        MsgBox("The One-Time-Password Auth URL could not be read.", MsgBoxStyle.Exclamation, Application.ProductName)
       End If
       Return
     End If
@@ -251,26 +251,26 @@
       uri = New Uri(sURL)
     Catch ex As Exception
       If fromQR Then
-        MsgBox("Found a QR code, but it doesn't contain a valid URL.", MsgBoxStyle.Exclamation)
+        MsgBox("Found a QR code, but it doesn't contain a valid URL.", MsgBoxStyle.Exclamation, Application.ProductName)
       Else
-        MsgBox("The One-Time-Password Auth URL does not appear to be valid.", MsgBoxStyle.Exclamation)
+        MsgBox("The One-Time-Password Auth URL does not appear to be valid.", MsgBoxStyle.Exclamation, Application.ProductName)
       End If
       Return
     End Try
     If Not uri.Scheme.ToLower = "otpauth" Then
       If fromQR Then
-        MsgBox("Found a QR code, but it doesn't contain One-Time-Password Auth information.", MsgBoxStyle.Exclamation)
+        MsgBox("Found a QR code, but it doesn't contain One-Time-Password Auth information.", MsgBoxStyle.Exclamation, Application.ProductName)
       Else
-        MsgBox("The URL does not contain One-Time-Password Auth information.", MsgBoxStyle.Exclamation)
+        MsgBox("The URL does not contain One-Time-Password Auth information.", MsgBoxStyle.Exclamation, Application.ProductName)
       End If
       Return
     End If
     If uri.Host.ToLower = "hotp" Then
-      MsgBox("One-Time-Password Auth QR Code is HMAC-based. Only Time-based authentication is supported at present.", MsgBoxStyle.Exclamation)
+      MsgBox("One-Time-Password Auth QR Code is HMAC-based. Only Time-based authentication is supported at present.", MsgBoxStyle.Exclamation, Application.ProductName)
       Return
     End If
     If Not uri.Host.ToLower = "totp" Then
-      MsgBox("One-Time-Password Auth QR Code is not Time-based. Only Time-based authentication is supported at present.", MsgBoxStyle.Exclamation)
+      MsgBox("One-Time-Password Auth QR Code is not Time-based. Only Time-based authentication is supported at present.", MsgBoxStyle.Exclamation, Application.ProductName)
       Return
     End If
     Dim sName As String = uri.LocalPath
@@ -291,9 +291,9 @@
     Dim sQuery As String = uri.Query
     If String.IsNullOrEmpty(sQuery) Then
       If fromQR Then
-        MsgBox("Unable to read query variables in One-Time-Password Auth QR Code.", MsgBoxStyle.Exclamation)
+        MsgBox("Unable to read query variables in One-Time-Password Auth QR Code.", MsgBoxStyle.Exclamation, Application.ProductName)
       Else
-        MsgBox("Unable to read query variables in One-Time-Password Auth URL.", MsgBoxStyle.Exclamation)
+        MsgBox("Unable to read query variables in One-Time-Password Auth URL.", MsgBoxStyle.Exclamation, Application.ProductName)
       End If
       Return
     End If
@@ -311,19 +311,19 @@
         ElseIf sVal.ToUpper = "SHA512" Then
           sAlg = cSettings.HashAlg.SHA512
         Else
-          MsgBox("This profile uses the " & sVal & " hashing algorithm. SHA1, SHA256, and SHA512 are the only supported algorithms at present.", MsgBoxStyle.Exclamation)
+          MsgBox("This profile uses the " & sVal & " hashing algorithm. SHA1, SHA256, and SHA512 are the only supported algorithms at present.", MsgBoxStyle.Exclamation, Application.ProductName)
           Return
         End If
       ElseIf sKey = "period" Then
         If Not UInt16.TryParse(sVal, iPeriod) Then iPeriod = 30
         If iPeriod < 1 Or iPeriod > 86400 Then
-          MsgBox("This profile uses a " & sVal & " second interval. Intervals must be between 1 and 86400 seconds.", MsgBoxStyle.Exclamation)
+          MsgBox("This profile uses a " & sVal & " second interval. Intervals must be between 1 and 86400 seconds.", MsgBoxStyle.Exclamation, Application.ProductName)
           Return
         End If
       ElseIf sKey = "digits" Then
         If Not Byte.TryParse(sVal, iSize) Then iSize = 6
         If Not (iSize = 6 Or iSize = 8) Then
-          MsgBox("This profile uses " & iSize & " digits. Only six or eight digits are supported at present.", MsgBoxStyle.Exclamation)
+          MsgBox("This profile uses " & iSize & " digits. Only six or eight digits are supported at present.", MsgBoxStyle.Exclamation, Application.ProductName)
           Return
         End If
       ElseIf sKey = "secret" Then
@@ -336,9 +336,9 @@
     Next
     If String.IsNullOrEmpty(sSecret) Then
       If fromQR Then
-        MsgBox("No secret value was found in One-Time-Password Auth QR Code.", MsgBoxStyle.Exclamation)
+        MsgBox("No secret value was found in One-Time-Password Auth QR Code.", MsgBoxStyle.Exclamation, Application.ProductName)
       Else
-        MsgBox("No secret value was found in One-Time-Password Auth URL.", MsgBoxStyle.Exclamation)
+        MsgBox("No secret value was found in One-Time-Password Auth URL.", MsgBoxStyle.Exclamation, Application.ProductName)
       End If
       Return
     End If
@@ -368,12 +368,12 @@
     If Not iPeriod = 30 Then sDetection &= vbNewLine & "  " & iPeriod & " second Period"
     sDetection &= vbNewLine & "  Secret: " & sSecret
     If fromQR Then
-      If MsgBox("Detected new Authenticator Profile:" & vbNewLine & sDetection & vbNewLine & vbNewLine & "Do you wish to add this profile to SecondFactor?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton1, "Add New Profile?") = MsgBoxResult.No Then Return
+      If MsgBox("Detected new Authenticator Profile:" & vbNewLine & sDetection & vbNewLine & vbNewLine & "Do you wish to add this profile to SecondFactor?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton1, Application.ProductName) = MsgBoxResult.No Then Return
     Else
-      If MsgBox("Received new Authenticator Profile:" & vbNewLine & sDetection & vbNewLine & vbNewLine & "Do you wish to add this profile to SecondFactor?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton1 Or MsgBoxStyle.SystemModal, "Add New Profile?") = MsgBoxResult.No Then Return
+      If MsgBox("Received new Authenticator Profile:" & vbNewLine & sDetection & vbNewLine & vbNewLine & "Do you wish to add this profile to SecondFactor?", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton1 Or MsgBoxStyle.SystemModal, Application.ProductName) = MsgBoxResult.No Then Return
     End If
     If Not cSettings.AddProfile(sName, sSecret, iSize, sAlg, iPeriod, trueName) Then
-      MsgBox("Failed to create new profile.", MsgBoxStyle.Exclamation)
+      MsgBox("Failed to create new profile.", MsgBoxStyle.Exclamation, Application.ProductName)
       Return
     End If
     UpdateProfileListing()
