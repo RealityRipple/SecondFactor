@@ -15,7 +15,7 @@
   End Structure
   Public Serial As List(Of JSElement)
   Public TextEncoding As System.Text.Encoding
-  Public Sub New(stream As IO.Stream, ExpectUTF8 As Boolean)
+  Public Sub New(ByVal stream As IO.Stream, ByVal ExpectUTF8 As Boolean)
     TextEncoding = System.Text.Encoding.GetEncoding(LATIN_1)
     Dim bom0 As Integer = stream.ReadByte
     Dim bom1 As Integer = stream.ReadByte
@@ -46,7 +46,7 @@
       workElement = ReadElement(stream, TextEncoding)
     Loop
   End Sub
-  Private Shared Function ReadCharacter(stream As IO.Stream, streamEncoding As System.Text.Encoding) As String
+  Private Shared Function ReadCharacter(ByVal stream As IO.Stream, ByVal streamEncoding As System.Text.Encoding) As String
     Select Case streamEncoding.CodePage
       Case LATIN_1
         Dim b As Integer = stream.ReadByte
@@ -120,7 +120,7 @@
         Return ChrW(b)
     End Select
   End Function
-  Public Shared Function ReadElement(stream As IO.Stream, streamEncoding As System.Text.Encoding) As JSElement
+  Public Shared Function ReadElement(ByVal stream As IO.Stream, ByVal streamEncoding As System.Text.Encoding) As JSElement
     Dim el As New JSElement
     If Not stream.CanRead Then
       el.Type = ElementType.None

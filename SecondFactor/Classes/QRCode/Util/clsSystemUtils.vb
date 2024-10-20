@@ -1,7 +1,7 @@
 ﻿Imports System
 Namespace QRCode.Decoder.Util
   Public Class SystemUtils
-    Public Shared Function URShift(number As Integer, bits As Integer) As Integer
+    Public Shared Function URShift(ByVal number As Integer, ByVal bits As Integer) As Integer
       If number >= 0 Then Return number >> bits
       Return (number >> bits) + (2 << (Not bits))
     End Function

@@ -7,7 +7,7 @@ Namespace My
   ' StartupNextInstance: Raised when launching a single-instance application and the application is already active. 
   ' NetworkAvailabilityChanged: Raised when the network connection is connected or disconnected.
   Partial Friend Class MyApplication
-    Private Sub MyApplication_Startup(sender As Object, e As StartupEventArgs) Handles Me.Startup
+    Private Sub MyApplication_Startup(ByVal sender As Object, ByVal e As StartupEventArgs) Handles Me.Startup
       Dim v As Authenticode.Validity = Authenticode.IsSelfSigned(Reflection.Assembly.GetExecutingAssembly().Location)
       If Not (v = Authenticode.Validity.SignedAndValid Or v = Authenticode.Validity.SignedButUntrusted) Then
         Dim sErr As String = "0x" & v.ToString("x")
@@ -75,7 +75,7 @@ Namespace My
     Private Sub DeleteRegistry()
       If My.Computer.Registry.ClassesRoot.GetSubKeyNames.Contains("otpauth") Then My.Computer.Registry.ClassesRoot.DeleteSubKeyTree("otpauth")
     End Sub
-    Private Sub MyApplication_StartupNextInstance(sender As Object, e As Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventArgs) Handles Me.StartupNextInstance
+    Private Sub MyApplication_StartupNextInstance(ByVal sender As Object, ByVal e As Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventArgs) Handles Me.StartupNextInstance
       Dim sImport As String = Nothing
       If e.CommandLine IsNot Nothing AndAlso e.CommandLine.Count > 0 Then
         Dim sCmd As String = Join(e.CommandLine.ToArray)

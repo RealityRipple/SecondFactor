@@ -16,7 +16,7 @@
       Return mQRCode
     End Get
   End Property
-  Private Sub frmQR_MouseUp(sender As Object, e As MouseEventArgs) Handles Me.MouseUp
+  Private Sub frmQR_MouseUp(ByVal sender As Object, ByVal e As MouseEventArgs) Handles Me.MouseUp
     If Not e.Button = MouseButtons.Left Then
       Me.DialogResult = DialogResult.No
       Return
@@ -102,7 +102,7 @@
       Me.DialogResult = DialogResult.Yes
     End If
   End Sub
-  Private Sub frmQR_KeyUp(sender As Object, e As KeyEventArgs) Handles Me.KeyUp
+  Private Sub frmQR_KeyUp(ByVal sender As Object, ByVal e As KeyEventArgs) Handles Me.KeyUp
     If e.KeyCode = Keys.Escape Then Me.DialogResult = DialogResult.No
   End Sub
   Private Function TakeScreenShot() As Bitmap

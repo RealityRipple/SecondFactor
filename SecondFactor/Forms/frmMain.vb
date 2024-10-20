@@ -1,6 +1,6 @@
 ﻿Public Class frmMain
   Private priorSlice As UInt32
-  Private Sub tmrAuthVals_Tick(sender As Object, e As EventArgs) Handles tmrAuthVals.Tick
+  Private Sub tmrAuthVals_Tick(ByVal sender As Object, ByVal e As EventArgs) Handles tmrAuthVals.Tick
     Dim iPeriod As UInt16 = 30
     If cmbProfile.Items.Count > 0 Then iPeriod = cSettings.ProfilePeriod(cmbProfile.SelectedItem)
     Dim remainder As UInt16 = DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) Mod iPeriod
@@ -20,7 +20,7 @@
       LoadProfileData(Nothing)
     End If
   End Sub
-  Private Sub frmMain_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+  Private Sub frmMain_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Shown
     UpdateProfileListing()
     Dim selProfile As String = cSettings.LastSelectedProfileName
     If Not String.IsNullOrEmpty(selProfile) Then
@@ -39,7 +39,7 @@
     End If
   End Sub
 #Region "App Menu"
-  Protected Overrides Sub OnHandleCreated(e As System.EventArgs)
+  Protected Overrides Sub OnHandleCreated(ByVal e As System.EventArgs)
     MyBase.OnHandleCreated(e)
     Try
       Dim hSysMenu As IntPtr = NativeMethods.GetSystemMenu(Me.Handle, False)
@@ -63,7 +63,7 @@
     NativeMethods.ModifyMenu(hSysMenu, TOPMOST_MENU_ID, NativeMethods.MenuFlags.MF_STRING Or uChecked, TOPMOST_MENU_ID, TOPMOST_MENU_TEXT)
   End Sub
 #End Region
-  Private Function GetCode(secret As String, size As Integer, algo As cSettings.HashAlg, period As UInt16, timeOffset As Int16) As String
+  Private Function GetCode(ByVal secret As String, ByVal size As Integer, ByVal algo As cSettings.HashAlg, ByVal period As UInt16, ByVal timeOffset As Int16) As String
     If String.IsNullOrEmpty(secret) Then Return StrDup(size, "0")
     Dim timeSlice As UInt32 = Math.Floor(DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) / period) + timeOffset
     Dim secretKey As Byte() = Base32.ToByteArray(secret.ToUpper)
@@ -93,7 +93,7 @@
     Dim ret As String = (value Mod modulo)
     Return StrDup(size - ret.Length, "0") & ret
   End Function
-  Private Sub cmdProfiles_Click(sender As Object, e As EventArgs) Handles cmdProfiles.Click
+  Private Sub cmdProfiles_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdProfiles.Click
     frmProfiles.ShowDialog(Me)
     UpdateProfileListing()
   End Sub
@@ -121,7 +121,7 @@
       'LoadProfileData(cmbProfile.SelectedItem)
     End If
   End Sub
-  Private Sub LoadProfileData(ProfileName As String)
+  Private Sub LoadProfileData(ByVal ProfileName As String)
     Dim codeW As Integer
     If String.IsNullOrEmpty(ProfileName) OrElse Not cSettings.GetProfileNames.Contains(ProfileName) Then
       codeW = TextRenderer.MeasureText(txtCodePast.CreateGraphics, "000 000", txtCodePast.Font, New Size(Integer.MaxValue, Integer.MaxValue), TextFormatFlags.TextBoxControl).Width
@@ -185,13 +185,13 @@
     txtCode.SelectAll()
     If priorSlice > 0 Then cSettings.LastSelectedProfileName = ProfileName
   End Sub
-  Private Sub cmbProfile_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbProfile.SelectedIndexChanged
+  Private Sub cmbProfile_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cmbProfile.SelectedIndexChanged
     If cSettings.Count > 0 Then LoadProfileData(cmbProfile.SelectedItem)
   End Sub
-  Private Sub txtCodePast_MouseDown(sender As Object, e As MouseEventArgs) Handles txtCodePast.MouseDown
+  Private Sub txtCodePast_MouseDown(ByVal sender As Object, ByVal e As MouseEventArgs) Handles txtCodePast.MouseDown
     txtCodePast.SelectAll()
   End Sub
-  Private Sub txtCodePast_MouseUp(sender As Object, e As MouseEventArgs) Handles txtCodePast.MouseUp
+  Private Sub txtCodePast_MouseUp(ByVal sender As Object, ByVal e As MouseEventArgs) Handles txtCodePast.MouseUp
     txtCodePast.SelectAll()
     If (e.Button And MouseButtons.Left) = MouseButtons.Left Then
       Try
@@ -200,10 +200,10 @@
       End Try
     End If
   End Sub
-  Private Sub txtCode_MouseDown(sender As Object, e As MouseEventArgs) Handles txtCode.MouseDown
+  Private Sub txtCode_MouseDown(ByVal sender As Object, ByVal e As MouseEventArgs) Handles txtCode.MouseDown
     txtCode.SelectAll()
   End Sub
-  Private Sub txtCode_MouseUp(sender As Object, e As MouseEventArgs) Handles txtCode.MouseUp
+  Private Sub txtCode_MouseUp(ByVal sender As Object, ByVal e As MouseEventArgs) Handles txtCode.MouseUp
     txtCode.SelectAll()
     If (e.Button And MouseButtons.Left) = MouseButtons.Left Then
       Try
@@ -212,10 +212,10 @@
       End Try
     End If
   End Sub
-  Private Sub txtCodeFuture_MouseDown(sender As Object, e As MouseEventArgs) Handles txtCodeFuture.MouseDown
+  Private Sub txtCodeFuture_MouseDown(ByVal sender As Object, ByVal e As MouseEventArgs) Handles txtCodeFuture.MouseDown
     txtCodeFuture.SelectAll()
   End Sub
-  Private Sub txtCodeFuture_MouseUp(sender As Object, e As MouseEventArgs) Handles txtCodeFuture.MouseUp
+  Private Sub txtCodeFuture_MouseUp(ByVal sender As Object, ByVal e As MouseEventArgs) Handles txtCodeFuture.MouseUp
     txtCodeFuture.SelectAll()
     If (e.Button And MouseButtons.Left) = MouseButtons.Left Then
       Try
@@ -224,7 +224,7 @@
       End Try
     End If
   End Sub
-  Private Sub cmdQR_Click(sender As Object, e As EventArgs) Handles cmdQR.Click
+  Private Sub cmdQR_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdQR.Click
     cmdQR.Enabled = False
     Me.Opacity = 0
     Using fQR As New frmQR
@@ -237,7 +237,7 @@
     End Using
     cmdQR.Enabled = True
   End Sub
-  Friend Sub ParseOTPURL(sURL As String, fromQR As Boolean)
+  Friend Sub ParseOTPURL(ByVal sURL As String, ByVal fromQR As Boolean)
     If String.IsNullOrEmpty(sURL) Then
       If fromQR Then
         MsgBox("Unable to find any QR codes on the screen.", MsgBoxStyle.Exclamation)

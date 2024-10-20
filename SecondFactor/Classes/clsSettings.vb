@@ -6,7 +6,7 @@
   End Enum
   Private Shared passkey() As Byte
   Private Shared cryptoSeq As String = "|PADDING" & Application.ProductName & "PADDING|"
-  Private Shared Function RegistryPath(Optional writable As Boolean = False) As Microsoft.Win32.RegistryKey
+  Private Shared Function RegistryPath(Optional ByVal writable As Boolean = False) As Microsoft.Win32.RegistryKey
     If Not My.Computer.Registry.CurrentUser.GetSubKeyNames.Contains("Software") Then My.Computer.Registry.CurrentUser.CreateSubKey("Software")
     If Not My.Computer.Registry.CurrentUser.OpenSubKey("Software").GetSubKeyNames.Contains(Application.CompanyName) Then My.Computer.Registry.CurrentUser.OpenSubKey("Software", True).CreateSubKey(Application.CompanyName)
     If Not My.Computer.Registry.CurrentUser.OpenSubKey("Software").OpenSubKey(Application.CompanyName).GetSubKeyNames.Contains(Application.ProductName) Then My.Computer.Registry.CurrentUser.OpenSubKey("Software", True).OpenSubKey(Application.CompanyName, True).CreateSubKey(Application.ProductName)
@@ -18,7 +18,7 @@
       If Not RegistryPath.GetValueKind("Topmost") = Microsoft.Win32.RegistryValueKind.String Then Return Nothing
       Return RegistryPath.GetValue("Topmost", "N") = "Y"
     End Get
-    Set(value As Boolean)
+    Set(ByVal value As Boolean)
       If value Then
         RegistryPath(True).SetValue("Topmost", "Y", Microsoft.Win32.RegistryValueKind.String)
       Else
@@ -37,7 +37,7 @@
       Return True
     End Get
   End Property
-  Private Shared Function LegacyLogin(pass As String) As Boolean
+  Private Shared Function LegacyLogin(ByVal pass As String) As Boolean
     Dim bPass As Byte() = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(pass)
     Dim sha256 As New Security.Cryptography.SHA256CryptoServiceProvider()
     Dim bHash As Byte()
@@ -49,7 +49,7 @@
     passkey = bHash
     Return LoggedIn
   End Function
-  Public Shared Function Login(pass As String) As Boolean
+  Public Shared Function Login(ByVal pass As String) As Boolean
     If Not RegistryPath.GetValueNames.Contains("C") Then
       If LegacyLogin(pass) Then
         ChangePassword(pass)
@@ -66,7 +66,7 @@
     passkey = PBKDF2.Rfc2898DeriveBytes(pass, salt, iterations, 32, PBKDF2.HashStrength.SHA512)
     Return LoggedIn
   End Function
-  Public Shared Function ChangePassword(newPass As String) As Boolean
+  Public Shared Function ChangePassword(ByVal newPass As String) As Boolean
     If RequiresLogin AndAlso Not LoggedIn Then Return False
     Dim sProfiles As String() = GetProfileNames
     Dim sProfSel As String = LastSelectedProfileName
@@ -142,7 +142,7 @@
       If Not RegistryPath().OpenSubKey("Profiles").GetValueKind("") = Microsoft.Win32.RegistryValueKind.Binary Then Return Nothing
       Return DecrypText(RegistryPath.OpenSubKey("Profiles").GetValue("", Nothing))
     End Get
-    Set(value As String)
+    Set(ByVal value As String)
       If Not GetProfileNames.Contains(value) Then Return
       If RequiresLogin AndAlso Not LoggedIn Then Return
       If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then RegistryPath(True).CreateSubKey("Profiles")
@@ -161,7 +161,7 @@
       Return sRet.ToArray
     End Get
   End Property
-  Public Shared Property ProfileDefaultName(Name As String) As String
+  Public Shared Property ProfileDefaultName(ByVal Name As String) As String
     Get
       If RequiresLogin AndAlso Not LoggedIn Then Return Nothing
       If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then Return Nothing
@@ -170,14 +170,14 @@
       If Not RegistryPath().OpenSubKey("Profiles").OpenSubKey(Name).GetValueKind("") = Microsoft.Win32.RegistryValueKind.Binary Then Return Nothing
       Return DecrypText(RegistryPath.OpenSubKey("Profiles").OpenSubKey(Name).GetValue("", Nothing))
     End Get
-    Set(value As String)
+    Set(ByVal value As String)
       If RequiresLogin AndAlso Not LoggedIn Then Return
       If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then RegistryPath(True).CreateSubKey("Profiles")
       If Not RegistryPath().OpenSubKey("Profiles").GetSubKeyNames.Contains(Name) Then RegistryPath(True).OpenSubKey("Profiles", True).CreateSubKey(Name)
       RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(Name, True).SetValue("", EncrypText(value), Microsoft.Win32.RegistryValueKind.Binary)
     End Set
   End Property
-  Public Shared Property ProfileSecret(Name As String) As String
+  Public Shared Property ProfileSecret(ByVal Name As String) As String
     Get
       If RequiresLogin AndAlso Not LoggedIn Then Return Nothing
       If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then Return Nothing
@@ -186,14 +186,14 @@
       If Not RegistryPath().OpenSubKey("Profiles").OpenSubKey(Name).GetValueKind("Secret") = Microsoft.Win32.RegistryValueKind.Binary Then Return Nothing
       Return DeScrypt(RegistryPath.OpenSubKey("Profiles").OpenSubKey(Name).GetValue("Secret", Nothing))
     End Get
-    Set(value As String)
+    Set(ByVal value As String)
       If RequiresLogin AndAlso Not LoggedIn Then Return
       If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then RegistryPath(True).CreateSubKey("Profiles")
       If Not RegistryPath().OpenSubKey("Profiles").GetSubKeyNames.Contains(Name) Then RegistryPath(True).OpenSubKey("Profiles", True).CreateSubKey(Name)
       RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(Name, True).SetValue("Secret", Secrypt(value), Microsoft.Win32.RegistryValueKind.Binary)
     End Set
   End Property
-  Public Shared Property ProfileDigits(Name As String) As Byte
+  Public Shared Property ProfileDigits(ByVal Name As String) As Byte
     Get
       If RequiresLogin AndAlso Not LoggedIn Then Return 6
       If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then Return 6
@@ -202,14 +202,14 @@
       If Not RegistryPath().OpenSubKey("Profiles").OpenSubKey(Name).GetValueKind("Size") = Microsoft.Win32.RegistryValueKind.DWord Then Return 6
       Return RegistryPath.OpenSubKey("Profiles").OpenSubKey(Name).GetValue("Size", 6)
     End Get
-    Set(value As Byte)
+    Set(ByVal value As Byte)
       If RequiresLogin AndAlso Not LoggedIn Then Return
       If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then RegistryPath(True).CreateSubKey("Profiles")
       If Not RegistryPath().OpenSubKey("Profiles").GetSubKeyNames.Contains(Name) Then RegistryPath(True).OpenSubKey("Profiles", True).CreateSubKey(Name)
       RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(Name, True).SetValue("Size", value, Microsoft.Win32.RegistryValueKind.DWord)
     End Set
   End Property
-  Public Shared Property ProfileAlgorithm(Name As String) As HashAlg
+  Public Shared Property ProfileAlgorithm(ByVal Name As String) As HashAlg
     Get
       If RequiresLogin AndAlso Not LoggedIn Then Return HashAlg.SHA1
       If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then Return HashAlg.SHA1
@@ -222,7 +222,7 @@
         Case Else : Return HashAlg.SHA1
       End Select
     End Get
-    Set(value As HashAlg)
+    Set(ByVal value As HashAlg)
       If RequiresLogin AndAlso Not LoggedIn Then Return
       If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then RegistryPath(True).CreateSubKey("Profiles")
       If Not RegistryPath().OpenSubKey("Profiles").GetSubKeyNames.Contains(Name) Then RegistryPath(True).OpenSubKey("Profiles", True).CreateSubKey(Name)
@@ -233,7 +233,7 @@
       End Select
     End Set
   End Property
-  Public Shared Property ProfilePeriod(Name As String) As UInt16
+  Public Shared Property ProfilePeriod(ByVal Name As String) As UInt16
     Get
       If RequiresLogin AndAlso Not LoggedIn Then Return 30
       If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then Return 30
@@ -241,14 +241,14 @@
       If Not RegistryPath.OpenSubKey("Profiles").OpenSubKey(Name).GetValueNames.Contains("Period") Then Return 30
       Return RegistryPath.OpenSubKey("Profiles").OpenSubKey(Name).GetValue("Period", 30)
     End Get
-    Set(value As UInt16)
+    Set(ByVal value As UInt16)
       If RequiresLogin AndAlso Not LoggedIn Then Return
       If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then RegistryPath(True).CreateSubKey("Profiles")
       If Not RegistryPath().OpenSubKey("Profiles").GetSubKeyNames.Contains(Name) Then RegistryPath(True).OpenSubKey("Profiles", True).CreateSubKey(Name)
       RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(Name, True).SetValue("Period", value, Microsoft.Win32.RegistryValueKind.DWord)
     End Set
   End Property
-  Public Shared Function RenameProfile(OldName As String, NewName As String) As Boolean
+  Public Shared Function RenameProfile(ByVal OldName As String, ByVal NewName As String) As Boolean
     If RequiresLogin AndAlso Not LoggedIn Then Return Nothing
     If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then Return False
     If Not RegistryPath().OpenSubKey("Profiles").GetSubKeyNames.Contains(OldName) Then Return False
@@ -278,7 +278,7 @@
     If Not OldName.ToLower = NewName.ToLower Then RegistryPath(True).OpenSubKey("Profiles", True).DeleteSubKey(OldName)
     Return True
   End Function
-  Public Shared Function AddProfile(Name As String, Secret As String, Optional Digits As Byte = 6, Optional Algorithm As HashAlg = HashAlg.SHA1, Optional Period As UInt16 = 30, Optional TrueName As String = Nothing) As Boolean
+  Public Shared Function AddProfile(ByVal Name As String, ByVal Secret As String, Optional ByVal Digits As Byte = 6, Optional ByVal Algorithm As HashAlg = HashAlg.SHA1, Optional ByVal Period As UInt16 = 30, Optional ByVal TrueName As String = Nothing) As Boolean
     If RequiresLogin AndAlso Not LoggedIn Then Return Nothing
     If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then RegistryPath(True).CreateSubKey("Profiles")
     If RegistryPath().OpenSubKey("Profiles").GetSubKeyNames.Contains(Name) Then Return False
@@ -295,14 +295,14 @@
     RegistryPath(True).OpenSubKey("Profiles", True).OpenSubKey(Name, True).SetValue("Period", Period, Microsoft.Win32.RegistryValueKind.DWord)
     Return True
   End Function
-  Public Shared Function RemoveProfile(Name As String) As Boolean
+  Public Shared Function RemoveProfile(ByVal Name As String) As Boolean
     If RequiresLogin AndAlso Not LoggedIn Then Return Nothing
     If Not RegistryPath().GetSubKeyNames.Contains("Profiles") Then Return False
     If Not RegistryPath().OpenSubKey("Profiles").GetSubKeyNames.Contains(Name) Then Return False
     RegistryPath(True).OpenSubKey("Profiles", True).DeleteSubKey(Name)
     Return True
   End Function
-  Private Shared Function Secrypt(Secret As String) As Byte()
+  Private Shared Function Secrypt(ByVal Secret As String) As Byte()
     If String.IsNullOrEmpty(Secret) Then
       Dim bRet(3) As Byte
       Return bRet
@@ -339,7 +339,7 @@
       Return msEncrypt.ToArray()
     End Using
   End Function
-  Private Shared Function DeScrypt(Encrypted As Byte()) As String
+  Private Shared Function DeScrypt(ByVal Encrypted As Byte()) As String
     If Encrypted Is Nothing OrElse Encrypted.Length = 0 Then Return "Missing"
     If Encrypted.Length = 4 And
       Encrypted(0) = 0 And
@@ -392,7 +392,7 @@
     If bOut.Count = 0 Then Return Nothing
     Return bOut.ToArray.ToBase32String
   End Function
-  Private Shared Function EncrypText(Text As String, Optional SpecialLogin As Boolean = False) As Byte()
+  Private Shared Function EncrypText(ByVal Text As String, Optional ByVal SpecialLogin As Boolean = False) As Byte()
     Dim prefix As String = cryptoRandom() & cryptoSeq
     Dim bKey As Byte() = Nothing
     If SpecialLogin Then
@@ -427,7 +427,7 @@
       Return msEncrypt.ToArray()
     End Using
   End Function
-  Private Shared Function DecrypText(Encrypted As Byte(), Optional SpecialLogin As Boolean = False) As String
+  Private Shared Function DecrypText(ByVal Encrypted As Byte(), Optional ByVal SpecialLogin As Boolean = False) As String
     If Encrypted Is Nothing OrElse Encrypted.Length = 0 Then Return "Missing"
     Dim bKey As Byte() = Nothing
     If SpecialLogin Then

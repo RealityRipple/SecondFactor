@@ -44,7 +44,7 @@
     Public Shared Function getCenter(ByVal p1 As Geom.Point, ByVal p2 As Geom.Point) As Geom.Point
       Return New Geom.Point(Math.Floor((p1.X + p2.X) / 2), Math.Floor((p1.Y + p2.Y) / 2))
     End Function
-    Public Overrides Function Equals(compare As Object) As Boolean
+    Public Overrides Function Equals(ByVal compare As Object) As Boolean
       'If compare.GetType = GetType(Geom.Point) Then Return False
       Dim cCompare As Geom.Point = compare
       If X = cCompare.X AndAlso Y = cCompare.Y Then

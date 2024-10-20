@@ -4,7 +4,7 @@ Public Class frmProgress
     Get
       Return pbProgress.Value / pbProgress.Maximum
     End Get
-    Set(value As Double)
+    Set(ByVal value As Double)
       pbProgress.Value = value * pbProgress.Maximum
     End Set
   End Property

@@ -10,12 +10,12 @@ Public Class NativeMethods
     MF_UNCHECKED = &H0
   End Enum
   <DllImport("user32", CharSet:=CharSet.Auto, setlasterror:=True)>
-  Public Shared Function GetSystemMenu(hWnd As IntPtr, bRevert As Boolean) As IntPtr
+  Public Shared Function GetSystemMenu(ByVal hWnd As IntPtr, ByVal bRevert As Boolean) As IntPtr
   End Function
   <DllImport("user32", CharSet:=CharSet.Auto, setlasterror:=True)>
-  Public Shared Function InsertMenu(hMenu As IntPtr, uPosition As Integer, uFlags As Integer, uIDNewItem As Integer, lpNewItem As String) As Boolean
+  Public Shared Function InsertMenu(ByVal hMenu As IntPtr, ByVal uPosition As Integer, ByVal uFlags As Integer, ByVal uIDNewItem As Integer, ByVal lpNewItem As String) As Boolean
   End Function
   <DllImport("user32", CharSet:=CharSet.Auto, setlasterror:=True)>
-  Public Shared Function ModifyMenu(hMenu As IntPtr, uPosition As Integer, uFlags As Integer, uIDNewItem As Integer, lpNewItem As String) As Boolean
+  Public Shared Function ModifyMenu(ByVal hMenu As IntPtr, ByVal uPosition As Integer, ByVal uFlags As Integer, ByVal uIDNewItem As Integer, ByVal lpNewItem As String) As Boolean
   End Function
 End Class

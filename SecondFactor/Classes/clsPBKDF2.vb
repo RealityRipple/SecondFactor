@@ -1,7 +1,7 @@
 ﻿Public Class PBKDF2
-  Private Declare Function BCryptOpenAlgorithmProvider Lib "bcrypt" (ByRef phAlgorithm As IntPtr, pszAlgId As IntPtr, pszImplementation As IntPtr, dwFlags As UInteger) As Integer
-  Private Declare Function BCryptCloseAlgorithmProvider Lib "bcrypt" (hAlgorithm As IntPtr, dwFlags As UInteger) As Integer
-  Private Declare Function BCryptDeriveKeyPBKDF2 Lib "bcrypt" (pPrf As IntPtr, pbPassword As IntPtr, cbPassword As UInteger, pbSalt As IntPtr, cbSalt As UInteger, cIterations As ULong, pbDerivedKey As IntPtr, cbDerivedKey As UInteger, dwFlags As UInteger) As Integer
+  Private Declare Function BCryptOpenAlgorithmProvider Lib "bcrypt" (ByRef phAlgorithm As IntPtr, ByVal pszAlgId As IntPtr, ByVal pszImplementation As IntPtr, ByVal dwFlags As UInteger) As Integer
+  Private Declare Function BCryptCloseAlgorithmProvider Lib "bcrypt" (ByVal hAlgorithm As IntPtr, ByVal dwFlags As UInteger) As Integer
+  Private Declare Function BCryptDeriveKeyPBKDF2 Lib "bcrypt" (ByVal pPrf As IntPtr, ByVal pbPassword As IntPtr, ByVal cbPassword As UInteger, ByVal pbSalt As IntPtr, ByVal cbSalt As UInteger, ByVal cIterations As ULong, ByVal pbDerivedKey As IntPtr, ByVal cbDerivedKey As UInteger, ByVal dwFlags As UInteger) As Integer
   Public Enum HashStrength As Byte
     SHA1 = 1
     SHA256 = 2
@@ -10,14 +10,14 @@
   End Enum
   Private Shared mBestIter(3) As UInt64
 #Region "RFC2898"
-  Public Shared Function Rfc2898DeriveBytes(password As String, salt As Byte(), iterationCount As UInt64, keySize As Integer, hash As HashStrength) As Byte()
+  Public Shared Function Rfc2898DeriveBytes(ByVal password As String, ByVal salt As Byte(), ByVal iterationCount As UInt64, ByVal keySize As Integer, ByVal hash As HashStrength) As Byte()
     Dim Win7Plus As Boolean = True
     If Environment.OSVersion.Version.Major < 6 Then Win7Plus = False
     If Environment.OSVersion.Version.Major = 6 And Environment.OSVersion.Version.Minor < 1 Then Win7Plus = False
     If Win7Plus Then Return Rfc2898APIDeriveBytes(password, salt, iterationCount, keySize, hash)
     Return Rfc2898ManagedDeriveBytes(password, salt, iterationCount, keySize, hash)
   End Function
-  Private Shared Function Rfc2898APIDeriveBytes(password As String, salt As Byte(), iterationCount As UInt64, keySize As Integer, hash As HashStrength) As Byte()
+  Private Shared Function Rfc2898APIDeriveBytes(ByVal password As String, ByVal salt As Byte(), ByVal iterationCount As UInt64, ByVal keySize As Integer, ByVal hash As HashStrength) As Byte()
     Dim hAlg As New IntPtr
     Dim sHash As String = "SHA1"
     Select Case hash
@@ -42,7 +42,7 @@
     BCryptCloseAlgorithmProvider(hAlg, 0)
     Return bDerivedKey
   End Function
-  Private Shared Function Rfc2898ManagedDeriveBytes(password As String, salt As Byte(), iterationCount As UInt64, keySize As Integer, hash As HashStrength) As Byte()
+  Private Shared Function Rfc2898ManagedDeriveBytes(ByVal password As String, ByVal salt As Byte(), ByVal iterationCount As UInt64, ByVal keySize As Integer, ByVal hash As HashStrength) As Byte()
     Dim bPass As Byte() = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(password)
     Dim hClass As Type
     Select Case hash
@@ -92,13 +92,13 @@
   End Function
 #End Region
 #Region "Iterative Time"
-  Public Shared ReadOnly Property BestIterationFor(hash As PBKDF2.HashStrength) As UInt64
+  Public Shared ReadOnly Property BestIterationFor(ByVal hash As PBKDF2.HashStrength) As UInt64
     Get
       If mBestIter(hash - 1) = 0 Then mBestIter(hash - 1) = GetBestIterationFor(hash)
       Return mBestIter(hash - 1)
     End Get
   End Property
-  Private Shared Function GetBestIterationFor(hash As PBKDF2.HashStrength) As UInt64
+  Private Shared Function GetBestIterationFor(ByVal hash As PBKDF2.HashStrength) As UInt64
     Dim Win7Plus As Boolean = True
     If Environment.OSVersion.Version.Major < 6 Then Win7Plus = False
     If Environment.OSVersion.Version.Major = 6 And Environment.OSVersion.Version.Minor < 1 Then Win7Plus = False

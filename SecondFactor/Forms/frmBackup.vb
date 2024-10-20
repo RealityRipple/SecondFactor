@@ -1,7 +1,7 @@
 ﻿Public Class frmBackup
   Private GoodIterations As UInt64 = 0
   Private ImportedFiles As ZIP.File()
-  Private Sub frmBackup_Load(sender As Object, e As EventArgs) Handles Me.Load
+  Private Sub frmBackup_Load(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Load
     lstExportProfiles.Items.Clear()
     lstImportProfiles.Items.Clear()
     lstExportProfiles.Tag = "WORKING"
@@ -14,7 +14,7 @@
     lstExportProfiles.Tag = Nothing
     chkExportAll.Tag = Nothing
   End Sub
-  Private Sub frmBackup_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+  Private Sub frmBackup_Shown(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Shown
     cmdExport.Enabled = False
     Me.Cursor = Cursors.WaitCursor
     Application.DoEvents()
@@ -31,7 +31,7 @@
     cmdExport.Enabled = True
     Me.Cursor = Me.DefaultCursor
   End Sub
-  Private Sub lstExportProfiles_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles lstExportProfiles.ItemCheck
+  Private Sub lstExportProfiles_ItemCheck(ByVal sender As Object, ByVal e As ItemCheckEventArgs) Handles lstExportProfiles.ItemCheck
     If chkExportAll.Tag IsNot Nothing Then Return
     lstExportProfiles.Tag = "WORKING"
     Dim allChecked As Boolean = True
@@ -58,7 +58,7 @@
     End If
     lstExportProfiles.Tag = Nothing
   End Sub
-  Private Sub chkExportAll_CheckStateChanged(sender As Object, e As EventArgs) Handles chkExportAll.CheckStateChanged
+  Private Sub chkExportAll_CheckStateChanged(ByVal sender As Object, ByVal e As EventArgs) Handles chkExportAll.CheckStateChanged
     If lstExportProfiles.Tag IsNot Nothing Then Return
     chkExportAll.Tag = "WORKING"
     For I As Integer = 0 To lstExportProfiles.Items.Count - 1
@@ -70,7 +70,7 @@
     Next
     chkExportAll.Tag = Nothing
   End Sub
-  Private Sub cmdExport_Click(sender As Object, e As EventArgs) Handles cmdExport.Click
+  Private Sub cmdExport_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdExport.Click
     Dim zExport As New ZIP(ZIP.AESStrength.AES256)
     Dim iItems As New List(Of Integer)
     For I As Integer = 0 To lstExportProfiles.Items.Count - 1
@@ -132,7 +132,7 @@
     cmdExport.Enabled = True
     Me.Cursor = Me.DefaultCursor
   End Sub
-  Private Sub chkImportAll_CheckedChanged(sender As Object, e As EventArgs) Handles chkImportAll.CheckedChanged
+  Private Sub chkImportAll_CheckedChanged(ByVal sender As Object, ByVal e As EventArgs) Handles chkImportAll.CheckedChanged
     If lstImportProfiles.Tag IsNot Nothing Then Return
     chkImportAll.Tag = "WORKING"
     For I As Integer = 0 To lstImportProfiles.Items.Count - 1
@@ -144,7 +144,7 @@
     Next
     chkImportAll.Tag = Nothing
   End Sub
-  Private Sub lstImportProfiles_ItemCheck(sender As Object, e As ItemCheckEventArgs) Handles lstImportProfiles.ItemCheck
+  Private Sub lstImportProfiles_ItemCheck(ByVal sender As Object, ByVal e As ItemCheckEventArgs) Handles lstImportProfiles.ItemCheck
     If chkImportAll.Tag IsNot Nothing Then Return
     lstImportProfiles.Tag = "WORKING"
     Dim allChecked As Boolean = True
@@ -171,7 +171,7 @@
     End If
     lstImportProfiles.Tag = Nothing
   End Sub
-  Private Sub cmdImportFile_Click(sender As Object, e As EventArgs) Handles cmdImportFile.Click
+  Private Sub cmdImportFile_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdImportFile.Click
     Using dlgOpen As New OpenFileDialog()
       dlgOpen.Filter = "ZIP Files|*.zip"
       dlgOpen.Title = "Select SecondFactor Profiles Backup File..."
@@ -180,7 +180,7 @@
       End If
     End Using
   End Sub
-  Private Sub txtImportFile_TextChanged(sender As Object, e As EventArgs) Handles txtImportFile.TextChanged
+  Private Sub txtImportFile_TextChanged(ByVal sender As Object, ByVal e As EventArgs) Handles txtImportFile.TextChanged
     ReDim ImportedFiles(0)
     Dim sPath As String = txtImportFile.Text
     If String.IsNullOrEmpty(sPath) Then Return
@@ -246,7 +246,7 @@
     txtImportFile.Enabled = True
     Me.Cursor = Me.DefaultCursor
   End Sub
-  Private Sub cmdImport_Click(sender As Object, e As EventArgs) Handles cmdImport.Click
+  Private Sub cmdImport_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdImport.Click
     Dim iItems As New List(Of Integer)
     For I As Integer = 0 To lstImportProfiles.Items.Count - 1
       If lstImportProfiles.GetItemCheckState(I) = CheckState.Checked Then iItems.Add(I)
