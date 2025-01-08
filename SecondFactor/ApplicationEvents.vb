@@ -19,19 +19,18 @@
       End If
       Dim sImport As String = Nothing
       If e.CommandLine IsNot Nothing AndAlso e.CommandLine.Count > 0 Then
-        Dim sCmd As String = Join(e.CommandLine.ToArray)
-        If sCmd.ToLower = "-reg" Or sCmd.ToLower = "/reg" Then
-          CheckRegistry()
+        Dim sCancel As Boolean = False
+        If Command_Reg(e.CommandLine) Then sCancel = True
+        If Command_Unreg(e.CommandLine) Then sCancel = True
+        If Command_Uninstall(e.CommandLine) Then sCancel = True
+        If sCancel Then
           e.Cancel = True
           Return
         End If
-        If sCmd.ToLower = "-unreg" Or sCmd.ToLower = "/unreg" Then
-          DeleteRegistry()
-          e.Cancel = True
-          Return
-        End If
-        If sCmd.Substring(0, 8).ToLower = "-import " Or sCmd.Substring(0, 8).ToLower = "/import " Then
-          sImport = sCmd.Substring(8)
+        If e.CommandLine.Contains("-import") Then
+          sImport = e.CommandLine(e.CommandLine.IndexOf("-import") + 1)
+        ElseIf e.CommandLine.Contains("/import") Then
+          sImport = e.CommandLine(e.CommandLine.IndexOf("/import") + 1)
         End If
       End If
       If cSettings.RequiresLogin Then
@@ -92,20 +91,44 @@
         MsgBox("There was an error while unregistering the ""otpauth:"" Protocol handler." & vbNewLine & vbNewLine & ex.Message, MsgBoxStyle.Critical, My.Application.Info.ProductName)
       End Try
     End Sub
+    Private Function Command_Reg(cLine As ObjectModel.ReadOnlyCollection(Of String)) As Boolean
+      If cLine.Count = 0 Then Return False
+      If Not (cLine.Contains("-reg") OrElse cLine.Contains("/reg")) Then Return False
+      CheckRegistry()
+      Return True
+    End Function
+    Private Function Command_Unreg(cLine As ObjectModel.ReadOnlyCollection(Of String)) As Boolean
+      If cLine.Count = 0 Then Return False
+      If Not (cLine.Contains("-unreg") OrElse cLine.Contains("/unreg")) Then Return False
+      DeleteRegistry()
+      Return True
+    End Function
+    Private Function Command_Uninstall(cLine As ObjectModel.ReadOnlyCollection(Of String)) As Boolean
+      If cLine.Count = 0 Then Return False
+      If Not (cLine.Contains("-uninstall") OrElse cLine.Contains("/uninstall")) Then Return False
+      If Not cSettings.CanSave Then Return True
+      Dim showPrompt As Boolean = True
+      If cLine.Contains("-silent") OrElse cLine.Contains("/silent") Then showPrompt = False
+      If Not cSettings.HasProfiles Then showPrompt = False
+      If showPrompt AndAlso MsgBox("Do you want to save your Authentication Profiles?" & vbNewLine & vbNewLine & "This data may be useful if you plan to reinstall " & My.Application.Info.ProductName & "." & vbNewLine & "Removing your Profiles can result in you no longer having access to related accounts and services.", MsgBoxStyle.Question Or MsgBoxStyle.YesNo, My.Application.Info.ProductName) = MsgBoxResult.Yes Then Return True
+      cSettings.RemoveAll()
+      Return True
+    End Function
     Private Sub sia_NewInstanceStartup(ByVal sender As Object, ByVal e As Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventArgs) Handles sia.NewInstanceStartup
       Dim sImport As String = Nothing
       If e.CommandLine IsNot Nothing AndAlso e.CommandLine.Count > 0 Then
-        Dim sCmd As String = Join(e.CommandLine.ToArray)
-        If sCmd.ToLower = "-reg" Or sCmd.ToLower = "/reg" Then
-          CheckRegistry()
+        Command_Reg(e.CommandLine)
+        Dim sCancel As Boolean = False
+        If Command_Unreg(e.CommandLine) Then sCancel = True
+        If Command_Uninstall(e.CommandLine) Then sCancel = True
+        If sCancel Then
+          System.Windows.Forms.Application.Exit()
           Return
         End If
-        If sCmd.ToLower = "-unreg" Or sCmd.ToLower = "/unreg" Then
-          DeleteRegistry()
-          Return
-        End If
-        If sCmd.Substring(0, 8).ToLower = "-import " Or sCmd.Substring(0, 8).ToLower = "/import " Then
-          sImport = sCmd.Substring(8)
+        If e.CommandLine.Contains("-import") Then
+          sImport = e.CommandLine(e.CommandLine.IndexOf("-import") + 1)
+        ElseIf e.CommandLine.Contains("/import") Then
+          sImport = e.CommandLine(e.CommandLine.IndexOf("/import") + 1)
         End If
       End If
       If String.IsNullOrEmpty(sImport) Then

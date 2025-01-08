@@ -35,11 +35,15 @@
       Next
     End If
     priorSlice = Math.Floor(DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) / 30)
-    If Not String.IsNullOrEmpty(Command) Then
-      If Command.Substring(0, 8).ToLower = "-import " Or Command.Substring(0, 8).ToLower = "/import " Then
-        ParseOTPURL(Command.Substring(8), False)
+    Dim sImport As String = Nothing
+    If My.Application.CommandLineArgs IsNot Nothing AndAlso My.Application.CommandLineArgs.Count > 0 Then
+      If My.Application.CommandLineArgs.Contains("-import") Then
+        sImport = My.Application.CommandLineArgs(My.Application.CommandLineArgs.IndexOf("-import") + 1)
+      ElseIf My.Application.CommandLineArgs.Contains("/import") Then
+        sImport = My.Application.CommandLineArgs(My.Application.CommandLineArgs.IndexOf("/import") + 1)
       End If
     End If
+    If Not String.IsNullOrEmpty(sImport) Then ParseOTPURL(sImport, False)
   End Sub
   Private Sub frmMain_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
     If Application.UseWaitCursor Then
