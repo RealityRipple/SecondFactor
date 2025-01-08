@@ -33,33 +33,32 @@
           sImport = e.CommandLine(e.CommandLine.IndexOf("/import") + 1)
         End If
       End If
-      If cSettings.RequiresLogin Then
-        For I As Integer = 1 To 3
-          Using pass As New frmPassEntry
-            pass.Prepare_Login()
-            If pass.ShowDialog() = DialogResult.Cancel Then
-              e.Cancel = True
-              Exit For
-            End If
-            If cSettings.Login(pass.Password) Then
-              e.Cancel = False
-              Exit For
-            End If
+      If Not cSettings.RequiresLogin Then Return
+      For I As Integer = 1 To 3
+        Using pass As New frmPassEntry
+          pass.Prepare_Login()
+          If pass.ShowDialog() = DialogResult.Cancel Then
             e.Cancel = True
-            If I = 1 Then
-              MsgBox("The password you entered was incorrect." & vbNewLine & "You have 2 attempts remaining.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
-            ElseIf I = 2 Then
-              MsgBox("The password you entered was incorrect." & vbNewLine & "You have 1 attempt remaining.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
+            Exit For
+          End If
+          If cSettings.Login(pass.Password) Then
+            e.Cancel = False
+            Exit For
+          End If
+          e.Cancel = True
+          If I = 1 Then
+            MsgBox("The password you entered was incorrect." & vbNewLine & "You have 2 attempts remaining.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
+          ElseIf I = 2 Then
+            MsgBox("The password you entered was incorrect." & vbNewLine & "You have 1 attempt remaining.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
+          Else
+            If Not String.IsNullOrEmpty(sImport) Then
+              MsgBox("The password you entered was incorrect." & vbNewLine & "Failed to import new Authenticator Profile. You must successfully log in before adding a new profile.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
             Else
-              If Not String.IsNullOrEmpty(sImport) Then
-                MsgBox("The password you entered was incorrect." & vbNewLine & "Failed to import new Authenticator Profile. You must successfully log in before adding a new profile.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
-              Else
-                MsgBox("The password you entered was incorrect.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
-              End If
+              MsgBox("The password you entered was incorrect.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
             End If
-          End Using
-        Next
-      End If
+          End If
+        End Using
+      Next
     End Sub
     Private Sub CheckRegistry()
       Try
