@@ -17,6 +17,15 @@
         e.Cancel = True
         Return
       End If
+      If Not cSettings.CanSave Then
+        If cSettings.IsInstalledIsh Then
+          MsgBox(My.Application.Info.ProductName & " could not find a suitable save location." & vbNewLine & vbNewLine & "Please make sure you have write access to the local Registry and/or App Data directory.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
+        Else
+          MsgBox(My.Application.Info.ProductName & " could not find a suitable save location." & vbNewLine & vbNewLine & "Please make sure the """ & IO.Path.GetPathRoot(My.Application.Info.DirectoryPath) & """ Drive is not full or write-protected.", MsgBoxStyle.Critical, My.Application.Info.ProductName)
+        End If
+        e.Cancel = True
+        Return
+      End If
       Dim sImport As String = Nothing
       If e.CommandLine IsNot Nothing AndAlso e.CommandLine.Count > 0 Then
         Dim sCancel As Boolean = False
