@@ -8,7 +8,8 @@
     chkExportAll.Tag = "WORKING"
     Dim sProfiles As String() = cSettings.GetProfileNames
     For Each sName As String In sProfiles
-      If Not String.IsNullOrEmpty(cSettings.ProfileSecret(sName)) Then lstExportProfiles.Items.Add(sName, CheckState.Checked)
+      Dim pInfo As cSettings.PROFILEINFO = cSettings.Profile(sName)
+      If Not String.IsNullOrEmpty(pInfo.Secret) Then lstExportProfiles.Items.Add(sName, CheckState.Checked)
     Next
     chkExportAll.CheckState = CheckState.Checked
     lstExportProfiles.Tag = Nothing
@@ -82,17 +83,18 @@
     Dim sNames As String() = cSettings.GetProfileNames
     For I As Integer = 0 To iItems.Count - 1
       Dim sName As String = sNames(iItems(I))
+      Dim pInfo As cSettings.PROFILEINFO = cSettings.Profile(sName)
       Dim sAlg As String = "SHA1"
-      Select Case cSettings.ProfileAlgorithm(sName)
+      Select Case pInfo.Algorithm
         Case cSettings.HashAlg.SHA256 : sAlg = "SHA256"
         Case cSettings.HashAlg.SHA512 : sAlg = "SHA512"
       End Select
       Dim sData As String = "{" & vbLf &
         " ""name"": """ & sName & """," & vbLf &
-        " ""secret"": """ & cSettings.ProfileSecret(sName) & """," & vbLf &
+        " ""secret"": """ & pInfo.Secret & """," & vbLf &
         " ""alg"": """ & sAlg & """," & vbLf &
-        " ""digits"": """ & cSettings.ProfileDigits(sName) & """," & vbLf &
-        " ""period"": """ & cSettings.ProfilePeriod(sName) & """" & vbLf &
+        " ""digits"": """ & pInfo.Digits & """," & vbLf &
+        " ""period"": """ & pInfo.Period & """" & vbLf &
         "}" & vbLf
       Dim bData As Byte() = System.Text.Encoding.GetEncoding(LATIN_1).GetBytes(sData)
       zExport.AddData(idx & ".json", bData, expTime)

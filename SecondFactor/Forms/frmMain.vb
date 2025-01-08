@@ -1,16 +1,19 @@
 ﻿Public Class frmMain
+  Private tClose As Threading.Timer = Nothing
   Private priorSlice As UInt32
   Private Sub tmrAuthVals_Tick(ByVal sender As Object, ByVal e As EventArgs) Handles tmrAuthVals.Tick
     Dim iPeriod As UInt16 = 30
-    If cmbProfile.Items.Count > 0 Then iPeriod = cSettings.ProfilePeriod(cmbProfile.SelectedItem)
+    Dim selProf As String = Nothing
+    If cmbProfile.SelectedIndex > -1 Then selProf = cmbProfile.SelectedItem
+    If Not String.IsNullOrEmpty(selProf) AndAlso cSettings.Count > 0 AndAlso cSettings.GetProfileNames.Contains(selProf) Then iPeriod = cSettings.Profile(selProf).Period
     Dim remainder As UInt16 = DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) Mod iPeriod
     Dim timeSlice As UInt32 = Math.Floor(DateDiff(DateInterval.Second, New Date(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc), Now.ToUniversalTime) / iPeriod)
     If Not pbTime.Maximum = iPeriod - 1 Then pbTime.Maximum = iPeriod - 1
     If Not pbTime.Value = (iPeriod - 1) - remainder Then pbTime.Value = (iPeriod - 1) - remainder
     If timeSlice = priorSlice Then Return
     priorSlice = timeSlice
-    If cmbProfile.Items.Count > 0 Then
-      LoadProfileData(cmbProfile.SelectedItem)
+    If Not String.IsNullOrEmpty(selProf) AndAlso cSettings.Count > 0 AndAlso cSettings.GetProfileNames.Contains(selProf) Then
+      LoadProfileData(selProf)
       If txtCodeFuture.Focused Then
         txtCode.Focus()
       ElseIf txtCode.Focused Then
@@ -37,6 +40,21 @@
         ParseOTPURL(Command.Substring(8), False)
       End If
     End If
+  End Sub
+  Private Sub frmMain_FormClosing(ByVal sender As Object, ByVal e As System.Windows.Forms.FormClosingEventArgs) Handles Me.FormClosing
+    If Application.UseWaitCursor Then
+      e.Cancel = True
+      Me.Visible = False
+      If tClose IsNot Nothing Then Return
+      tClose = New Threading.Timer(AddressOf tmrClose_Tick, Nothing, 100, 100)
+    End If
+  End Sub
+  Private Sub tmrClose_Tick(ByVal state As Object)
+    If tClose Is Nothing Then Return
+    If Application.UseWaitCursor Then Return
+    tClose.Dispose()
+    tClose = Nothing
+    Me.Close()
   End Sub
 #Region "App Menu"
   Protected Overrides Sub OnHandleCreated(ByVal e As System.EventArgs)
@@ -107,6 +125,7 @@
     Else
       cmbProfile.Items.AddRange(cSettings.GetProfileNames)
       cmbProfile.Enabled = True
+      If String.IsNullOrEmpty(selText) Then selText = cSettings.LastSelectedProfileName
       If String.IsNullOrEmpty(selText) Then
         cmbProfile.SelectedIndex = 0
       Else
@@ -122,8 +141,9 @@
     End If
   End Sub
   Private Sub LoadProfileData(ByVal ProfileName As String)
+    Dim bAuthOK As Boolean = Not cSettings.RequiresLogin OrElse cSettings.LoggedIn
     Dim codeW As Integer
-    If String.IsNullOrEmpty(ProfileName) OrElse Not cSettings.GetProfileNames.Contains(ProfileName) Then
+    If Not bAuthOK OrElse String.IsNullOrEmpty(ProfileName) OrElse Not cSettings.GetProfileNames.Contains(ProfileName) Then
       codeW = TextRenderer.MeasureText(txtCodePast.CreateGraphics, "000 000", txtCodePast.Font, New Size(Integer.MaxValue, Integer.MaxValue), TextFormatFlags.TextBoxControl).Width
       If codeW < 50 Then codeW = 50
       txtCodePast.Width = codeW
@@ -141,17 +161,14 @@
       Else
         cmbProfile.SelectedIndex = 0
       End If
-      If priorSlice > 0 Then cSettings.LastSelectedProfileName = Nothing
+      If bAuthOK AndAlso priorSlice > 0 Then cSettings.LastSelectedProfileName = Nothing
       Return
     End If
-    Dim sSecret As String = cSettings.ProfileSecret(ProfileName)
-    Dim iSize As Byte = cSettings.ProfileDigits(ProfileName)
-    Dim alg As cSettings.HashAlg = cSettings.ProfileAlgorithm(ProfileName)
-    Dim iPeriod As UInt16 = cSettings.ProfilePeriod(ProfileName)
-    Dim sPast = GetCode(sSecret, iSize, alg, iPeriod, -1)
-    Dim sPresent = GetCode(sSecret, iSize, alg, iPeriod, 0)
-    Dim sFuture = GetCode(sSecret, iSize, alg, iPeriod, 1)
-    If iSize = 6 Then
+    Dim pInfo As cSettings.PROFILEINFO = cSettings.Profile(ProfileName)
+    Dim sPast = GetCode(pInfo.Secret, pInfo.Digits, pInfo.Algorithm, pInfo.Period, -1)
+    Dim sPresent = GetCode(pInfo.Secret, pInfo.Digits, pInfo.Algorithm, pInfo.Period, 0)
+    Dim sFuture = GetCode(pInfo.Secret, pInfo.Digits, pInfo.Algorithm, pInfo.Period, 1)
+    If pInfo.Digits = 6 Then
       sPast = sPast.Substring(0, 3) & " " & sPast.Substring(3)
       sPresent = sPresent.Substring(0, 3) & " " & sPresent.Substring(3)
       sFuture = sFuture.Substring(0, 3) & " " & sFuture.Substring(3)
@@ -163,7 +180,7 @@
       txtCode.Width = codeW
       codeW = TextRenderer.MeasureText(txtCodeFuture.CreateGraphics, sFuture, txtCodeFuture.Font, New Size(Integer.MaxValue, Integer.MaxValue), TextFormatFlags.TextBoxControl).Width
       If codeW < 50 Then codeW = 50
-    ElseIf iSize = 8 Then
+    ElseIf pInfo.Digits = 8 Then
       sPast = sPast.Substring(0, 4) & " " & sPast.Substring(4)
       sPresent = sPresent.Substring(0, 4) & " " & sPresent.Substring(4)
       sFuture = sFuture.Substring(0, 4) & " " & sFuture.Substring(4)
@@ -186,7 +203,9 @@
     If priorSlice > 0 Then cSettings.LastSelectedProfileName = ProfileName
   End Sub
   Private Sub cmbProfile_SelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs) Handles cmbProfile.SelectedIndexChanged
-    If cSettings.Count > 0 Then LoadProfileData(cmbProfile.SelectedItem)
+    Dim selProf As String = Nothing
+    If cmbProfile.SelectedIndex > -1 Then selProf = cmbProfile.SelectedItem
+    If Not String.IsNullOrEmpty(selProf) AndAlso cSettings.Count > 0 AndAlso cSettings.GetProfileNames.Contains(selProf) Then LoadProfileData(selProf)
   End Sub
   Private Sub txtCodePast_MouseDown(ByVal sender As Object, ByVal e As MouseEventArgs) Handles txtCodePast.MouseDown
     txtCodePast.SelectAll()

@@ -18,4 +18,10 @@ Public Class NativeMethods
   <DllImport("user32", CharSet:=CharSet.Auto, setlasterror:=True)>
   Public Shared Function ModifyMenu(ByVal hMenu As IntPtr, ByVal uPosition As Integer, ByVal uFlags As Integer, ByVal uIDNewItem As Integer, ByVal lpNewItem As String) As Boolean
   End Function
+  <DllImport("kernel32", CharSet:=CharSet.Unicode, SetLastError:=True)>
+  Public Shared Function WritePrivateProfileStringW(ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpString As String, ByVal lpFileName As String) As Integer
+  End Function
+  <DllImport("kernel32", CharSet:=CharSet.Unicode, SetLastError:=True)>
+  Public Shared Function GetPrivateProfileStringW(ByVal lpApplicationName As String, ByVal lpKeyName As String, ByVal lpDefault As String, ByVal lpReturnedString As String, ByVal nSize As Int32, ByVal lpFileName As String) As Integer
+  End Function
 End Class

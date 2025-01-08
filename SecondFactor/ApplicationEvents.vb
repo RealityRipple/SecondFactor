@@ -62,6 +62,10 @@ Namespace My
       End If
     End Sub
     Private Sub CheckRegistry()
+      If Not cSettings.IsInstalledIsh Then
+        MsgBox("Registering the ""otpauth:"" Protocol is not available in Portable mode.", MsgBoxStyle.Exclamation, My.Application.Info.ProductName)
+        Return
+      End If
       If Not My.Computer.Registry.ClassesRoot.GetSubKeyNames.Contains("otpauth") Then My.Computer.Registry.ClassesRoot.CreateSubKey("otpauth")
       My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth", True).SetValue("", "URL:OTPAUTH Protocol")
       My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth", True).SetValue("URL Protocol", "")
@@ -73,6 +77,10 @@ Namespace My
       My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth", True).OpenSubKey("DefaultIcon", True).SetValue("", Reflection.Assembly.GetExecutingAssembly().Location & ",1")
     End Sub
     Private Sub DeleteRegistry()
+      If Not cSettings.IsInstalledIsh Then
+        MsgBox("Unregistering the ""otpauth:"" Protocol is not available in Portable mode.", MsgBoxStyle.Exclamation, My.Application.Info.ProductName)
+        Return
+      End If
       If My.Computer.Registry.ClassesRoot.GetSubKeyNames.Contains("otpauth") Then My.Computer.Registry.ClassesRoot.DeleteSubKeyTree("otpauth")
     End Sub
     Private Sub MyApplication_StartupNextInstance(ByVal sender As Object, ByVal e As Microsoft.VisualBasic.ApplicationServices.StartupNextInstanceEventArgs) Handles Me.StartupNextInstance

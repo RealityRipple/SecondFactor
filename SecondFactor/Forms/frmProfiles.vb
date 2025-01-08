@@ -41,7 +41,7 @@
       cmdRemove.Enabled = False
       Return
     End If
-    If Not String.IsNullOrEmpty(cSettings.ProfileSecret(cmbProfiles.SelectedItem)) Then
+    If Not String.IsNullOrEmpty(cSettings.Profile(cmbProfiles.SelectedItem).Secret) Then
       If MsgBox("Are you sure you want to remove the " & cmbProfiles.SelectedItem & " profile?" & vbNewLine & "If this profile is still used by a website or service, you may no longer be able to access the associated account." & vbNewLine & "Please be absolutely certain you wish to proceed before clicking ""Yes"".", MsgBoxStyle.Question Or MsgBoxStyle.YesNo Or MsgBoxStyle.DefaultButton2, Application.ProductName) = MsgBoxResult.No Then Return
     End If
     cSettings.RemoveProfile(cmbProfiles.SelectedItem)
@@ -73,14 +73,16 @@
       txtSize.Focus()
       Return
     End If
-    cSettings.ProfileSecret(cmbProfiles.SelectedItem) = txtSecret.Text
-    cSettings.ProfileDigits(cmbProfiles.SelectedItem) = txtSize.Value
+    Dim pInfo As cSettings.PROFILEINFO = cSettings.Profile(cmbProfiles.SelectedItem)
+    pInfo.Secret = txtSecret.Text
+    pInfo.Digits = txtSize.Value
     Select Case cmbAlgorithm.SelectedIndex
-      Case 1 : cSettings.ProfileAlgorithm(cmbProfiles.SelectedItem) = cSettings.HashAlg.SHA256
-      Case 2 : cSettings.ProfileAlgorithm(cmbProfiles.SelectedItem) = cSettings.HashAlg.SHA512
-      Case Else : cSettings.ProfileAlgorithm(cmbProfiles.SelectedItem) = cSettings.HashAlg.SHA1
+      Case 1 : pInfo.Algorithm = cSettings.HashAlg.SHA256
+      Case 2 : pInfo.Algorithm = cSettings.HashAlg.SHA512
+      Case Else : pInfo.Algorithm = cSettings.HashAlg.SHA1
     End Select
-    cSettings.ProfilePeriod(cmbProfiles.SelectedItem) = txtPeriod.Value
+    pInfo.Period = txtPeriod.Value
+    cSettings.Profile(cmbProfiles.SelectedItem) = pInfo
     Dim selName As String = txtName.Text
     If Not cmbProfiles.SelectedItem = selName Then cSettings.RenameProfile(cmbProfiles.SelectedItem, selName)
     UpdateProfileListing()
@@ -151,21 +153,26 @@
     mBusy = True
     txtName.Text = ProfileName
     txtName.Enabled = True
-    Dim sDefault As String = cSettings.ProfileDefaultName(cmbProfiles.SelectedItem)
+    Dim pInfo As cSettings.PROFILEINFO = cSettings.Profile(cmbProfiles.SelectedItem)
+    If pInfo.Digits = 0 Then
+      LoadProfileData(Nothing)
+      Return
+    End If
+    Dim sDefault As String = pInfo.DefaultName
     If sDefault = ProfileName Then sDefault = Nothing
     cmdDefaultService.Visible = Not String.IsNullOrEmpty(sDefault)
-    txtSecret.Text = cSettings.ProfileSecret(ProfileName)
+    txtSecret.Text = pInfo.Secret
     txtSecret.Enabled = True
     txtSecret.ShowContents = False
-    txtSize.Value = cSettings.ProfileDigits(ProfileName)
+    txtSize.Value = pInfo.Digits
     txtSize.Enabled = True
-    Select Case cSettings.ProfileAlgorithm(ProfileName)
+    Select Case pInfo.Algorithm
       Case cSettings.HashAlg.SHA256 : cmbAlgorithm.SelectedIndex = 1
       Case cSettings.HashAlg.SHA512 : cmbAlgorithm.SelectedIndex = 2
       Case Else : cmbAlgorithm.SelectedIndex = 0
     End Select
     cmbAlgorithm.Enabled = True
-    txtPeriod.Value = cSettings.ProfilePeriod(ProfileName)
+    txtPeriod.Value = pInfo.Period
     txtPeriod.Enabled = True
     mBusy = False
     SettingsChanged()
@@ -174,11 +181,12 @@
     If mBusy Then Return
     Dim changeDetected As Boolean = False
     If cmbProfiles.SelectedIndex > -1 Then
+      Dim pInfo As cSettings.PROFILEINFO = cSettings.Profile(cmbProfiles.SelectedItem)
       If Not txtName.Text = cmbProfiles.SelectedItem Then changeDetected = True
-      If Not txtSecret.Text = cSettings.ProfileSecret(cmbProfiles.SelectedItem) Then changeDetected = True
-      If Not txtSize.Value = cSettings.ProfileDigits(cmbProfiles.SelectedItem) Then changeDetected = True
-      If Not txtPeriod.Value = cSettings.ProfilePeriod(cmbProfiles.SelectedItem) Then changeDetected = True
-      Select Case cSettings.ProfileAlgorithm(cmbProfiles.SelectedItem)
+      If Not txtSecret.Text = pInfo.Secret Then changeDetected = True
+      If Not txtSize.Value = pInfo.Digits Then changeDetected = True
+      If Not txtPeriod.Value = pInfo.Period Then changeDetected = True
+      Select Case pInfo.Algorithm
         Case cSettings.HashAlg.SHA1 : If Not cmbAlgorithm.SelectedIndex = 0 Then changeDetected = True
         Case cSettings.HashAlg.SHA256 : If Not cmbAlgorithm.SelectedIndex = 1 Then changeDetected = True
         Case cSettings.HashAlg.SHA512 : If Not cmbAlgorithm.SelectedIndex = 2 Then changeDetected = True
@@ -193,7 +201,7 @@
     SettingsChanged()
   End Sub
   Private Sub cmdDefaultService_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdDefaultService.Click
-    Dim sDefault As String = cSettings.ProfileDefaultName(cmbProfiles.SelectedItem)
+    Dim sDefault As String = cSettings.Profile(cmbProfiles.SelectedItem).DefaultName
     If String.IsNullOrEmpty(sDefault) Then
       Beep()
       Return
