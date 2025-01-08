@@ -73,7 +73,7 @@
         If Not My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth").GetSubKeyNames.Contains("shell") Then My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth", True).CreateSubKey("shell")
         If Not My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth").OpenSubKey("shell").GetSubKeyNames.Contains("open") Then My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth", True).OpenSubKey("shell", True).CreateSubKey("open")
         If Not My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth").OpenSubKey("shell").OpenSubKey("open").GetSubKeyNames.Contains("command") Then My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth", True).OpenSubKey("shell", True).OpenSubKey("open", True).CreateSubKey("command")
-        My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth", True).OpenSubKey("shell", True).OpenSubKey("open", True).OpenSubKey("command", True).SetValue("", """" & Reflection.Assembly.GetExecutingAssembly().Location & """ -import %1")
+        My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth", True).OpenSubKey("shell", True).OpenSubKey("open", True).OpenSubKey("command", True).SetValue("", """" & Reflection.Assembly.GetExecutingAssembly().Location & """ -import ""%1""")
         If Not My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth").GetSubKeyNames.Contains("DefaultIcon") Then My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth", True).CreateSubKey("DefaultIcon")
         My.Computer.Registry.ClassesRoot.OpenSubKey("otpauth", True).OpenSubKey("DefaultIcon", True).SetValue("", Reflection.Assembly.GetExecutingAssembly().Location & ",1")
       Catch ex As Exception
