@@ -15,6 +15,9 @@
     <Deterministic>true</Deterministic>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
   </PropertyGroup>
+  <PropertyGroup>
+    <Win32Resource>Resources\SecondFactor.res</Win32Resource>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
@@ -193,6 +196,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\SecondFactor.res" />
     <Content Include="key.ico" />
     <None Include="Resources\key.png" />
     <None Include="Resources\crosshair.cur" />
